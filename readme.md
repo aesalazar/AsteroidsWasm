@@ -1,8 +1,10 @@
+# Asteroids WebAssembly
+
 This project is a POC to determine the plausibility of writing a .NET Standard library and using it across devices INCLUDING WebAssembly (WASM).  The root library, Asteroids.Standard, encapsulates all logic for rendering the classic '80s video game.  None of this is meant to be production-worthy.  It is more me just messing around trying to see what works.
 
 <div style="text-align: center;">
     <a href="Documents/Screeny.gif" target="_blank">
-        <img src="Documents/Screeny.gif" alt="Screen Shot" height="300" >
+        <img src="Documents/Screeny.gif" alt="Screen Shot" >
     </a>  
 </div>
 
