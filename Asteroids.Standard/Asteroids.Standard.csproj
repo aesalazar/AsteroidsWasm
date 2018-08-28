@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Sounds\explode1.wav" />
+    <None Remove="Sounds\explode2.wav" />
+    <None Remove="Sounds\explode3.wav" />
+    <None Remove="Sounds\fire.WAV" />
+    <None Remove="Sounds\life.wav" />
+    <None Remove="Sounds\lsaucer.WAV" />
+    <None Remove="Sounds\sfire.WAV" />
+    <None Remove="Sounds\ssaucer.WAV" />
+    <None Remove="Sounds\thrust.wav" />
+    <None Remove="Sounds\thumphi.WAV" />
+    <None Remove="Sounds\thumplo.WAV" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Sounds\explode1.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\explode2.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\explode3.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\fire.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\life.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\lsaucer.WAV">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\sfire.WAV">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\ssaucer.WAV">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\thrust.wav">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\thumphi.WAV">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sounds\thumplo.WAV">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>
