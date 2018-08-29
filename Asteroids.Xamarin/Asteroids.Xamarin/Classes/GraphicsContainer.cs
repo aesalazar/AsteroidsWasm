@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
@@ -75,12 +76,15 @@ namespace Asteroids.Xamarin.Classes
 
         private SKColor FromHex(string colorHex)
         {
-            var argb = int.Parse(colorHex.Replace("#", ""), NumberStyles.HexNumber);
+            var hex = colorHex.Replace("#", "");
+            var length = hex.Length;
 
-            return new SKColor((byte)((argb & -16777216) >> 0x18),
-                                  (byte)((argb & 0xff0000) >> 0x10),
-                                  (byte)((argb & 0xff00) >> 8),
-                                  (byte)(argb & 0xff));
+            var bytes = new byte[length / 2];
+
+            for (int i = 0; i < length; i += 2)
+                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+
+            return new SKColor(bytes[0], bytes[1], bytes[2]);
         }
     }
 }
