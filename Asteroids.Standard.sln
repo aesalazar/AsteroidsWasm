@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asteroids.WinForms", "Aster
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asteroids.Wpf", "Asteroids.Wpf\Asteroids.Wpf.csproj", "{0FCDC591-4EB4-4058-B697-CD01A4638F20}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Xamarin", "Xamarin", "{B4DC9E00-6AAB-4232-A7BC-B8D64D20778F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asteroids.Xamarin.Android", "Asteroids.Xamarin\Asteroids.Xamarin.Android\Asteroids.Xamarin.Android.csproj", "{8714AC47-C2C4-44A5-8DE5-CA71DBAD3F48}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asteroids.Xamarin.UWP", "Asteroids.Xamarin\Asteroids.Xamarin.UWP\Asteroids.Xamarin.UWP.csproj", "{CEDC3880-59E4-4F6F-84EC-61216EA8B806}"
@@ -422,11 +420,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{8714AC47-C2C4-44A5-8DE5-CA71DBAD3F48} = {B4DC9E00-6AAB-4232-A7BC-B8D64D20778F}
-		{CEDC3880-59E4-4F6F-84EC-61216EA8B806} = {B4DC9E00-6AAB-4232-A7BC-B8D64D20778F}
-		{748E9505-B5B4-4571-B4BF-5C44BC41CEF0} = {B4DC9E00-6AAB-4232-A7BC-B8D64D20778F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E32C5FBF-C2F8-4320-953F-60DB550AC268}
