@@ -10,15 +10,15 @@ namespace Asteroids.Ooui.Classes
     public class GraphicsContainer : Canvas, IGraphicContainer
     {
         private GameController _controller;
-        private CanvasRenderingContext2D context;
+        private CanvasRenderingContext2D _context;
 
         public void Initialize(GameController controller, Rectangle rectangle)
         {
             _controller = controller;
 
-            context = GetContext2D();
-            context.LineWidth = 2;
-            context.FillStyle = Colors.Clear;
+            _context = GetContext2D();
+            _context.LineWidth = 2;
+            _context.FillStyle = Colors.Clear;
 
             SetDimensions(rectangle);
         }
@@ -31,27 +31,29 @@ namespace Asteroids.Ooui.Classes
 
         public void DrawLine(string colorHex, Point point1, Point point2)
         {
-            context.StrokeStyle = colorHex;
+            _context.StrokeStyle = colorHex;
 
-            context.BeginPath();
-            context.LineTo(point1.X, point1.Y);
-            context.LineTo(point2.X, point2.Y);
-            context.Stroke();
+            _context.BeginPath();
+            _context.LineTo(point1.X, point1.Y);
+            _context.LineTo(point2.X, point2.Y);
+            _context.Stroke();
         }
 
         public void DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
-            context.StrokeStyle = colorHex;
+            _context.StrokeStyle = colorHex;
 
-            context.BeginPath();
+            _context.BeginPath();
 
-            foreach (var pt in points)
-                context.LineTo(pt.X, pt.Y);
+            var pts = points.ToList();
 
-            var first = points.First();
-            context.LineTo(first.X, first.Y);
+            foreach (var pt in pts)
+                _context.LineTo(pt.X, pt.Y);
 
-            context.Stroke();
+            var first = pts.First();
+            _context.LineTo(first.X, first.Y);
+
+            _context.Stroke();
         }
 
         public void SetDimensions(Rectangle rectangle)
@@ -62,7 +64,7 @@ namespace Asteroids.Ooui.Classes
 
         private void Clear()
         {
-            context.ClearRect(0, 0, Width, Height);
+            _context.ClearRect(0, 0, Width, Height);
         }
 
     }
