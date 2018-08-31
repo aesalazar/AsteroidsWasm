@@ -17,6 +17,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.Xamarin", "Astero
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.Ooui", "Asteroids.Ooui\Asteroids.Ooui.csproj", "{C7BB5ED4-CCC1-483E-857F-A67B29311731}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.Blazor", "Asteroids.Blazor\Asteroids.Blazor.csproj", "{D950B4DD-7426-4272-8601-AC51340D9124}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.BlazorComponents", "Asteroids.BlazorComponents\Asteroids.BlazorComponents.csproj", "{39EE3BA7-80BF-48F9-BE2B-71402AF19A9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
