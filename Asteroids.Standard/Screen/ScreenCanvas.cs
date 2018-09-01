@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Interfaces;
 
@@ -37,7 +38,7 @@ namespace Asteroids.Standard.Screen
                 _polys.Clear();
         }
 
-        public void Draw(IGraphicContainer container)
+        public async Task Draw(IGraphicContainer container)
         {
             var pts = new List<Tuple<Point[], string>>();
             lock (_updatePointsLock)
@@ -52,14 +53,14 @@ namespace Asteroids.Standard.Screen
                 var pt1 = tuple.Item1[0];
                 var pt2 = tuple.Item1[1];
                 var penDraw = tuple.Item2;
-                container.DrawLine(penDraw, pt1, pt2);
+                await container.DrawLine(penDraw, pt1, pt2);
             }
 
             foreach (var tuple in polys)
             {
                 var poly = tuple.Item1;
                 var penDraw = tuple.Item2;
-                container.DrawPolygon(penDraw, poly);
+                await container.DrawPolygon(penDraw, poly);
             }
         }
 

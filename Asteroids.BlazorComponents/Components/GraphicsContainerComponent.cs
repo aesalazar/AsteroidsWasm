@@ -31,40 +31,44 @@ namespace Asteroids.BlazorComponents.Components
         public GraphicsContainerComponent()
         {
             _controller = new GameController(this);
-            _controller.Initialize(new Rectangle(0, 0, CanvasWidth, CanvasHeight));
+            Task.Factory.StartNew(async () =>
+                await _controller.Initialize(new Rectangle(0, 0, CanvasWidth, CanvasHeight))
+            );
         }
 
         #endregion
 
         #region Implementation of IGraphicContainer
 
-        public void Initialize(GameController controller, Rectangle rectangle)
+        public async Task Initialize(GameController controller, Rectangle rectangle)
         {
             _canvas = new InteropCanvas();
-            SetDimensions(rectangle);
-
-            Task.Factory.StartNew(() => _canvas.Initialize(CanvasId));
+            await SetDimensions(rectangle);
+            await _canvas.Initialize(CanvasId);
         }
 
-        public void SetDimensions(Rectangle rectangle)
+        public Task SetDimensions(Rectangle rectangle)
         {
             CanvasWidth = rectangle.Width;
             CanvasHeight = rectangle.Height;
+
+            return Task.CompletedTask;
         }
 
-        public void Activate()
+        public async Task Activate()
         {
-            _canvas.Clear(() => _controller.Repaint(this));
+            await _canvas.Clear();
+            await _controller.Repaint(this);
         }
 
-        public void DrawLine(string colorHex, Point point1, Point point2)
+        public async Task DrawLine(string colorHex, Point point1, Point point2)
         {
-            _canvas.DrawLine(colorHex, point1, point2);
+            await _canvas.DrawLine(colorHex, point1, point2);
         }
 
-        public void DrawPolygon(string colorHex, IEnumerable<Point> points)
+        public async Task DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
-            _canvas.DrawPolygon(colorHex, points);
+            await _canvas.DrawPolygon(colorHex, points);
         }
 
         #endregion

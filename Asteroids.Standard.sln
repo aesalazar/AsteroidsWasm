@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.Blazor", "Asteroi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.BlazorComponents", "Asteroids.BlazorComponents\Asteroids.BlazorComponents.csproj", "{39EE3BA7-80BF-48F9-BE2B-71402AF19A9D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{B588CC0D-2597-48CE-AEAC-021F16DBD6F0}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{CFE33B50-3F0C-48EC-B75D-6C6CECD51F7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -524,7 +524,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{10AB7D83-5711-4C7B-A216-94BB8F25660F} = {B588CC0D-2597-48CE-AEAC-021F16DBD6F0}
+		{10AB7D83-5711-4C7B-A216-94BB8F25660F} = {CFE33B50-3F0C-48EC-B75D-6C6CECD51F7F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E32C5FBF-C2F8-4320-953F-60DB550AC268}

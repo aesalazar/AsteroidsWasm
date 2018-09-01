@@ -33,19 +33,19 @@ namespace Asteroids
             _controller.Dispose();
         }
 
-        private void frmAsteroids_Resize(object sender, EventArgs e)
+        private async void frmAsteroids_Resize(object sender, EventArgs e)
         {
             var rec = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
-            _controller.ResizeGame(rec);
+            await _controller.ResizeGame(rec);
         }
 
-        private void frmAsteroids_Activated(object sender, EventArgs e)
+        private async void frmAsteroids_Activated(object sender, EventArgs e)
         {
             if (_controller.GameStatus != Modes.Prep)
                 return;
 
             var rec = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
-            _controller.Initialize(rec);
+            await _controller.Initialize(rec);
         }
 
         private void frmAsteroids_KeyDown(object sender, KeyEventArgs e)
@@ -145,16 +145,11 @@ namespace Asteroids
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {
-                if (components != null)
-                {
-                    components.Dispose();
-                }
-            }
+                components?.Dispose();
+
             _controller.Dispose();
             base.Dispose(disposing);
         }
-
 
         #endregion
 

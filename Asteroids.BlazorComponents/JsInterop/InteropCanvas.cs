@@ -41,27 +41,27 @@ namespace Asteroids.BlazorComponents.JsInterop
             );
         }
 
-        public void Clear(Action callback)
+        public async Task Clear()
         {
-            JSRuntime.Current.InvokeAsync<string>(
+            await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropBlazorComponents}.{clear}"
             );
 
-            callback();
         }
 
-        public Task<string> DrawLine(string colorHex, Point point1, Point point2)
+        public async Task<string> DrawLine(string colorHex, Point point1, Point point2)
         {
-            return JSRuntime.Current.InvokeAsync<string>(
+            return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropBlazorComponents}.{drawLine}"
                 , colorHex
                 , point1
                 , point2
             );
         }
-        public Task<string> DrawPolygon(string colorHex, IEnumerable<Point> points)
+
+        public async Task<string> DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
-            return JSRuntime.Current.InvokeAsync<string>(
+            return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropBlazorComponents}.{drawPolygon}"
                 , colorHex
                 , points

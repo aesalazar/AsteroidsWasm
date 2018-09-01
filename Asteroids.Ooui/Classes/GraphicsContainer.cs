@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using Asteroids.Standard;
 using Asteroids.Standard.Interfaces;
 using Ooui;
@@ -12,7 +13,7 @@ namespace Asteroids.Ooui.Classes
         private GameController _controller;
         private CanvasRenderingContext2D _context;
 
-        public void Initialize(GameController controller, Rectangle rectangle)
+        public Task Initialize(GameController controller, Rectangle rectangle)
         {
             _controller = controller;
 
@@ -20,16 +21,16 @@ namespace Asteroids.Ooui.Classes
             _context.LineWidth = 2;
             _context.FillStyle = Colors.Clear;
 
-            SetDimensions(rectangle);
+            return SetDimensions(rectangle);
         }
 
-        public void Activate()
+        public Task Activate()
         {
             Clear();
-            _controller.Repaint(this);
+            return _controller.Repaint(this);
         }
 
-        public void DrawLine(string colorHex, Point point1, Point point2)
+        public Task DrawLine(string colorHex, Point point1, Point point2)
         {
             _context.StrokeStyle = colorHex;
 
@@ -37,9 +38,11 @@ namespace Asteroids.Ooui.Classes
             _context.LineTo(point1.X, point1.Y);
             _context.LineTo(point2.X, point2.Y);
             _context.Stroke();
+
+            return Task.CompletedTask;
         }
 
-        public void DrawPolygon(string colorHex, IEnumerable<Point> points)
+        public Task DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
             _context.StrokeStyle = colorHex;
 
@@ -54,12 +57,16 @@ namespace Asteroids.Ooui.Classes
             _context.LineTo(first.X, first.Y);
 
             _context.Stroke();
+
+            return Task.CompletedTask;
         }
 
-        public void SetDimensions(Rectangle rectangle)
+        public Task SetDimensions(Rectangle rectangle)
         {
             Width = rectangle.Width;
             Height = rectangle.Height;
+
+            return Task.CompletedTask;
         }
 
         private void Clear()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Timers;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
@@ -27,10 +28,10 @@ namespace Asteroids.Standard
             CommonOps.SoundTriggered += PlaySound;
         }
 
-        public void Initialize(Rectangle frameRectangle)
+        public async Task Initialize(Rectangle frameRectangle)
         {
             _frameRectangle = frameRectangle;
-            _container.Initialize(this, frameRectangle);
+            await _container.Initialize(this, frameRectangle);
 
             screenCanvas = new ScreenCanvas();
             score = new Score();
@@ -85,20 +86,20 @@ namespace Asteroids.Standard
             _timerFlip?.Dispose();
         }
 
-        public void ResizeGame(Rectangle frameRectangle)
+        public async Task ResizeGame(Rectangle frameRectangle)
         {
             _frameRectangle = frameRectangle;
-            _container.SetDimensions(_frameRectangle);
+            await _container.SetDimensions(_frameRectangle);
         }
 
-        public void Repaint(IGraphicContainer container)
+        public async Task Repaint(IGraphicContainer container)
         {
             // Only allow the canvas to be drawn once if there is an invalidate, it's ok, the other canvas will soon be drawn
             if (bLastDrawn)
                 return;
 
             bLastDrawn = true;
-            screenCanvas.Draw(container);
+            await screenCanvas.Draw(container);
         }
 
         public void KeyDown(Keys key)
@@ -235,7 +236,7 @@ namespace Asteroids.Standard
             return GameStatus == Modes.Game;
         }
 
-        private void FlipDisplay(object source, ElapsedEventArgs e)
+        private async Task FlipDisplay(object source, ElapsedEventArgs e)
         {
             // Draw the next screen
             screenCanvas.Clear();
@@ -256,7 +257,15 @@ namespace Asteroids.Standard
 
             // Flip the screen to show the updated image
             bLastDrawn = false;
-            _container.Activate();
+
+            try
+            {
+                await _container.Activate();
+            }
+            catch (Exception)
+            {
+                //ignore
+            }
         }
 
 
@@ -264,7 +273,7 @@ namespace Asteroids.Standard
         {
             // Screen Flip Timer
             _timerFlip = new Timer(timerInterval);
-            _timerFlip.Elapsed += new ElapsedEventHandler(FlipDisplay);
+            _timerFlip.Elapsed += new ElapsedEventHandler(async (s, e) => await FlipDisplay(s, e));
             _timerFlip.AutoReset = true;
             _timerFlip.Enabled = true;
         }
