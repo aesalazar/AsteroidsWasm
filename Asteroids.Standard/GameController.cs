@@ -9,7 +9,7 @@ using Asteroids.Standard.Screen;
 
 namespace Asteroids.Standard
 {
-    public class GameController
+    public class GameController : IDisposable
     {
         #region Constructor
 
@@ -78,11 +78,11 @@ namespace Asteroids.Standard
 
         #region Methods (public)
 
-        public void ExitGame()
+        public void Dispose()
         {
             // Ensure game exits when close is hit
             GameStatus = Modes.Exit;
-            timerFlip.Dispose();
+            _timerFlip?.Dispose();
         }
 
         public void ResizeGame(Rectangle frameRectangle)

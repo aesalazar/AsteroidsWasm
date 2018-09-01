@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Media;
 using System.Windows;
@@ -7,7 +8,7 @@ using Asteroids.Standard;
 
 namespace Asteroids.Wpf
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IDisposable
     {
         public MainWindow()
         {
@@ -47,7 +48,6 @@ namespace Asteroids.Wpf
                     // Escape during a title screen exits the game
                     if (_controller.GameStatus == Standard.Enums.Modes.Title)
                     {
-                        _controller.ExitGame();
                         Application.Current.Shutdown();
                         return;
                     }
@@ -124,6 +124,11 @@ namespace Asteroids.Wpf
             }
 
             _controller.KeyUp(key);
+        }
+
+        public void Dispose()
+        {
+            _controller.Dispose();
         }
     }
 }

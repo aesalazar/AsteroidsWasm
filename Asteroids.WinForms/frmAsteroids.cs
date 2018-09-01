@@ -10,7 +10,7 @@ using Keys = System.Windows.Forms.Keys;
 
 namespace Asteroids
 {
-    public class frmAsteroids : Form
+    public class frmAsteroids : Form, IDisposable
     {
         private GameController _controller;
         private WinForms.Classes.GraphicPictureBox frame1;
@@ -30,7 +30,7 @@ namespace Asteroids
 
         private void frmAsteroids_Closed(object sender, EventArgs e)
         {
-            _controller.ExitGame();
+            _controller.Dispose();
         }
 
         private void frmAsteroids_Resize(object sender, EventArgs e)
@@ -57,7 +57,6 @@ namespace Asteroids
                     // Escape during a title screen exits the game
                     if (_controller.GameStatus == Modes.Title)
                     {
-                        _controller.ExitGame();
                         Application.Exit();
                         return;
                     }
@@ -152,6 +151,7 @@ namespace Asteroids
                     components.Dispose();
                 }
             }
+            _controller.Dispose();
             base.Dispose(disposing);
         }
 

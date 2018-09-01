@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace Asteroids.Xamarin
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage : ContentPage, IDisposable
     {
         public MainPage()
         {
@@ -49,5 +49,9 @@ namespace Asteroids.Xamarin
             return rec;
         }
 
+        public void Dispose()
+        {
+            _controller.Dispose();
+        }
     }
 }
