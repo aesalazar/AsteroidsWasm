@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Screen;
@@ -10,11 +11,11 @@ namespace Asteroids.Standard.Components
     /// </summary>
     public class Explosions : CommonOps
     {
-        protected ArrayList explosions;
+        private IList<Explosion> explosions;
 
         public Explosions()
         {
-            explosions = new ArrayList();
+            explosions = new List<Explosion>();
         }
 
         public int Count()
@@ -29,23 +30,21 @@ namespace Asteroids.Standard.Components
 
         public void AddExplosion(Point ptExplosion, double timeFactor)
         {
-            Explosion explosion = new Explosion(ptExplosion, timeFactor);
+            var explosion = new Explosion(ptExplosion, timeFactor);
             explosions.Add(explosion);
         }
 
         public void Move()
         {
             for (int i = explosions.Count - 1; i >= 0; i--)
-                if (!((Explosion)(explosions[i])).Move())
+                if (!explosions[i].Move())
                     explosions.RemoveAt(i);
         }
 
         public void Draw(ScreenCanvas sc, int iPictX, int iPictY)
         {
-            foreach (Explosion explosion in explosions)
-            {
+            foreach (var explosion in explosions)
                 explosion.Draw(sc, iPictX, iPictY);
-            }
         }
     }
 }

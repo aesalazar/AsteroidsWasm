@@ -73,22 +73,23 @@ namespace Asteroids.Standard.Components
             for (int i = 0; i < 9; i++)
             {
                 radPt = i * (360 / 9) * (Math.PI / 180);
-                AddPoint(new Point((int)(Math.Sin(radPt) * -((int)aSize * SIZE_INCR)),
-                                   (int)(Math.Cos(radPt) * ((int)aSize * SIZE_INCR))));
+                AddPoint(new Point(
+                    (int)(Math.Sin(radPt) * -((int)aSize * SIZE_INCR))
+                    , (int)(Math.Cos(radPt) * ((int)aSize * SIZE_INCR))
+                ));
             }
         }
 
-        public new void Move()
+        public override bool Move()
         {
             // only draw things that are not available
             if (aSize != ASTEROID_SIZE.DNE)
-            {
                 Rotate(rotateSpeed);
-            }
-            base.Move();
+
+            return base.Move();
         }
 
-        public new void Draw(ScreenCanvas sc, int iPictX, int iPictY)
+        public override void Draw(ScreenCanvas sc, int iPictX, int iPictY)
         {
             // only draw things that are not available
             if (aSize != ASTEROID_SIZE.DNE)

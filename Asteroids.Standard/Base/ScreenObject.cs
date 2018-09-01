@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
@@ -14,8 +15,8 @@ namespace Asteroids.Standard.Base
     abstract class ScreenObject : CommonOps
     {
         // points is used for the internal cartesian system
-        protected ArrayList points;
-        public ArrayList pointsTransformed; // exposed to simplify explosions
+        protected IList<Point> points;
+        public IList<Point> pointsTransformed; // exposed to simplify explosions
         protected Point currLoc;
         protected double velocityX;
         protected double velocityY;
@@ -29,10 +30,14 @@ namespace Asteroids.Standard.Base
         public ScreenObject(Point location)
         {
             radians = 180 * Math.PI / 180;
-            points = new ArrayList();
-            points.Capacity = 20;
-            pointsTransformed = new ArrayList();
-            pointsTransformed.Capacity = 20;
+            points = new List<Point>
+            {
+                Capacity = 20
+            };
+            pointsTransformed = new List<Point>
+            {
+                Capacity = 20
+            };
             velocityX = 0;
             velocityY = 0;
             currLoc = location;
@@ -46,7 +51,8 @@ namespace Asteroids.Standard.Base
         public int AddPoint(Point pt)
         {
             points.Add(pt);
-            return pointsTransformed.Add(pt);
+            pointsTransformed.Add(pt);
+            return pointsTransformed.Count - 1;
         }
 
         protected void Rotate(double degrees)
@@ -57,23 +63,23 @@ namespace Asteroids.Standard.Base
             double CosVal = Math.Cos(radians);
 
             pointsTransformed.Clear();
-            Point ptTransformed = new Point(0, 0);
+            var ptTransformed = new Point(0, 0);
             for (int i = 0; i < points.Count; i++)
             {
-                Point pt = ((Point)points[i]);
+                var pt = points[i];
                 ptTransformed.X = (int)(pt.X * CosVal + pt.Y * SinVal);
                 ptTransformed.Y = (int)(pt.X * SinVal - pt.Y * CosVal);
                 pointsTransformed.Add(ptTransformed);
             }
         }
 
-        protected void DrawPolyToSC(ArrayList alPoly, ScreenCanvas sc, int iPictX, int iPictY, string penColor)
+        protected void DrawPolyToSC(IList<Point> alPoly, ScreenCanvas sc, int iPictX, int iPictY, string penColor)
         {
-            Point[] ptsPoly = new Point[alPoly.Count];
+            var ptsPoly = new Point[alPoly.Count];
             for (int i = 0; i < alPoly.Count; i++)
             {
-                ptsPoly[i].X = (int)((currLoc.X + ((Point)alPoly[i]).X) / (double)iMaxX * iPictX);
-                ptsPoly[i].Y = (int)((currLoc.Y + ((Point)alPoly[i]).Y) / (double)iMaxY * iPictY);
+                ptsPoly[i].X = (int)((currLoc.X + alPoly[i].X) / (double)iMaxX * iPictX);
+                ptsPoly[i].Y = (int)((currLoc.Y + alPoly[i].Y) / (double)iMaxY * iPictY);
             }
             sc.AddPolygon(ptsPoly, penColor);
         }

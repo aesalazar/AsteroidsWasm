@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
@@ -117,13 +118,16 @@ namespace Asteroids.Standard.Components
                     {
                         // We have points transformed 
                         // so...  we know where the bottom of the ship is
-                        ArrayList alPoly = new ArrayList();
-                        alPoly.Capacity = 3;
+                        var alPoly = new List<Point>
+                        {
+                            Capacity = 3
+                        };
+
                         alPoly.Add(pointsTransformed[iPointThrust1]);
                         alPoly.Add(pointsTransformed[iPointThrust2]);
                         int iThrustSize = rndGen.Next(200) + 100; // random thrust effect
-                        alPoly.Add(new Point((((Point)pointsTransformed[iPointThrust1]).X + ((Point)pointsTransformed[iPointThrust2]).X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
-                                             (((Point)pointsTransformed[iPointThrust1]).Y + ((Point)pointsTransformed[iPointThrust2]).Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))));
+                        alPoly.Add(new Point((pointsTransformed[iPointThrust1].X + pointsTransformed[iPointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
+                                             (pointsTransformed[iPointThrust1].Y + pointsTransformed[iPointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))));
                         // Draw thrust directly to ScreenCanvas
                         // it's not really part of the ship object
                         DrawPolyToSC(alPoly, sc, iPictX, iPictY, GetRandomFireColor());

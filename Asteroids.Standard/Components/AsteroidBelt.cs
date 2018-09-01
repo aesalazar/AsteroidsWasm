@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
@@ -13,7 +13,7 @@ namespace Asteroids.Standard.Components
     class AsteroidBelt : CommonOps
     {
         const int SAFE_DISTANCE = 2000;
-        protected ArrayList asteroids;
+        private IList<Asteroid> asteroids;
 
         public AsteroidBelt(int iNumAsteroids)
         {
@@ -27,7 +27,7 @@ namespace Asteroids.Standard.Components
 
         public void StartBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize)
         {
-            asteroids = new ArrayList();
+            asteroids = new List<Asteroid>();
             Asteroid.ASTEROID_SIZE aAsteroidSize;
             for (int i = 0; i < iNumAsteroids; i++)
             {
@@ -43,7 +43,7 @@ namespace Asteroids.Standard.Components
 
         public void Move()
         {
-            foreach (Asteroid asteroid in asteroids)
+            foreach (var asteroid in asteroids)
                 asteroid.Move();
         }
 
@@ -51,7 +51,7 @@ namespace Asteroids.Standard.Components
         {
             bool bCenterSafe = true;
             Point ptAsteroid;
-            foreach (Asteroid asteroid in asteroids)
+            foreach (var asteroid in asteroids)
             {
                 ptAsteroid = asteroid.GetCurrLoc();
                 if (Math.Sqrt(Math.Pow(ptAsteroid.X - iMaxX / 2, 2) + Math.Pow(ptAsteroid.Y - iMaxY / 2, 2)) <= SAFE_DISTANCE)
@@ -65,7 +65,7 @@ namespace Asteroids.Standard.Components
 
         public void Draw(ScreenCanvas sc, int iPictX, int iPictY)
         {
-            foreach (Asteroid asteroid in asteroids)
+            foreach (var asteroid in asteroids)
                 asteroid.Draw(sc, iPictX, iPictY);
         }
 
@@ -75,9 +75,9 @@ namespace Asteroids.Standard.Components
             int iCount = asteroids.Count;
             for (int i = iCount - 1; i >= 0; i--)
             {
-                if (((Asteroid)asteroids[i]).CheckPointInside(ptCheck))
+                if (asteroids[i].CheckPointInside(ptCheck))
                 {
-                    Asteroid.ASTEROID_SIZE sizeReduced = ((Asteroid)asteroids[i]).ReduceSize();
+                    Asteroid.ASTEROID_SIZE sizeReduced = asteroids[i].ReduceSize();
                     switch (sizeReduced)
                     {
                         case Asteroid.ASTEROID_SIZE.DNE:
@@ -96,7 +96,7 @@ namespace Asteroids.Standard.Components
                     }
                     // Add a new asteroid if it wasn't small
                     if (sizeReduced != Asteroid.ASTEROID_SIZE.DNE)
-                        asteroids.Add(new Asteroid((Asteroid)asteroids[i]));
+                        asteroids.Add(new Asteroid(asteroids[i]));
 
                     break;
                 }
