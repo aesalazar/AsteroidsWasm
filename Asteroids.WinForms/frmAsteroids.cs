@@ -14,13 +14,12 @@ namespace Asteroids
     {
         private GameController _controller;
         private WinForms.Classes.GraphicPictureBox frame1;
-        private WinForms.Classes.GraphicPictureBox frame2;
 
         public frmAsteroids()
         {
             InitializeComponent();
 
-            _controller = new GameController(frame1, frame2, PlaySound);
+            _controller = new GameController(frame1, PlaySound);
         }
 
         private void PlaySound(Stream stream)
@@ -168,9 +167,7 @@ namespace Asteroids
         private void InitializeComponent()
         {
             this.frame1 = new Asteroids.WinForms.Classes.GraphicPictureBox();
-            this.frame2 = new Asteroids.WinForms.Classes.GraphicPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.frame1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.frame2)).BeginInit();
             this.SuspendLayout();
             // 
             // frame1
@@ -182,20 +179,10 @@ namespace Asteroids
             this.frame1.TabIndex = 2;
             this.frame1.TabStop = false;
             // 
-            // frame2
-            // 
-            this.frame2.BackColor = System.Drawing.SystemColors.WindowText;
-            this.frame2.Location = new System.Drawing.Point(189, 72);
-            this.frame2.Name = "frame2";
-            this.frame2.Size = new System.Drawing.Size(100, 50);
-            this.frame2.TabIndex = 3;
-            this.frame2.TabStop = false;
-            // 
             // frmAsteroids
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(632, 453);
-            this.Controls.Add(this.frame2);
             this.Controls.Add(this.frame1);
             this.Name = "frmAsteroids";
             this.Text = "Asteroids";
@@ -205,7 +192,6 @@ namespace Asteroids
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.frmAsteroids_KeyUp);
             this.Resize += new System.EventHandler(this.frmAsteroids_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.frame1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.frame2)).EndInit();
             this.ResumeLayout(false);
 
         }

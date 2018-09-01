@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Asteroids.Standard.Interfaces;
-using Asteroids.Standard.Enums;
-using Asteroids.Standard.Base;
-using Asteroids.Standard.Screen;
 using Asteroids.Standard;
+using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.WinForms.Classes
 {
@@ -33,18 +29,8 @@ namespace Asteroids.WinForms.Classes
 
         public void Activate()
         {
-            Invoke(new Action(() =>
-            {
-                try
-                {
-                    BringToFront();
-                    Visible = true;
-                }
-                catch
-                {
-                    //ignore
-                }
-            }));
+            //trigger a repaint
+            Invalidate();
         }
 
         public void DrawLine(string colorHex, Point point1, Point point2)
