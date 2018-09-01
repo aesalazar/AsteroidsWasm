@@ -16,9 +16,8 @@ namespace Asteroids.Standard
         public GameController(IGraphicContainer container)
         {
             GameStatus = Modes.Prep;
-            iShowFrame = 0;
             bLastDrawn = false;
-            _containerA = container;
+            _container = container;
         }
 
         public GameController(IGraphicContainer container, Action<Stream> playSound)
@@ -28,19 +27,10 @@ namespace Asteroids.Standard
             CommonOps.SoundTriggered += PlaySound;
         }
 
-
-        public GameController(IGraphicContainer containerA, IGraphicContainer containerB, Action<Stream> playSound)
-            : this(containerA, playSound)
-        {
-            _containerB = containerB;
-        }
-
         public void Initialize(Rectangle frameRectangle)
         {
             _frameRectangle = frameRectangle;
-
-            _containerA.Initialize(this, frameRectangle);
-            _containerB?.Initialize(this, frameRectangle);
+            _container.Initialize(this, frameRectangle);
 
             screenCanvas = new ScreenCanvas();
             score = new Score();
@@ -55,13 +45,13 @@ namespace Asteroids.Standard
 
         #region Fields
 
-        private IGraphicContainer _containerA;
-        private IGraphicContainer _containerB;
+        private const double timerInterval = 1000 / CommonOps.FPS;
+
+        private IGraphicContainer _container;
         private Rectangle _frameRectangle;
 
         private Action<Stream> _playSound;
 
-        private int iShowFrame;
         private bool bLastDrawn;
 
         private TitleScreen currTitle;
@@ -76,7 +66,7 @@ namespace Asteroids.Standard
         private bool bShootingLastPressed;
         private bool bPauseLastPressed;
 
-        private Timer timerFlip;
+        private Timer _timerFlip;
 
         #endregion
 
@@ -98,8 +88,7 @@ namespace Asteroids.Standard
         public void ResizeGame(Rectangle frameRectangle)
         {
             _frameRectangle = frameRectangle;
-            _containerA.SetDimensions(_frameRectangle);
-            _containerB?.SetDimensions(_frameRectangle);
+            _container.SetDimensions(_frameRectangle);
         }
 
         public void Repaint(IGraphicContainer container)
@@ -267,27 +256,17 @@ namespace Asteroids.Standard
 
             // Flip the screen to show the updated image
             bLastDrawn = false;
-
-            if (_containerB != null)
-                iShowFrame = 1 - iShowFrame;
-
-            if (iShowFrame == 0)
-                _containerA.Activate();
-            else
-                _containerB.Activate();
-
-            // Set another timer...
-            if (GameStatus != Modes.Exit)
-                SetFlipTimer();
+            _container.Activate();
         }
+
 
         private void SetFlipTimer()
         {
             // Screen Flip Timer
-            timerFlip = new Timer(1000 / CommonOps.FPS);
-            timerFlip.Elapsed += new ElapsedEventHandler(FlipDisplay);
-            timerFlip.AutoReset = false;
-            timerFlip.Enabled = true;
+            _timerFlip = new Timer(timerInterval);
+            _timerFlip.Elapsed += new ElapsedEventHandler(FlipDisplay);
+            _timerFlip.AutoReset = true;
+            _timerFlip.Enabled = true;
         }
 
         private void PlaySound(object sender, Stream soundStream)
