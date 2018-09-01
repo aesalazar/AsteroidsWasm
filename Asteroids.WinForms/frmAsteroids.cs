@@ -182,7 +182,7 @@ namespace Asteroids
             // frmAsteroids
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-            this.ClientSize = new System.Drawing.Size(632, 453);
+            this.ClientSize = new System.Drawing.Size(634, 461);
             this.Controls.Add(this.frame1);
             this.Name = "frmAsteroids";
             this.Text = "Asteroids";

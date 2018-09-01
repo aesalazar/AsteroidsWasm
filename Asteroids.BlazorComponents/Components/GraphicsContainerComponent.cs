@@ -16,10 +16,10 @@ namespace Asteroids.BlazorComponents.Components
         protected string CanvasId { get; set; } = nameof(Asteroids) + nameof(BlazorComponents) + nameof(GraphicsContainerComponent);
 
         [Parameter]
-        protected int CanvasWidth { get; set; } = 600;
+        protected int CanvasWidth { get; set; } = 650;
 
         [Parameter]
-        protected int CanvasHeight { get; set; } = 600;
+        protected int CanvasHeight { get; set; } = 500;
 
         #endregion
 
