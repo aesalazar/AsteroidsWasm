@@ -30,10 +30,14 @@ namespace Asteroids.BlazorComponents.Components
 
         private readonly GameController _controller;
         private InteropCanvas _canvas;
+        public InteropSounds _sounds;
 
         public GraphicsContainerComponent()
         {
-            _controller = new GameController(this);
+            _controller = new GameController(this, actionSound => 
+                _sounds.Play(actionSound.ToString().ToLowerInvariant())
+            );
+
             _controller.Initialize(new Rectangle(0, 0, CanvasWidth, CanvasHeight));
         }
 
@@ -45,6 +49,13 @@ namespace Asteroids.BlazorComponents.Components
         {
             InteropKeyPress.KeyUp += OnKeyUp;
             InteropKeyPress.KeyDown += OnKeyDown;
+
+            _sounds = new InteropSounds();
+            var sounds = Enum
+                .GetNames(typeof(ActionSound))
+                .Select(s => s.ToLowerInvariant());
+
+            _sounds.LoadSounds(sounds);
 
             _canvas = new InteropCanvas();
             SetDimensions(rectangle);
