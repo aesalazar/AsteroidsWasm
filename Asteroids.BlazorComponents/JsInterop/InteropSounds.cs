@@ -5,16 +5,29 @@ using Microsoft.JSInterop;
 
 namespace Asteroids.BlazorComponents.JsInterop
 {
+    /// <summary>
+    /// Proxy to manage sounds stored in JavaScript.
+    /// </summary>
     public class InteropSounds
     {
-        //JS method container name
+        /// <summary>
+        /// JavaScript method container name.
+        /// </summary>
         private const string JsAsteroidsSound = nameof(JsAsteroidsSound);
 
-        //Commands
+        /// <summary>
+        /// JavaScript method to call when sounds are to be loaded.
+        /// </summary>
         private const string loadSounds = nameof(loadSounds);
+
+        /// <summary>
+        /// JavaScript method to call when a sound is to be played.
+        /// </summary>
         private const string play = nameof(play);
 
-        //loaded sounds
+        /// <summary>
+        /// Collection of loaded sounds.
+        /// </summary>
         private IDictionary<string, int> soundDict = new Dictionary<string, int>();
 
         /// <summary>
@@ -47,7 +60,6 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// Call JavaScript to play a sound.
         /// </summary>
         /// <param name="name">Sound to play.</param>
-        /// <returns></returns>
         public Task<string> Play(string name)
         {
             return JSRuntime.Current.InvokeAsync<string>(
