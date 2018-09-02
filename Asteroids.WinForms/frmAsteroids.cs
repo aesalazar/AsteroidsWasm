@@ -1,12 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
+using System.Linq;
 using System.Media;
 using System.Windows.Forms;
 using Asteroids.Standard;
 using Asteroids.Standard.Enums;
-using Keys = System.Windows.Forms.Keys;
 
 namespace Asteroids
 {
@@ -14,17 +14,28 @@ namespace Asteroids
     {
         private GameController _controller;
         private WinForms.Classes.GraphicPictureBox frame1;
+        private IDictionary<ActionSound, SoundPlayer> _soundPlayers;
 
         public frmAsteroids()
         {
             InitializeComponent();
 
             _controller = new GameController(frame1, PlaySound);
+
+            _soundPlayers = Standard
+                .Sounds.ActionSounds.SoundDictionary
+                .ToDictionary(
+                    kvp => kvp.Key
+                    , kvp => new SoundPlayer(kvp.Value)
+                );
+
+            foreach (var player in _soundPlayers)
+                player.Value.Load();
         }
 
-        private void PlaySound(Stream stream)
-        {
-            var player = new SoundPlayer(stream);
+        private void PlaySound(ActionSound sound)
+        { 
+            var player = _soundPlayers[sound];
             player.Play();
         }
 
@@ -41,7 +52,7 @@ namespace Asteroids
 
         private void frmAsteroids_Activated(object sender, EventArgs e)
         {
-            if (_controller.GameStatus != Modes.Prep)
+            if (_controller.GameStatus != GameMode.Prep)
                 return;
 
             var rec = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
@@ -50,42 +61,42 @@ namespace Asteroids
 
         private void frmAsteroids_KeyDown(object sender, KeyEventArgs e)
         {
-            Standard.Enums.Keys key;
+            PlayKey key;
             switch (e.KeyData)
             {
                 case Keys.Escape:
                     // Escape during a title screen exits the game
-                    if (_controller.GameStatus == Modes.Title)
+                    if (_controller.GameStatus == GameMode.Title)
                     {
                         Application.Exit();
                         return;
                     }
 
-                    key = Standard.Enums.Keys.Escape;
+                    key = PlayKey.Escape;
                     break;
 
                 case Keys.Left:
-                    key = Standard.Enums.Keys.Left;
+                    key = PlayKey.Left;
                     break;
 
                 case Keys.Right:
-                    key = Standard.Enums.Keys.Right;
+                    key = PlayKey.Right;
                     break;
 
                 case Keys.Up:
-                    key = Standard.Enums.Keys.Up;
+                    key = PlayKey.Up;
                     break;
 
                 case Keys.Down:
-                    key = Standard.Enums.Keys.Down;
+                    key = PlayKey.Down;
                     break;
 
                 case Keys.Space:
-                    key = Standard.Enums.Keys.Space;
+                    key = PlayKey.Space;
                     break;
 
                 case Keys.P:
-                    key = Standard.Enums.Keys.P;
+                    key = PlayKey.P;
                     break;
 
                 default:
@@ -97,35 +108,35 @@ namespace Asteroids
 
         private void frmAsteroids_KeyUp(object sender, KeyEventArgs e)
         {
-            Standard.Enums.Keys key;
+            PlayKey key;
             switch (e.KeyData)
             {
                 case Keys.Escape:
-                    key = Standard.Enums.Keys.Escape;
+                    key = PlayKey.Escape;
                     break;
 
                 case Keys.Left:
-                    key = Standard.Enums.Keys.Left;
+                    key = PlayKey.Left;
                     break;
 
                 case Keys.Right:
-                    key = Standard.Enums.Keys.Right;
+                    key = PlayKey.Right;
                     break;
 
                 case Keys.Up:
-                    key = Standard.Enums.Keys.Up;
+                    key = PlayKey.Up;
                     break;
 
                 case Keys.Down:
-                    key = Standard.Enums.Keys.Down;
+                    key = PlayKey.Down;
                     break;
 
                 case Keys.Space:
-                    key = Standard.Enums.Keys.Space;
+                    key = PlayKey.Space;
                     break;
 
                 case Keys.P:
-                    key = Standard.Enums.Keys.P;
+                    key = PlayKey.P;
                     break;
 
                 default:
@@ -145,13 +156,14 @@ namespace Asteroids
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {
                 if (components != null)
-                {
                     components.Dispose();
-                }
-            }
+
+            foreach (var player in _soundPlayers)
+                player.Value.Dispose();
+
             _controller.Dispose();
+
             base.Dispose(disposing);
         }
 

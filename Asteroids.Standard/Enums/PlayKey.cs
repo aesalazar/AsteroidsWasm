@@ -1,6 +1,6 @@
 ﻿namespace Asteroids.Standard.Enums
 {
-    public enum Keys {
+    public enum PlayKey {
         Escape,
         Left,
         Right,

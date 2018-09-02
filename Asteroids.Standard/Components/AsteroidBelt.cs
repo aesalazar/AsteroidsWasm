@@ -4,6 +4,7 @@ using System.Drawing;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Screen;
+using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Components
 {
@@ -82,16 +83,16 @@ namespace Asteroids.Standard.Components
                     {
                         case Asteroid.ASTEROID_SIZE.DNE:
                             pointValue = 250; // destroyed small - MEDIUM 100 pts
-                            PlaySound(this, ActionSounds.Explode3);
+                            PlaySound(this, ActionSound.Explode3);
                             asteroids.RemoveAt(i);
                             break;
                         case Asteroid.ASTEROID_SIZE.SMALL:
                             pointValue = 100; // destroyed large - MEDIUM 100 pts
-                            PlaySound(this, ActionSounds.Explode2);
+                            PlaySound(this, ActionSound.Explode2);
                             break;
                         case Asteroid.ASTEROID_SIZE.MEDIUM:
                             pointValue = 50; // destroyed large - 50 pts
-                            PlaySound(this, ActionSounds.Explode1);
+                            PlaySound(this, ActionSound.Explode1);
                             break;
                     }
                     // Add a new asteroid if it wasn't small

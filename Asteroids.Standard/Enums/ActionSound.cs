@@ -1,6 +1,6 @@
 ﻿namespace Asteroids.Standard.Enums
 {
-    public enum ActionSounds
+    public enum ActionSound
     {
         Fire,
         Life,

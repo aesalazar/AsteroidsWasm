@@ -1,10 +1,10 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Screen;
+using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Components
 {
@@ -96,7 +96,7 @@ namespace Asteroids.Standard.Components
             if (velocityY < -maxThrustSpeed)
                 velocityY = -maxThrustSpeed;
 
-            PlaySound(this, ActionSounds.Thrust);
+            PlaySound(this, ActionSound.Thrust);
         }
 
         public void RotateLeft()

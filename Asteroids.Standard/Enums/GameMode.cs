@@ -1,6 +1,6 @@
 ﻿namespace Asteroids.Standard.Enums
 {
-    public enum Modes {
+    public enum GameMode {
         Prep,
         Title,
         Game,

@@ -1,6 +1,7 @@
 using System;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
+using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Screen
 {
@@ -53,7 +54,7 @@ namespace Asteroids.Standard.Screen
             {
                 iShips += 1;
                 iFreeShip += iFreeShipIncrement;
-                PlaySound(this, ActionSounds.Life);
+                PlaySound(this, ActionSound.Life);
 
             }
             if (iScore >= 1000000)

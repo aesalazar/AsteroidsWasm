@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using Asteroids.Standard;
+using Asteroids.Standard.Enums;
 using Xamarin.Forms;
 
 namespace Asteroids.Xamarin
@@ -12,16 +12,10 @@ namespace Asteroids.Xamarin
         {
             InitializeComponent();
 
-            _controller = new GameController(MainContainer1, PlaySound);
+            _controller = new GameController(MainContainer1);
         }
 
         private GameController _controller;
-
-        private void PlaySound(Stream stream)
-        {
-            //using (var player = new SoundPlayer(stream))
-            //    player.Play();
-        }
 
         private void ContentPage_SizeChanged(object sender, EventArgs e)
         {
@@ -30,7 +24,7 @@ namespace Asteroids.Xamarin
 
         private void ContentPage_LayoutChanged(object sender, EventArgs e)
         {
-            if (_controller.GameStatus != Standard.Enums.Modes.Prep)
+            if (_controller.GameStatus != Standard.Enums.GameMode.Prep)
                 return;
 
             _controller.Initialize(GetRectangle());

@@ -2,6 +2,7 @@ using System.Drawing;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Enums;
+using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Screen
 {
@@ -77,7 +78,7 @@ namespace Asteroids.Standard.Screen
                     if (bullet.Available())
                     {
                         bullet.Shoot(ship.GetCurrLoc(), ship.GetRadians(), ship.GetVelocityX(), ship.GetVelocityY());
-                        PlaySound(this, ActionSounds.Fire);
+                        PlaySound(this, ActionSound.Fire);
                         return;
                     }
                 }
@@ -105,9 +106,9 @@ namespace Asteroids.Standard.Screen
         {
             Point ptCheck = new Point(0);
 
-            PlaySound(this, ActionSounds.Explode1);
-            PlaySound(this, ActionSounds.Explode2);
-            PlaySound(this, ActionSounds.Explode3);
+            PlaySound(this, ActionSound.Explode1);
+            PlaySound(this, ActionSound.Explode2);
+            PlaySound(this, ActionSound.Explode3);
 
             foreach (Point ptExp in ship.pointsTransformed)
             {
