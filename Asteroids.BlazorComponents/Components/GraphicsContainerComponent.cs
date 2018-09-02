@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using Asteroids.BlazorComponents.Classes;
 using Asteroids.BlazorComponents.JsInterop;
 using Asteroids.Standard;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
+using Asteroids.Standard.Sounds;
+using Blazor.Extensions.Storage;
 using Microsoft.AspNetCore.Blazor.Components;
 
 namespace Asteroids.BlazorComponents.Components
@@ -23,6 +26,9 @@ namespace Asteroids.BlazorComponents.Components
 
         [Parameter]
         protected int CanvasHeight { get; set; } = 500;
+
+        [Inject]
+        protected SessionStorage sessionStorage { get; set; }
 
         #endregion
 
@@ -43,19 +49,30 @@ namespace Asteroids.BlazorComponents.Components
 
         #endregion
 
+        #region Overrides
+
+        protected override async Task OnInitAsync()
+        {
+            //First load the stream to storage
+            await LoadSoundStreams();
+
+            //Load the sounds in javascript
+            _sounds = new InteropSounds();
+            var sounds = Enum
+                .GetNames(typeof(ActionSound))
+                .Select(s => s.ToLowerInvariant());
+
+            await _sounds.LoadSounds(sounds);
+        }
+
+        #endregion
+
         #region Implementation of IGraphicContainer
 
         public void Initialize(GameController controller, Rectangle rectangle)
         {
             InteropKeyPress.KeyUp += OnKeyUp;
             InteropKeyPress.KeyDown += OnKeyDown;
-
-            _sounds = new InteropSounds();
-            var sounds = Enum
-                .GetNames(typeof(ActionSound))
-                .Select(s => s.ToLowerInvariant());
-
-            _sounds.LoadSounds(sounds);
 
             _canvas = new InteropCanvas();
             SetDimensions(rectangle);
@@ -177,6 +194,22 @@ namespace Asteroids.BlazorComponents.Components
             _controller.KeyUp(key);
         }
 
+        /// <summary>
+        /// Loads sound <see cref="Stream"/>s stored in <see cref="ActionSounds.SoundDictionary"/>
+        /// to HTML Sesion Storage via <see cref="sessionStorage"/>.
+        /// </summary>
+        private async Task LoadSoundStreams()
+        {
+            foreach (var kvp in ActionSounds.SoundDictionary)
+            {
+                await sessionStorage.SetItem(
+                    kvp.Key.ToString().ToLower()
+                    , kvp.Value.ToBase64()
+                );
+            }
+        }
+
         #endregion
+
     }
 }

@@ -9,8 +9,6 @@ namespace Asteroids.BlazorComponents.JsInterop
     {
         //JS method container name
         private const string JsAsteroidsSound = nameof(JsAsteroidsSound);
-        private const string SoundPath = "sounds/";
-        private const string SoundExtension = ".wav";
 
         //Commands
         private const string loadSounds = nameof(loadSounds);
@@ -19,20 +17,25 @@ namespace Asteroids.BlazorComponents.JsInterop
         //loaded sounds
         private IDictionary<string, int> soundDict = new Dictionary<string, int>();
 
+        /// <summary>
+        /// Call JavaScript to load sounds to Audio objects.
+        /// </summary>
+        /// <param name="fileNames">Collection of wav file names.</param>
         public Task<string> LoadSounds(IEnumerable<string> fileNames)
         {
-            foreach (string name in fileNames)
-            {
-                var id = soundDict.Count;
-                soundDict.Add(name, id);
-            }
-
             var sounds = fileNames
-                .Select(name => new
+                .Select(name =>
                 {
-                    id = soundDict[name],
-                    path = $"{SoundPath}{name}{SoundExtension}"
-                }).ToList();
+                    var snd = new
+                    {
+                        id = soundDict.Count,
+                        path = name
+                    };
+                    soundDict.Add(name, snd.id);
+
+                    return snd;
+                })
+                .ToList();
 
             return JSRuntime.Current.InvokeAsync<string>(
                 $"{JsAsteroidsSound}.{loadSounds}"
@@ -40,6 +43,11 @@ namespace Asteroids.BlazorComponents.JsInterop
             );
         }
 
+        /// <summary>
+        /// Call JavaScript to play a sound.
+        /// </summary>
+        /// <param name="name">Sound to play.</param>
+        /// <returns></returns>
         public Task<string> Play(string name)
         {
             return JSRuntime.Current.InvokeAsync<string>(
