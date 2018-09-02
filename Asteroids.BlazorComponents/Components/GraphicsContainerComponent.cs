@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using Asteroids.BlazorComponents.JsInterop;
 using Asteroids.Standard;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using Microsoft.AspNetCore.Blazor.Components;
 
@@ -40,6 +43,9 @@ namespace Asteroids.BlazorComponents.Components
 
         public void Initialize(GameController controller, Rectangle rectangle)
         {
+            InteropKeyPress.KeyUp += OnKeyUp;
+            InteropKeyPress.KeyDown += OnKeyDown;
+
             _canvas = new InteropCanvas();
             SetDimensions(rectangle);
 
@@ -65,6 +71,99 @@ namespace Asteroids.BlazorComponents.Components
         public void DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
             _canvas.DrawPolygon(colorHex, points);
+        }
+
+        #endregion
+
+        #region Methods
+
+        private void OnKeyDown(object sender, ConsoleKey e)
+        {
+            PlayKey key;
+            switch (e)
+            {
+                case ConsoleKey.Escape:
+                    //Do not send exit command
+                    if (_controller.GameStatus != GameMode.Game)
+                        return;
+
+                    key = PlayKey.Escape;
+                    break;
+
+                case ConsoleKey.LeftArrow:
+                    key = PlayKey.Left;
+                    break;
+
+                case ConsoleKey.RightArrow:
+                    key = PlayKey.Right;
+                    break;
+
+                case ConsoleKey.UpArrow:
+                    key = PlayKey.Up;
+                    break;
+
+                case ConsoleKey.DownArrow:
+                    key = PlayKey.Down;
+                    break;
+
+                case ConsoleKey.Spacebar:
+                    key = PlayKey.Space;
+                    break;
+
+                case ConsoleKey.P:
+                    key = PlayKey.P;
+                    break;
+
+                default:
+                    return;
+            }
+
+            _controller.KeyDown(key);
+
+        }
+
+        private void OnKeyUp(object sender, ConsoleKey e)
+        {
+            PlayKey key;
+            switch (e)
+            {
+                case ConsoleKey.Escape:
+                    //Do not send exit command
+                    if (_controller.GameStatus != GameMode.Game)
+                        return;
+
+                    key = PlayKey.Escape;
+                    break;
+
+                case ConsoleKey.LeftArrow:
+                    key = PlayKey.Left;
+                    break;
+
+                case ConsoleKey.RightArrow:
+                    key = PlayKey.Right;
+                    break;
+
+                case ConsoleKey.UpArrow:
+                    key = PlayKey.Up;
+                    break;
+
+                case ConsoleKey.DownArrow:
+                    key = PlayKey.Down;
+                    break;
+
+                case ConsoleKey.Spacebar:
+                    key = PlayKey.Space;
+                    break;
+
+                case ConsoleKey.P:
+                    key = PlayKey.P;
+                    break;
+
+                default:
+                    return;
+            }
+
+            _controller.KeyUp(key);
         }
 
         #endregion

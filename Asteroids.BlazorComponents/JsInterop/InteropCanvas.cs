@@ -11,7 +11,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         #region Properties
 
         //JS method container name
-        private const string JsInteropBlazorComponents = nameof(JsInteropBlazorComponents);
+        private const string JsInteropAsteroidsCanvas = nameof(JsInteropAsteroidsCanvas);
 
         //Commands
         private const string initialize = nameof(initialize);
@@ -36,7 +36,7 @@ namespace Asteroids.BlazorComponents.JsInterop
             CanvasId = canvasId;
 
             return JSRuntime.Current.InvokeAsync<string>(
-                $"{JsInteropBlazorComponents}.{initialize}"
+                $"{JsInteropAsteroidsCanvas}.{initialize}"
                 , CanvasId
             );
         }
@@ -44,7 +44,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         public void Clear(Action callback)
         {
             JSRuntime.Current.InvokeAsync<string>(
-                $"{JsInteropBlazorComponents}.{clear}"
+                $"{JsInteropAsteroidsCanvas}.{clear}"
             );
 
             callback();
@@ -53,16 +53,17 @@ namespace Asteroids.BlazorComponents.JsInterop
         public Task<string> DrawLine(string colorHex, Point point1, Point point2)
         {
             return JSRuntime.Current.InvokeAsync<string>(
-                $"{JsInteropBlazorComponents}.{drawLine}"
+                $"{JsInteropAsteroidsCanvas}.{drawLine}"
                 , colorHex
                 , point1
                 , point2
             );
         }
+
         public Task<string> DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
             return JSRuntime.Current.InvokeAsync<string>(
-                $"{JsInteropBlazorComponents}.{drawPolygon}"
+                $"{JsInteropAsteroidsCanvas}.{drawPolygon}"
                 , colorHex
                 , points
             );
