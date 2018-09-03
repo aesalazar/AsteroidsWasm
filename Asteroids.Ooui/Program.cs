@@ -1,4 +1,5 @@
-﻿using Asteroids.Ooui.Classes;
+﻿using System.Threading.Tasks;
+using Asteroids.Ooui.Classes;
 using Asteroids.Standard;
 using Ooui;
 
@@ -25,7 +26,9 @@ namespace Asteroids.Ooui
             UI.Port = 8082;
             UI.Publish("/", d);
 
-            _gameController.Initialize(new System.Drawing.Rectangle(0, 0, 650, 500));
+            Task.Factory.StartNew(async () => 
+                await _gameController.Initialize(new System.Drawing.Rectangle(0, 0, 650, 500))
+            );
 
         }
     }

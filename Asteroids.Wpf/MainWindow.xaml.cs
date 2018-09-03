@@ -38,18 +38,18 @@ namespace Asteroids.Wpf
             player.Play();
         }
 
-        private void Window_Activated(object sender, EventArgs e)
+        private async void Window_Activated(object sender, EventArgs e)
         {
             if (_controller.GameStatus != GameMode.Prep)
                 return;
 
             var rec = new Rectangle(0, 0, (int)MainContainer.ActualWidth, (int)MainContainer.ActualHeight);
-            _controller.Initialize(rec);
+            await _controller.Initialize(rec);
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        private async void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            _controller.ResizeGame(new Rectangle(0, 0, (int)e.NewSize.Width, (int)e.NewSize.Height));
+            await _controller.ResizeGame(new Rectangle(0, 0, (int)e.NewSize.Width, (int)e.NewSize.Height));
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
