@@ -38,7 +38,7 @@ Currently, the project is made of the following:
 
 All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance` except Asteroids.Ooui as explained below.   The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
 
-The WinForms and WPF apps a fully functioning at this point in terms of keyboard and sound support.  The others are still a WIP since each requires unique configuration.
+The WinForms, WPF, Blazor apps a fully functioning at this point in terms of keyboard and sound support.  The others are still a WIP since each requires unique configuration.
 
 ## Xamarin Notes
 
@@ -48,7 +48,9 @@ The UWP application is set to require the Windows 10 Fall Creators Update at a m
 
 ## OOUI Notes
 
-To run the OOUI application, it requires some command line (VS could probably be configured somehow but CLI seems easier).  For this project, run the following in the Asteroids.Ooui folder to build it:
+Currently, the OOUI is not building properly.  That is, it builds but logs errors as warnings but they are actually fatal and the project will not run.  This is because of the async-await pattern and the need to reference `Task` types.  Seems there are still some issues with Mono and type mapping they are working on.  Hopefully, that will be in the next release.
+
+To run the OOUI application, when working, it requires some command line (VS could probably be configured somehow but CLI seems easier).  For this project, run the following in the Asteroids.Ooui folder to build it:
 
 `dotnet build`
 
