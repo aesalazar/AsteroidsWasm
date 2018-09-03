@@ -1,0 +1,71 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.JSInterop;
+
+namespace Asteroids.BlazorComponents.JsInterop
+{
+    /// <summary>
+    /// Proxy to manage sounds stored in JavaScript.
+    /// </summary>
+    public class InteropSounds
+    {
+        /// <summary>
+        /// JavaScript method container name.
+        /// </summary>
+        private const string JsAsteroidsSound = nameof(JsAsteroidsSound);
+
+        /// <summary>
+        /// JavaScript method to call when sounds are to be loaded.
+        /// </summary>
+        private const string loadSounds = nameof(loadSounds);
+
+        /// <summary>
+        /// JavaScript method to call when a sound is to be played.
+        /// </summary>
+        private const string play = nameof(play);
+
+        /// <summary>
+        /// Collection of loaded sounds.
+        /// </summary>
+        private IDictionary<string, int> soundDict = new Dictionary<string, int>();
+
+        /// <summary>
+        /// Call JavaScript to load sounds to Audio objects.
+        /// </summary>
+        /// <param name="fileNames">Collection of wav file names.</param>
+        public Task<string> LoadSounds(IEnumerable<string> fileNames)
+        {
+            var sounds = fileNames
+                .Select(name =>
+                {
+                    var snd = new
+                    {
+                        id = soundDict.Count,
+                        path = name
+                    };
+                    soundDict.Add(name, snd.id);
+
+                    return snd;
+                })
+                .ToList();
+
+            return JSRuntime.Current.InvokeAsync<string>(
+                $"{JsAsteroidsSound}.{loadSounds}"
+                , sounds
+            );
+        }
+
+        /// <summary>
+        /// Call JavaScript to play a sound.
+        /// </summary>
+        /// <param name="name">Sound to play.</param>
+        public Task<string> Play(string name)
+        {
+            return JSRuntime.Current.InvokeAsync<string>(
+                $"{JsAsteroidsSound}.{play}"
+                , soundDict[name]
+            );
+        }
+    }
+}

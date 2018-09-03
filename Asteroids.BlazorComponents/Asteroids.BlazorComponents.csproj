@@ -16,10 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="content\JsInteropBlazorComponents.js" />
+    <None Remove="content\JsInteropAsteroidsCanvas.js" />
+    <None Remove="content\JsInteropAsteroidsKeyPress.js" />
+    <None Remove="content\JsInteropAsteroidsSound.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor.Extensions.Storage" Version="0.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.5.1" />
   </ItemGroup>

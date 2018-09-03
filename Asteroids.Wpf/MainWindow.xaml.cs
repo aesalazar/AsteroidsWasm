@@ -38,7 +38,7 @@ namespace Asteroids.Wpf
             player.Play();
         }
 
-        private void Window_Activated(object sender, System.EventArgs e)
+        private void Window_Activated(object sender, EventArgs e)
         {
             if (_controller.GameStatus != GameMode.Prep)
                 return;

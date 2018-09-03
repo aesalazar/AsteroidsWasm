@@ -1,18 +1,14 @@
 ﻿let canvas;
 let context;
 
-window.JsInteropBlazorComponents = {
+window.JsInteropAsteroidsCanvas = {
 
     initialize: (canvasId) => {
         canvas = document.getElementById(canvasId);
-        console.warn("canvas:", canvas);
-
         if (canvas === null)
             return false;
 
         context = canvas.getContext("2d");
-        console.warn("context:", context);
-
         if (context === null)
             return false;
 
