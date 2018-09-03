@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Asteroids.Standard;
 using Asteroids.Standard.Interfaces;
+using System.Threading.Tasks;
 
 namespace Asteroids.WinForms.Classes
 {
@@ -12,43 +13,49 @@ namespace Asteroids.WinForms.Classes
         private GameController _controller;
         private Graphics _lastGraphics;
 
-        public void Initialize(GameController controller, Rectangle frameRectangle)
+        public Task Initialize(GameController controller, Rectangle frameRectangle)
         {
             _controller = controller;
             SetDimensions(frameRectangle);
             Paint += OnPaint;
+            return Task.CompletedTask;
         }
 
-        public void SetDimensions(Rectangle rectangle)
+        public Task SetDimensions(Rectangle rectangle)
         {
             Top = rectangle.Top;
             Left = rectangle.Left;
             Width = rectangle.Width;
             Height = rectangle.Height;
+
+            return Task.CompletedTask;
         }
 
-        public void Activate()
+        public Task Activate()
         {
             //trigger a repaint
             Invalidate();
+            return Task.CompletedTask;
         }
 
-        public void DrawLine(string colorHex, Point point1, Point point2)
+        public Task DrawLine(string colorHex, Point point1, Point point2)
         {
             var color = ColorTranslator.FromHtml(colorHex);
             _lastGraphics.DrawLine(new Pen(color), point1, point2);
+            return Task.CompletedTask;
         }
 
-        public void DrawPolygon(string colorHex, IEnumerable<Point> points)
+        public Task DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
             var color = ColorTranslator.FromHtml(colorHex);
             _lastGraphics.DrawPolygon(new Pen(color), points.ToArray());
+            return Task.CompletedTask;
         }
 
-        private void OnPaint(object sender, PaintEventArgs e)
+        private async void OnPaint(object sender, PaintEventArgs e)
         {
             _lastGraphics = e.Graphics;
-            _controller.Repaint(this);
+            await _controller.Repaint(this);
         }
     }
 }

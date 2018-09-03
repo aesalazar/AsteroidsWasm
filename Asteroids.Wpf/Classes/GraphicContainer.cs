@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Asteroids.Standard;
@@ -13,16 +14,16 @@ namespace Asteroids.Wpf.Classes
         private Dispatcher _mainDispatcher = Dispatcher.CurrentDispatcher;
         private GameController _controller;
 
-        public void Activate()
+        public async Task Activate()
         {
-            _mainDispatcher.Invoke(() => {
+            await _mainDispatcher.InvokeAsync(async () => {
                 Children.Clear();
                 Visibility = System.Windows.Visibility.Visible;
-                _controller.Repaint(this);
+                await _controller.Repaint(this);
             });
         }
 
-        public void DrawLine(string colorHex, Point point1, Point point2)
+        public Task DrawLine(string colorHex, Point point1, Point point2)
         {
             var color = ColorTranslator.FromHtml(colorHex);
             var line = new System.Windows.Shapes.Line();
@@ -36,9 +37,11 @@ namespace Asteroids.Wpf.Classes
             var c = System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
             line.Stroke = new System.Windows.Media.SolidColorBrush(c);
             line.StrokeThickness = 1;
+
+            return Task.CompletedTask;
         }
 
-        public void DrawPolygon(string colorHex, IEnumerable<Point> points)
+        public Task DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
             var color = ColorTranslator.FromHtml(colorHex);
             var poly = new System.Windows.Shapes.Polygon();
@@ -51,16 +54,18 @@ namespace Asteroids.Wpf.Classes
             var pts = points.ToList();
             pts.ForEach(p => poly.Points.Add(new System.Windows.Point(p.X, p.Y)));
 
+            return Task.CompletedTask;
         }
 
-        public void Initialize(GameController controller, Rectangle rectangle)
+        public async Task Initialize(GameController controller, Rectangle rectangle)
         {
             _controller = controller;
-            SetDimensions(rectangle);
+            await SetDimensions(rectangle);
         }
 
-        public void SetDimensions(Rectangle rectangle)
+        public Task SetDimensions(Rectangle rectangle)
         {
+            return Task.CompletedTask;
         }
     }
 }

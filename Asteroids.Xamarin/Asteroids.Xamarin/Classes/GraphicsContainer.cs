@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Asteroids.Standard;
 using Asteroids.Standard.Interfaces;
 using SkiaSharp;
@@ -17,16 +18,18 @@ namespace Asteroids.Xamarin.Classes
         private GameController _controller;
         private SKCanvas _lastCanvas;
 
-        public void Activate()
+        public Task Activate()
         {
             Device.BeginInvokeOnMainThread(() =>
             {
                 IsVisible = true;
                 InvalidateSurface();
             });
+
+            return Task.CompletedTask;
         }
 
-        public void DrawLine(string colorHex, Point point1, Point point2)
+        public Task DrawLine(string colorHex, Point point1, Point point2)
         {
             var color = FromHex(colorHex);
             var p0 = new SKPoint(point1.X, point1.Y);
@@ -39,9 +42,11 @@ namespace Asteroids.Xamarin.Classes
             };
 
             _lastCanvas.DrawLine(p0, p1, paint);
+
+            return Task.CompletedTask;
         }
 
-        public void DrawPolygon(string colorHex, IEnumerable<Point> points)
+        public Task DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
             var color = FromHex(colorHex);
             var path = new SKPath();
@@ -54,24 +59,29 @@ namespace Asteroids.Xamarin.Classes
             };
 
             _lastCanvas.DrawPath(path, paint);
+
+            return Task.CompletedTask;
         }
 
-        public void Initialize(GameController controller, Rectangle rectangle)
+        public Task Initialize(GameController controller, Rectangle rectangle)
         {
             _controller = controller;
             SetDimensions(rectangle);
-            PaintSurface += OnPaitSurface;
+            PaintSurface += OnPaintSurface;
+
+            return Task.CompletedTask;
         }
 
-        private void OnPaitSurface(object sender, SKPaintSurfaceEventArgs e)
+        private async void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             _lastCanvas = e.Surface.Canvas;
             _lastCanvas.Clear();
-            _controller.Repaint(this);
+            await _controller.Repaint(this);
         }
 
-        public void SetDimensions(Rectangle rectangle)
+        public Task SetDimensions(Rectangle rectangle)
         {
+            return Task.CompletedTask;
         }
 
         private SKColor FromHex(string colorHex)

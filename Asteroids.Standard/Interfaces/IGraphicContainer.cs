@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Threading.Tasks;
 
 namespace Asteroids.Standard.Interfaces
 {
     public interface IGraphicContainer
     {
-        void Initialize(GameController controller, Rectangle rectangle);
-        void SetDimensions(Rectangle rectangle);
-        void Activate();
+        Task Initialize(GameController controller, Rectangle rectangle);
+        Task SetDimensions(Rectangle rectangle);
+        Task Activate();
 
-        void DrawLine(string colorHex, Point point1, Point point2);
-        void DrawPolygon(string colorHex, IEnumerable<Point> points);
+        Task DrawLine(string colorHex, Point point1, Point point2);
+        Task DrawPolygon(string colorHex, IEnumerable<Point> points);
     }
 }
