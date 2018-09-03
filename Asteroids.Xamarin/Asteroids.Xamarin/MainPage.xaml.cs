@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using Asteroids.Standard;
-using Asteroids.Standard.Enums;
 using Xamarin.Forms;
 
 namespace Asteroids.Xamarin
@@ -17,17 +16,15 @@ namespace Asteroids.Xamarin
 
         private GameController _controller;
 
-        private void ContentPage_SizeChanged(object sender, EventArgs e)
+        private async void MainContentPage_SizeChanged(object sender, EventArgs e)
         {
-            _controller.ResizeGame(GetRectangle());
+            await _controller.ResizeGame(GetRectangle());
         }
 
-        private void ContentPage_LayoutChanged(object sender, EventArgs e)
+        private async void MainContentPage_LayoutChanged(object sender, EventArgs e)
         {
-            if (_controller.GameStatus != Standard.Enums.GameMode.Prep)
-                return;
-
-            _controller.Initialize(GetRectangle());
+            MainContentPage.LayoutChanged -= MainContentPage_LayoutChanged;
+            await _controller.Initialize(GetRectangle());
         }
 
         private System.Drawing.Rectangle GetRectangle()

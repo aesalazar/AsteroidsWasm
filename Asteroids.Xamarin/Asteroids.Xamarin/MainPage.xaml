@@ -3,8 +3,8 @@
              xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:classes="clr-namespace:Asteroids.Xamarin.Classes"
-             LayoutChanged="ContentPage_LayoutChanged"
-             SizeChanged="ContentPage_SizeChanged"
+             LayoutChanged="MainContentPage_LayoutChanged"
+             SizeChanged="MainContentPage_SizeChanged"
              x:Name="MainContentPage"
              
              >
