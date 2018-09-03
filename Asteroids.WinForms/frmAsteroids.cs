@@ -52,9 +52,7 @@ namespace Asteroids
 
         private async void frmAsteroids_Activated(object sender, EventArgs e)
         {
-            if (_controller.GameStatus != GameMode.Prep)
-                return;
-
+            Activated -= new EventHandler(frmAsteroids_Activated);
             var rec = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
             await _controller.Initialize(rec);
         }

@@ -12,6 +12,9 @@ namespace Asteroids.Wpf
 {
     public partial class MainWindow : Window, IDisposable
     {
+        private readonly GameController _controller;
+        private readonly IDictionary<ActionSound, SoundPlayer> _soundPlayers;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -29,9 +32,6 @@ namespace Asteroids.Wpf
                 player.Value.Load();
         }
 
-        private GameController _controller;
-        private IDictionary<ActionSound, SoundPlayer> _soundPlayers;
-
         private void PlaySound(ActionSound sound)
         {
             var player = _soundPlayers[sound];
@@ -40,9 +40,7 @@ namespace Asteroids.Wpf
 
         private async void Window_Activated(object sender, EventArgs e)
         {
-            if (_controller.GameStatus != GameMode.Prep)
-                return;
-
+            Activated -= Window_Activated;
             var rec = new Rectangle(0, 0, (int)MainContainer.ActualWidth, (int)MainContainer.ActualHeight);
             await _controller.Initialize(rec);
         }
