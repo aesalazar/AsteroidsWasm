@@ -69,11 +69,13 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         public GraphicsContainerComponent()
         {
-            _controller = new GameController(this, actionSound => 
-                _interopSounds.Play(actionSound.ToString().ToLowerInvariant())
+            _controller = new GameController(this, async actionSound => 
+                await _interopSounds.Play(actionSound.ToString().ToLowerInvariant())
             );
 
-            _controller.Initialize(new Rectangle(0, 0, CanvasWidth, CanvasHeight));
+            Task.Factory.StartNew(async () =>
+                await _controller.Initialize(new Rectangle(0, 0, CanvasWidth, CanvasHeight))
+            );
         }
 
         #endregion
@@ -106,33 +108,34 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         /// <param name="controller">Calling <see cref="GameController"/>.</param>
         /// <param name="rectangle">Required <see cref="Rectangle"/> size.</param>
-        public void Initialize(GameController controller, Rectangle rectangle)
+        public async Task Initialize(GameController controller, Rectangle rectangle)
         {
             InteropKeyPress.KeyUp += OnKeyUp;
             InteropKeyPress.KeyDown += OnKeyDown;
 
             _interopCanvas = new InteropCanvas();
-            SetDimensions(rectangle);
-
-            Task.Factory.StartNew(() => _interopCanvas.Initialize(CanvasId));
+            await SetDimensions(rectangle);
+            await _interopCanvas.Initialize(CanvasId);
         }
 
         /// <summary>
         /// Sets the height and width of the parent canvas.
         /// </summary>
-        public void SetDimensions(Rectangle rectangle)
+        public Task SetDimensions(Rectangle rectangle)
         {
             CanvasWidth = rectangle.Width;
             CanvasHeight = rectangle.Height;
+            return Task.CompletedTask;
         }
 
         /// <summary>
         /// Clears the <see cref="InteropCanvas"/> and calls the <see cref="GameController"/>
         /// to redraw the screen.
         /// </summary>
-        public void Activate()
+        public async Task Activate()
         {
-            _interopCanvas.Clear(() => _controller.Repaint(this));
+            await _interopCanvas.Clear();
+            await _controller.Repaint(this);
         }
 
         /// <summary>
@@ -141,9 +144,9 @@ namespace Asteroids.BlazorComponents.Components
         /// <param name="colorHex">HTML color hex, e.g. #000000</param>
         /// <param name="point1">Starting vertex point.</param>
         /// <param name="point2">Ending vertex point.</param>
-        public void DrawLine(string colorHex, Point point1, Point point2)
+        public async Task DrawLine(string colorHex, Point point1, Point point2)
         {
-            _interopCanvas.DrawLine(colorHex, point1, point2);
+            await _interopCanvas.DrawLine(colorHex, point1, point2);
         }
 
         /// <summary>
@@ -151,9 +154,9 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         /// <param name="colorHex">HTML color hex, e.g. #000000</param>
         /// <param name="points">Collection of vertex points.</param>
-        public void DrawPolygon(string colorHex, IEnumerable<Point> points)
+        public async Task DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
-            _interopCanvas.DrawPolygon(colorHex, points);
+            await _interopCanvas.DrawPolygon(colorHex, points);
         }
 
         #endregion

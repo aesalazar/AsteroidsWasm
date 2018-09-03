@@ -34,7 +34,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// Call JavaScript to load sounds to Audio objects.
         /// </summary>
         /// <param name="fileNames">Collection of wav file names.</param>
-        public Task<string> LoadSounds(IEnumerable<string> fileNames)
+        public async Task<string> LoadSounds(IEnumerable<string> fileNames)
         {
             var sounds = fileNames
                 .Select(name =>
@@ -50,7 +50,7 @@ namespace Asteroids.BlazorComponents.JsInterop
                 })
                 .ToList();
 
-            return JSRuntime.Current.InvokeAsync<string>(
+            return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsAsteroidsSound}.{loadSounds}"
                 , sounds
             );
@@ -60,9 +60,9 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// Call JavaScript to play a sound.
         /// </summary>
         /// <param name="name">Sound to play.</param>
-        public Task<string> Play(string name)
+        public async Task<string> Play(string name)
         {
-            return JSRuntime.Current.InvokeAsync<string>(
+            return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsAsteroidsSound}.{play}"
                 , soundDict[name]
             );

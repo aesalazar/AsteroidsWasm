@@ -41,19 +41,21 @@ namespace Asteroids.BlazorComponents.JsInterop
         #endregion
 
         #region Methods
+
         /// <summary>
         /// Call JavaScript to prep the canvas.
         /// </summary>
         /// <param name="canvasId">Canvas id to apply to.</param>
-        public Task<string> Initialize(string canvasId)
+        public async Task<string> Initialize(string canvasId)
         {
             if (string.IsNullOrEmpty(canvasId))
-                throw new ArgumentNullException($"Parameter '{nameof(canvasId)}' must have a value");
+            {
+                var ex = $"Parameter '{nameof(canvasId)}' must have a value";
+                Console.WriteLine($"Error: {ex}");
+                throw new ArgumentNullException(ex);
+            }
 
-            if (!string.IsNullOrEmpty(canvasId))
-                throw new TypeInitializationException(nameof(InteropCanvas), new Exception($"Instance has already been initialized with canvas id {canvasId}"));
-
-            return JSRuntime.Current.InvokeAsync<string>(
+            return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropAsteroidsCanvas}.{initialize}"
                 , canvasId
             );
@@ -62,14 +64,11 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <summary>
         /// Call JavaScript to clear the canvas.
         /// </summary>
-        /// <param name="callback">Callback method when complete.</param>
-        public void Clear(Action callback)
+        public async Task<string> Clear()
         {
-            JSRuntime.Current.InvokeAsync<string>(
+            return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropAsteroidsCanvas}.{clear}"
             );
-
-            callback();
         }
 
         /// <summary>
@@ -78,9 +77,9 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <param name="colorHex">HTML color hex, e.g. #000000</param>
         /// <param name="point1">Starting vertex point.</param>
         /// <param name="point2">Ending vertex point.</param>
-        public Task<string> DrawLine(string colorHex, Point point1, Point point2)
+        public async Task<string> DrawLine(string colorHex, Point point1, Point point2)
         {
-            return JSRuntime.Current.InvokeAsync<string>(
+            return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropAsteroidsCanvas}.{drawLine}"
                 , colorHex
                 , point1
@@ -93,9 +92,9 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// </summary>
         /// <param name="colorHex">HTML color hex, e.g. #000000</param>
         /// <param name="points">Collection of vertex points.</param>
-        public Task<string> DrawPolygon(string colorHex, IEnumerable<Point> points)
+        public async Task<string> DrawPolygon(string colorHex, IEnumerable<Point> points)
         {
-            return JSRuntime.Current.InvokeAsync<string>(
+            return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropAsteroidsCanvas}.{drawPolygon}"
                 , colorHex
                 , points
