@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Media;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Asteroids.Standard;
@@ -14,6 +15,7 @@ namespace Asteroids.Wpf
     {
         private readonly GameController _controller;
         private readonly IDictionary<ActionSound, SoundPlayer> _soundPlayers;
+        private SoundPlayer _soundPlaying;
 
         public MainWindow()
         {
@@ -34,8 +36,17 @@ namespace Asteroids.Wpf
 
         private void PlaySound(ActionSound sound)
         {
-            var player = _soundPlayers[sound];
-            player.Play();
+            if (_soundPlaying != null)
+                return;
+
+            _soundPlaying = _soundPlayers[sound];
+
+            Task.Factory.StartNew(() =>
+            {
+                _soundPlaying.Stream.Position = 0;
+                _soundPlaying.PlaySync();
+                _soundPlaying = null;
+            });
         }
 
         private async void Window_Activated(object sender, EventArgs e)

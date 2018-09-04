@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Media;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Asteroids.Standard;
 using Asteroids.Standard.Enums;
@@ -12,9 +13,11 @@ namespace Asteroids
 {
     public class frmAsteroids : Form, IDisposable
     {
-        private GameController _controller;
         private WinForms.Classes.GraphicPictureBox frame1;
-        private IDictionary<ActionSound, SoundPlayer> _soundPlayers;
+
+        private readonly GameController _controller;
+        private readonly IDictionary<ActionSound, SoundPlayer> _soundPlayers;
+        private SoundPlayer _soundPlaying;
 
         public frmAsteroids()
         {
@@ -34,9 +37,18 @@ namespace Asteroids
         }
 
         private void PlaySound(ActionSound sound)
-        { 
-            var player = _soundPlayers[sound];
-            player.Play();
+        {
+            if (_soundPlaying != null)
+                return;
+
+            _soundPlaying = _soundPlayers[sound];
+
+            Task.Factory.StartNew(() =>
+            {
+                _soundPlaying.Stream.Position = 0;
+                _soundPlaying.PlaySync();
+                _soundPlaying = null;
+            });
         }
 
         private void frmAsteroids_Closed(object sender, EventArgs e)
