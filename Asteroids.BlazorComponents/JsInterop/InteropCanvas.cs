@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Blazor;
 using Microsoft.JSInterop;
 
 namespace Asteroids.BlazorComponents.JsInterop
@@ -45,19 +46,12 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <summary>
         /// Call JavaScript to prep the canvas.
         /// </summary>
-        /// <param name="canvasId">Canvas id to apply to.</param>
-        public async Task<string> Initialize(string canvasId)
+        /// <param name="canvasElement">Canvas element to apply to.</param>
+        public async Task<string> Initialize(ElementRef canvasElement)
         {
-            if (string.IsNullOrEmpty(canvasId))
-            {
-                var ex = $"Parameter '{nameof(canvasId)}' must have a value";
-                Console.WriteLine($"Error: {ex}");
-                throw new ArgumentNullException(ex);
-            }
-
             return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropAsteroidsCanvas}.{initialize}"
-                , canvasId
+                , canvasElement
             );
         }
 

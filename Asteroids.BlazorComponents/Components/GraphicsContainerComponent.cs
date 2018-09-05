@@ -10,6 +10,7 @@ using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using Asteroids.Standard.Sounds;
 using Blazor.Extensions.Storage;
+using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
 
 namespace Asteroids.BlazorComponents.Components
@@ -19,13 +20,9 @@ namespace Asteroids.BlazorComponents.Components
         #region Blazor Parameters
 
         /// <summary>
-        /// Provides a unique HTML id for the main canvas element.
+        /// Primary HTML canvas to render the game in.
         /// </summary>
-        [Parameter]
-        protected string CanvasId { get; set; } = 
-            nameof(Asteroids) 
-            + nameof(BlazorComponents)
-            + nameof(GraphicsContainerComponent);
+        protected ElementRef CanvasElement;
 
         /// <summary>
         /// Provides the HTML width to the main canvas element.
@@ -115,7 +112,7 @@ namespace Asteroids.BlazorComponents.Components
 
             _interopCanvas = new InteropCanvas();
             await SetDimensions(rectangle);
-            await _interopCanvas.Initialize(CanvasId);
+            await _interopCanvas.Initialize(CanvasElement);
         }
 
         /// <summary>

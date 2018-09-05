@@ -3,8 +3,8 @@ let context;
 
 window.JsInteropAsteroidsCanvas = {
 
-    initialize: (canvasId) => {
-        canvas = document.getElementById(canvasId);
+    initialize: (canvasElement) => {
+        canvas = canvasElement;
         if (canvas === null)
             return false;
 
