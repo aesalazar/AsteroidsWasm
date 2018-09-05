@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.JSInterop;
 
 namespace Asteroids.BlazorComponents.JsInterop
@@ -22,33 +23,60 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// Called by JavaScript when a Key Down event fires.
         /// </summary>
         /// <param name="e"><see cref="ConsoleKey"/> number.</param>
+        /// <returns>
+        /// JavaScript Promise with the converted <see cref="ConsoleKey"/> value or <see cref="null"/> if
+        /// no equivalent is found.
+        /// </returns>
         [JSInvokable]
-        public static void JsKeyDown(int e)
+        public static Task<bool> JsKeyDown(int e)
         {
-            var handler = KeyDown;
+            var found = false;
+            var consoleKey = default(ConsoleKey);
 
-            if (handler == null)
-                return;
+            try
+            {
+                consoleKey = (ConsoleKey)e;
+                found = true;
+            }
+            catch
+            {
+                Console.WriteLine($"Cound not find {nameof(ConsoleKey)} for JS key value {e})");
+            }
 
-            var consoleKey = (ConsoleKey)Enum.Parse(typeof(ConsoleKey), e.ToString());
-            handler.Invoke(null, consoleKey);
+            if (found)
+                KeyDown?.Invoke(null, consoleKey);
+
+            return Task.FromResult(found);
         }
 
         /// <summary>
         /// Called by JavaScript when a Key Up event fires.
         /// </summary>
         /// <param name="e"><see cref="ConsoleKey"/> number.</param>
+        /// <returns>
+        /// JavaScript Promise with the converted <see cref="ConsoleKey"/> value or <see cref="null"/> if
+        /// no equivalent is found.
+        /// </returns>
         [JSInvokable]
-        public static void JsKeyUp(int e)
+        public static Task<bool> JsKeyUp(int e)
         {
-            var handler = KeyUp;
+            var found = false;
+            var consoleKey = default(ConsoleKey);
 
-            if (handler == null)
-                return;
+            try
+            {
+                consoleKey = (ConsoleKey)e;
+                found = true;
+            }
+            catch
+            {
+                Console.WriteLine($"Cound not find {nameof(ConsoleKey)} for JS key value {e})");
+            }
 
-            var consoleKey = (ConsoleKey)Enum.Parse(typeof(ConsoleKey), e.ToString());
-            handler.Invoke(null, consoleKey);
+            if (found)
+                KeyUp?.Invoke(null, consoleKey);
+
+            return Task.FromResult(found);
         }
-
     }
 }
