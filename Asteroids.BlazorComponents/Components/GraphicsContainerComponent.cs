@@ -82,6 +82,9 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Loads the sound streams in JavaScript.
         /// </summary>
+        /// <remarks>
+        ///  Base <see cref="BlazorComponent.OnInitAsync"/> returns null so do not call.
+        /// </remarks>
         protected override async Task OnInitAsync()
         {
             //First load the stream to storage
@@ -96,12 +99,28 @@ namespace Asteroids.BlazorComponents.Components
             await _interopSounds.LoadSounds(sounds);
         }
 
+        /// <summary>
+        ///  Initializes the <see cref="InteropCanvas"/>.
+        /// </summary>
+        /// <remarks>
+        ///  Base <see cref="BlazorComponent.OnAfterRenderAsync"/> returns null so do not call.
+        /// </remarks>
+        protected override async Task OnAfterRenderAsync()
+        {
+            //This can be called more then once
+            if (_interopCanvas != null)
+                return;
+
+            _interopCanvas = new InteropCanvas();
+            await _interopCanvas.Initialize(CanvasElement);
+        }
+
         #endregion
 
         #region Implementation of IGraphicContainer
 
         /// <summary>
-        /// Wires the key press handlers and initializes the <see cref="InteropCanvas"/>.
+        /// Wires the key press handlers.
         /// </summary>
         /// <param name="controller">Calling <see cref="GameController"/>.</param>
         /// <param name="rectangle">Required <see cref="Rectangle"/> size.</param>
@@ -110,9 +129,7 @@ namespace Asteroids.BlazorComponents.Components
             InteropKeyPress.KeyUp += OnKeyUp;
             InteropKeyPress.KeyDown += OnKeyDown;
 
-            _interopCanvas = new InteropCanvas();
             await SetDimensions(rectangle);
-            await _interopCanvas.Initialize(CanvasElement);
         }
 
         /// <summary>
