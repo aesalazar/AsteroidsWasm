@@ -145,24 +145,8 @@ namespace Asteroids.BlazorComponents.Components
         public async Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
             await _interopCanvas.Clear();
-
-            foreach (var line in lines)
-            {
-                var colorHex = line.ColorHex;
-                var point1 = line.Point1;
-                var point2 = line.Point2;
-
-                await _interopCanvas.DrawLine(colorHex, point1, point2);
-            }
-
-            foreach (var poly in polygons)
-            {
-                var colorHex = poly.ColorHex;
-                var points = poly.Points;
-
-                await _interopCanvas.DrawPolygon(colorHex, points);
-            }
-
+            await _interopCanvas.DrawLines(lines);
+            await _interopCanvas.DrawPolygons(polygons);
             await _interopCanvas.Paint();
         }
 

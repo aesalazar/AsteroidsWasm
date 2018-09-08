@@ -51,39 +51,50 @@ window.JsInteropAsteroidsCanvas = {
         context.drawImage(preCanvas, 0, 0);
     },
 
-    drawLine: (colorHex, point1, point2) => {
+    drawLines: (lines) => {
 
-        //If start of a new line color
-        if (lastColor !== colorHex) {
-            preContext.stroke();
-            preContext.beginPath();
-            preContext.strokeStyle = colorHex;
-            lastColor = colorHex;
-        }
+        lines.forEach(line => {
+            const colorHex = line.colorHex;
+            const point1 = line.point1;
+            const point2 = line.point2;
 
-        //Connect the points
-        preContext.moveTo(point1.x, point1.y);
-        preContext.lineTo(point2.x, point2.y);
+            //If start of a new line color
+            if (lastColor !== colorHex) {
+                preContext.stroke();
+                preContext.beginPath();
+                preContext.strokeStyle = colorHex;
+                lastColor = colorHex;
+            }
+
+            //Connect the points
+            preContext.moveTo(point1.x, point1.y);
+            preContext.lineTo(point2.x, point2.y);
+        });
 
         return true;
     },
 
-    drawPolygon: (colorHex, points) => {
+    drawPolygons: (polygons) => {
 
-        //If start of a new line color
-        if (lastColor !== colorHex) {
-            preContext.stroke();
-            preContext.beginPath();
-            preContext.strokeStyle = colorHex;
-            lastColor = colorHex;
-        }
+        polygons.forEach(poly => {
+            const colorHex = poly.colorHex;
+            const points = poly.points;
 
-        //Connect the points
-        const first = points[0];
-        preContext.moveTo(first.x, first.y);
+            //If start of a new line color
+            if (lastColor !== colorHex) {
+                preContext.stroke();
+                preContext.beginPath();
+                preContext.strokeStyle = colorHex;
+                lastColor = colorHex;
+            }
 
-        points.forEach(pt => preContext.lineTo(pt.x, pt.y));
-        preContext.closePath();
+            //Connect the points
+            const first = points[0];
+            preContext.moveTo(first.x, first.y);
+
+            points.forEach(pt => preContext.lineTo(pt.x, pt.y));
+            preContext.closePath();
+        });
 
         return true;
     }

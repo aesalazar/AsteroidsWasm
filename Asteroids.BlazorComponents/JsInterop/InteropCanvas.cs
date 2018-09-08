@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
+using Asteroids.Standard.Interfaces;
 using Microsoft.AspNetCore.Blazor;
 using Microsoft.JSInterop;
 
@@ -34,14 +36,14 @@ namespace Asteroids.BlazorComponents.JsInterop
         private const string paint = nameof(paint);
 
         /// <summary>
-        /// JavaScript method to draw a line on the canvas.
+        /// JavaScript method to draw lines on the canvas.
         /// </summary>
-        private const string drawLine = nameof(drawLine);
+        private const string drawLines = nameof(drawLines);
 
         /// <summary>
-        /// JavaScript method to draw a polygon on the canvas.
+        /// JavaScript method to draw polygons on the canvas.
         /// </summary>
-        private const string drawPolygon = nameof(drawPolygon);
+        private const string drawPolygons = nameof(drawPolygons);
 
         #endregion
 
@@ -80,35 +82,31 @@ namespace Asteroids.BlazorComponents.JsInterop
         }
 
         /// <summary>
-        /// Call JavaScript to queue a line to be drawn on the canvas.
+        /// Call JavaScript to queue lines to be drawn on the canvas.
         /// </summary>
         /// <param name="colorHex">HTML color hex, e.g. #000000</param>
         /// <param name="point1">Starting vertex point.</param>
         /// <param name="point2">Ending vertex point.</param>
-        public async Task<string> DrawLine(string colorHex, Point point1, Point point2)
+        public async Task<string> DrawLines(IEnumerable<IGraphicLine> lines)
         {
             return await JSRuntime.Current.InvokeAsync<string>(
-                $"{JsInteropAsteroidsCanvas}.{drawLine}"
-                , colorHex
-                , point1
-                , point2
+                $"{JsInteropAsteroidsCanvas}.{drawLines}"
+                , lines
             );
         }
 
         /// <summary>
-        /// Call JavaScript to queue a polygon to be drawn on the canvas.
+        /// Call JavaScript to queue polygons to be drawn on the canvas.
         /// </summary>
         /// <param name="colorHex">HTML color hex, e.g. #000000</param>
         /// <param name="points">Collection of vertex points.</param>
-        public async Task<string> DrawPolygon(string colorHex, IEnumerable<Point> points)
+        public async Task<string> DrawPolygons(IEnumerable<IGraphicPolygon> polygons)
         {
             return await JSRuntime.Current.InvokeAsync<string>(
-                $"{JsInteropAsteroidsCanvas}.{drawPolygon}"
-                , colorHex
-                , points
+                $"{JsInteropAsteroidsCanvas}.{drawPolygons}"
+                , polygons
             );
         }
-
         #endregion
 
     }
