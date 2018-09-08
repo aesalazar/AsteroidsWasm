@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Threading.Tasks;
-using Asteroids.Standard;
 using Asteroids.Standard.Interfaces;
 using Ooui;
 
@@ -10,13 +8,11 @@ namespace Asteroids.Ooui.Classes
 {
     public class GraphicsContainer : Canvas, IGraphicContainer
     {
-        private GameController _controller;
         private CanvasRenderingContext2D _context;
+        private string _lastColorHex;
 
-        public Task Initialize(GameController controller, Rectangle rectangle)
+        public Task Initialize(Rectangle rectangle)
         {
-            _controller = controller;
-
             _context = GetContext2D();
             _context.LineWidth = 2;
             _context.FillStyle = Colors.Clear;
@@ -24,40 +20,59 @@ namespace Asteroids.Ooui.Classes
             return SetDimensions(rectangle);
         }
 
-        public Task Activate()
+        public Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
-            Clear();
-            return _controller.Repaint(this);
-        }
-
-        public Task DrawLine(string colorHex, Point point1, Point point2)
-        {
-            _context.StrokeStyle = colorHex;
-
-            _context.BeginPath();
-            _context.LineTo(point1.X, point1.Y);
-            _context.LineTo(point2.X, point2.Y);
-            _context.Stroke();
-
-            return Task.CompletedTask;
-        }
-
-        public Task DrawPolygon(string colorHex, IEnumerable<Point> points)
-        {
-            _context.StrokeStyle = colorHex;
-
+            _context.ClearRect(0, 0, Width, Height);
             _context.BeginPath();
 
-            var pts = points.ToList();
+            //Draw the lines
+            foreach (var line in lines)
+            {
+                var colorHex = line.ColorHex;
+                var point1 = line.Point1;
+                var point2 = line.Point2;
 
-            foreach (var pt in pts)
-                _context.LineTo(pt.X, pt.Y);
+                //If start of a new line color
+                if (_lastColorHex != colorHex)
+                {
+                    _context.Stroke();
+                    _context.BeginPath();
+                    _context.StrokeStyle = colorHex;
+                    _lastColorHex = colorHex;
+                }
 
-            var first = pts.First();
-            _context.LineTo(first.X, first.Y);
+                //Connect the points
+                _context.MoveTo(point1.X, point1.Y);
+                _context.LineTo(point2.X, point2.Y);
+            }
 
+            //Draw polygons
+            foreach (var poly in polygons)
+            {
+                var colorHex = poly.ColorHex;
+                var points = poly.Points;
+
+                //If start of a new line color
+                if (_lastColorHex != colorHex)
+                {
+                    _context.Stroke();
+                    _context.BeginPath();
+                    _context.StrokeStyle = colorHex;
+                    _lastColorHex = colorHex;
+                }
+
+                //Connect the points
+                var first = points[0];
+                _context.MoveTo(first.X, first.Y);
+
+                foreach (var pt in points)
+                    _context.LineTo(pt.X, pt.Y);
+
+                _context.ClosePath();
+            }
+
+            //Commit and complete
             _context.Stroke();
-
             return Task.CompletedTask;
         }
 
@@ -68,11 +83,5 @@ namespace Asteroids.Ooui.Classes
 
             return Task.CompletedTask;
         }
-
-        private void Clear()
-        {
-            _context.ClearRect(0, 0, Width, Height);
-        }
-
     }
 }
