@@ -4,13 +4,26 @@ using System.Threading.Tasks;
 
 namespace Asteroids.Standard.Interfaces
 {
+    /// <summary>
+    /// Main graphic container to draw <see cref="IGraphicLine"/>s and <see cref="IGraphicPolygon"/>s.
+    /// </summary>
     public interface IGraphicContainer
     {
-        Task Initialize(GameController controller, Rectangle rectangle);
-        Task SetDimensions(Rectangle rectangle);
-        Task Activate();
+        /// <summary>
+        /// Initialize the container before painting starts.
+        /// </summary>
+        /// <param name="rectangle">Dimensions to setup with.</param>
+        Task Initialize(Rectangle rectangle);
 
-        Task DrawLine(string colorHex, Point point1, Point point2);
-        Task DrawPolygon(string colorHex, IEnumerable<Point> points);
+        /// <summary>
+        /// Set or update the dimensions of the container.
+        /// </summary>
+        /// <param name="rectangle">Dimensions to update with.</param>
+        Task SetDimensions(Rectangle rectangle);
+        
+        /// <summary>
+        /// Paint or repaint the canvas with the collections of lines and polygons (unfilled).
+        /// </summary>
+        Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons);
     }
 }

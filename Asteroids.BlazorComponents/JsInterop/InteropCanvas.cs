@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Blazor;
@@ -28,6 +27,11 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// JavaScript method to clear the canvas.
         /// </summary>
         private const string clear = nameof(clear);
+
+        /// <summary>
+        /// JavaScript method to paint the canvas.
+        /// </summary>
+        private const string paint = nameof(paint);
 
         /// <summary>
         /// JavaScript method to draw a line on the canvas.
@@ -66,7 +70,17 @@ namespace Asteroids.BlazorComponents.JsInterop
         }
 
         /// <summary>
-        /// Call JavaScript to draw a line on the canvas.
+        /// Call JavaScript to paint the canvas with the current queue.
+        /// </summary>
+        public async Task<string> Paint()
+        {
+            return await JSRuntime.Current.InvokeAsync<string>(
+                $"{JsInteropAsteroidsCanvas}.{paint}"
+            );
+        }
+
+        /// <summary>
+        /// Call JavaScript to queue a line to be drawn on the canvas.
         /// </summary>
         /// <param name="colorHex">HTML color hex, e.g. #000000</param>
         /// <param name="point1">Starting vertex point.</param>
@@ -82,7 +96,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         }
 
         /// <summary>
-        /// Call JavaScript to draw a polygon on the canvas.
+        /// Call JavaScript to queue a polygon to be drawn on the canvas.
         /// </summary>
         /// <param name="colorHex">HTML color hex, e.g. #000000</param>
         /// <param name="points">Collection of vertex points.</param>

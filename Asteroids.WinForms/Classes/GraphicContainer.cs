@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
-using Asteroids.Standard;
-using Asteroids.Standard.Interfaces;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.WinForms.Classes
 {
     public class GraphicPictureBox : PictureBox, IGraphicContainer
     {
-        private GameController _controller;
-        private Graphics _lastGraphics;
+        private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
+        private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
 
-        public Task Initialize(GameController controller, Rectangle frameRectangle)
+        public Task Initialize(Rectangle frameRectangle)
         {
-            _controller = controller;
             SetDimensions(frameRectangle);
             Paint += OnPaint;
             return Task.CompletedTask;
@@ -31,31 +29,28 @@ namespace Asteroids.WinForms.Classes
             return Task.CompletedTask;
         }
 
-        public Task Activate()
+        public Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
-            //trigger a repaint
             Invalidate();
+            _lastLines = lines;
+            _lastPolygons = polygons;
             return Task.CompletedTask;
+
         }
 
-        public Task DrawLine(string colorHex, Point point1, Point point2)
+        private void OnPaint(object sender, PaintEventArgs e)
         {
-            var color = ColorTranslator.FromHtml(colorHex);
-            _lastGraphics.DrawLine(new Pen(color), point1, point2);
-            return Task.CompletedTask;
-        }
+            foreach (var line in _lastLines)
+            {
+                var color = ColorTranslator.FromHtml(line.ColorHex);
+                e.Graphics.DrawLine(new Pen(color), line.Point1, line.Point2);
+            }
 
-        public Task DrawPolygon(string colorHex, IEnumerable<Point> points)
-        {
-            var color = ColorTranslator.FromHtml(colorHex);
-            _lastGraphics.DrawPolygon(new Pen(color), points.ToArray());
-            return Task.CompletedTask;
-        }
-
-        private async void OnPaint(object sender, PaintEventArgs e)
-        {
-            _lastGraphics = e.Graphics;
-            await _controller.Repaint(this);
+            foreach (var poly in _lastPolygons)
+            {
+                var color = ColorTranslator.FromHtml(poly.ColorHex);
+                e.Graphics.DrawPolygon(new Pen(color), poly.Points.ToArray());
+            }
         }
     }
 }

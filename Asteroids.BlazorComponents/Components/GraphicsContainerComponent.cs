@@ -66,7 +66,7 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         public GraphicsContainerComponent()
         {
-            _controller = new GameController(this, async actionSound => 
+            _controller = new GameController(this, async actionSound =>
                 await _interopSounds.Play(actionSound.ToString().ToLowerInvariant())
             );
 
@@ -124,7 +124,7 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         /// <param name="controller">Calling <see cref="GameController"/>.</param>
         /// <param name="rectangle">Required <see cref="Rectangle"/> size.</param>
-        public async Task Initialize(GameController controller, Rectangle rectangle)
+        public async Task Initialize(Rectangle rectangle)
         {
             InteropKeyPress.KeyUp += OnKeyUp;
             InteropKeyPress.KeyDown += OnKeyDown;
@@ -142,35 +142,28 @@ namespace Asteroids.BlazorComponents.Components
             return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Clears the <see cref="InteropCanvas"/> and calls the <see cref="GameController"/>
-        /// to redraw the screen.
-        /// </summary>
-        public async Task Activate()
+        public async Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
             await _interopCanvas.Clear();
-            await _controller.Repaint(this);
-        }
 
-        /// <summary>
-        /// Send message to the <see cref="InteropCanvas"/> to draw a line.
-        /// </summary>
-        /// <param name="colorHex">HTML color hex, e.g. #000000</param>
-        /// <param name="point1">Starting vertex point.</param>
-        /// <param name="point2">Ending vertex point.</param>
-        public async Task DrawLine(string colorHex, Point point1, Point point2)
-        {
-            await _interopCanvas.DrawLine(colorHex, point1, point2);
-        }
+            foreach (var line in lines)
+            {
+                var colorHex = line.ColorHex;
+                var point1 = line.Point1;
+                var point2 = line.Point2;
 
-        /// <summary>
-        /// Send message to the <see cref="InteropCanvas"/> to draw a polygon.
-        /// </summary>
-        /// <param name="colorHex">HTML color hex, e.g. #000000</param>
-        /// <param name="points">Collection of vertex points.</param>
-        public async Task DrawPolygon(string colorHex, IEnumerable<Point> points)
-        {
-            await _interopCanvas.DrawPolygon(colorHex, points);
+                await _interopCanvas.DrawLine(colorHex, point1, point2);
+            }
+
+            foreach (var poly in polygons)
+            {
+                var colorHex = poly.ColorHex;
+                var points = poly.Points;
+
+                await _interopCanvas.DrawPolygon(colorHex, points);
+            }
+
+            await _interopCanvas.Paint();
         }
 
         #endregion

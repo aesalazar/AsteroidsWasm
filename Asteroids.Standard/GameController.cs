@@ -31,7 +31,7 @@ namespace Asteroids.Standard
         public async Task Initialize(Rectangle frameRectangle)
         {
             _frameRectangle = frameRectangle;
-            await _container.Initialize(this, frameRectangle);
+            await _container.Initialize(frameRectangle);
 
             screenCanvas = new ScreenCanvas();
             score = new Score();
@@ -92,14 +92,14 @@ namespace Asteroids.Standard
             await _container.SetDimensions(_frameRectangle);
         }
 
-        public async Task Repaint(IGraphicContainer container)
+        private async Task Repaint()
         {
             // Only allow the canvas to be drawn once if there is an invalidate, it's ok, the other canvas will soon be drawn
             if (bLastDrawn)
                 return;
 
             bLastDrawn = true;
-            await screenCanvas.Draw(container);
+            await screenCanvas.Draw(_container);
         }
 
         public void KeyDown(PlayKey key)
@@ -260,7 +260,7 @@ namespace Asteroids.Standard
 
             try
             {
-                await _container.Activate();
+                await Repaint();
             }
             catch (Exception)
             {
