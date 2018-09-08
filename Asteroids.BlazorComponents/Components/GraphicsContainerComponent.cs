@@ -66,9 +66,8 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         public GraphicsContainerComponent()
         {
-            _controller = new GameController(this, async actionSound =>
-                await _interopSounds.Play(actionSound.ToString().ToLowerInvariant())
-            );
+            _controller = new GameController(this);
+            _controller.SoundPlayed += OnSoundPlayed;
 
             Task.Factory.StartNew(async () =>
                 await _controller.Initialize(new Rectangle(0, 0, CanvasWidth, CanvasHeight))
@@ -262,6 +261,14 @@ namespace Asteroids.BlazorComponents.Components
                     , kvp.Value.ToBase64()
                 );
             }
+        }
+
+        /// <summary>
+        /// Handles playing of <see cref="ActionSound"/>s.
+        /// </summary>
+        private async void OnSoundPlayed(object sender, ActionSound sound)
+        {
+            await _interopSounds.Play(sound.ToString().ToLowerInvariant());
         }
 
         #endregion

@@ -19,13 +19,8 @@ namespace Asteroids.Standard
             GameStatus = GameMode.Prep;
             bLastDrawn = false;
             _container = container;
-        }
-
-        public GameController(IGraphicContainer container, Action<ActionSound> playSound)
-            : this(container)
-        {
-            _playSound = playSound;
             ActionSounds.SoundTriggered += PlaySound;
+
         }
 
         public async Task Initialize(Rectangle frameRectangle)
@@ -74,6 +69,15 @@ namespace Asteroids.Standard
         #region Properties
 
         public GameMode GameStatus { get; private set; }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// Fires when the game plays a sound.
+        /// </summary>
+        public event EventHandler<ActionSound> SoundPlayed;
 
         #endregion
 
@@ -280,7 +284,7 @@ namespace Asteroids.Standard
 
         private void PlaySound(object sender, ActionSound sound)
         {
-            _playSound(sound);
+            SoundPlayed?.Invoke(sender, sound);
         }
 
         #endregion
