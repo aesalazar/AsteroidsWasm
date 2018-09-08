@@ -41,16 +41,28 @@ namespace Asteroids.WinForms.Classes
         private void OnPaint(object sender, PaintEventArgs e)
         {
             foreach (var line in _lastLines)
-            {
-                var color = ColorTranslator.FromHtml(line.ColorHex);
-                e.Graphics.DrawLine(new Pen(color), line.Point1, line.Point2);
-            }
+                e.Graphics.DrawLine(ColorHexToPen(line.ColorHex), line.Point1, line.Point2);
 
             foreach (var poly in _lastPolygons)
-            {
-                var color = ColorTranslator.FromHtml(poly.ColorHex);
-                e.Graphics.DrawPolygon(new Pen(color), poly.Points.ToArray());
-            }
+                e.Graphics.DrawPolygon(ColorHexToPen(poly.ColorHex), poly.Points.ToArray());
         }
+
+        #region Color Pen
+
+        private string _lastColorHex;
+        private Pen _lastPen;
+
+        private Pen ColorHexToPen(string colorHex)
+        {
+            if (colorHex == _lastColorHex)
+                return _lastPen;
+
+            _lastColorHex = colorHex;
+            _lastPen = new Pen(ColorTranslator.FromHtml(colorHex));
+
+            return _lastPen;
+        }
+
+        #endregion
     }
 }

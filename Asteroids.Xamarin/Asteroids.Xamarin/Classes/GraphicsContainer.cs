@@ -40,30 +40,28 @@ namespace Asteroids.Xamarin.Classes
 
             foreach (var gline in _lastLines)
             {
-                var color = FromHex(gline.ColorHex);
-                var p0 = new SKPoint(gline.Point1.X, gline.Point1.Y);
-                var p1 = new SKPoint(gline.Point2.X, gline.Point2.Y);
-
                 var paint = new SKPaint
                 {
-                    Color = color,
+                    Color = ColorHexToColor(gline.ColorHex),
                     IsStroke = true,
                 };
+
+                var p0 = new SKPoint(gline.Point1.X, gline.Point1.Y);
+                var p1 = new SKPoint(gline.Point2.X, gline.Point2.Y);
 
                 canvas.DrawLine(p0, p1, paint);
             }
 
             foreach (var gpoly in _lastPolygons)
             {
-                var color = FromHex(gpoly.ColorHex);
-                var path = new SKPath();
-                path.AddPoly(gpoly.Points.Select(p => new SKPoint(p.X, p.Y)).ToArray());
-
-                var paint = new SKPaint
+                   var paint = new SKPaint
                 {
-                    Color = color,
+                    Color = ColorHexToColor(gpoly.ColorHex),
                     IsStroke = true,
                 };
+
+                var path = new SKPath();
+                path.AddPoly(gpoly.Points.Select(p => new SKPoint(p.X, p.Y)).ToArray());
 
                 canvas.DrawPath(path, paint);
             }
@@ -74,8 +72,18 @@ namespace Asteroids.Xamarin.Classes
             return Task.CompletedTask;
         }
 
-        private SKColor FromHex(string colorHex)
+        #region Color
+
+        private string _lastColorHex;
+        private SKColor _lastColor;
+
+        private SKColor ColorHexToColor(string colorHex)
         {
+            if (colorHex == _lastColorHex)
+                return _lastColor;
+
+            _lastColorHex = colorHex;
+
             var hex = colorHex.Replace("#", "");
             var length = hex.Length;
 
@@ -84,7 +92,10 @@ namespace Asteroids.Xamarin.Classes
             for (int i = 0; i < length; i += 2)
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
 
-            return new SKColor(bytes[0], bytes[1], bytes[2]);
+            _lastColor = new SKColor(bytes[0], bytes[1], bytes[2]);
+            return _lastColor;
         }
+
+        #endregion
     }
 }
