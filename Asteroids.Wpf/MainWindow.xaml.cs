@@ -21,7 +21,7 @@ namespace Asteroids.Wpf
         {
             InitializeComponent();
 
-            _controller = new GameController(MainContainer, PlaySound);
+            _controller = new GameController(MainContainer);
 
             _soundPlayers = Standard
                 .Sounds.ActionSounds.SoundDictionary
@@ -32,9 +32,11 @@ namespace Asteroids.Wpf
 
             foreach (var player in _soundPlayers)
                 player.Value.Load();
+
+            _controller.SoundPlayed += OnSoundPlayed;
         }
 
-        private void PlaySound(ActionSound sound)
+        private void OnSoundPlayed(object sender, ActionSound sound)
         {
             if (_soundPlaying != null)
                 return;
@@ -150,6 +152,8 @@ namespace Asteroids.Wpf
 
         public void Dispose()
         {
+            _controller.SoundPlayed -= OnSoundPlayed;
+
             foreach (var player in _soundPlayers)
                 player.Value.Dispose();
 

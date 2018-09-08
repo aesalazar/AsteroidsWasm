@@ -23,7 +23,8 @@ namespace Asteroids
         {
             InitializeComponent();
 
-            _controller = new GameController(frame1, PlaySound);
+            _controller = new GameController(frame1);
+            _controller.SoundPlayed += OnSoundPlayed;
 
             _soundPlayers = Standard
                 .Sounds.ActionSounds.SoundDictionary
@@ -36,7 +37,7 @@ namespace Asteroids
                 player.Value.Load();
         }
 
-        private void PlaySound(ActionSound sound)
+        private void OnSoundPlayed(object sender, ActionSound sound)
         {
             if (_soundPlaying != null)
                 return;
@@ -165,6 +166,8 @@ namespace Asteroids
 
         protected override void Dispose(bool disposing)
         {
+            _controller.SoundPlayed -= OnSoundPlayed;
+
             if (disposing)
                 components?.Dispose();
 

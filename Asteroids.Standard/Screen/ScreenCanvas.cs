@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
+using Asteroids.Standard.Components;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Interfaces;
 
@@ -48,20 +50,22 @@ namespace Asteroids.Standard.Screen
             lock (_updatePolysLock)
                 polys.AddRange(_polys);
 
-            foreach (var tuple in pts)
+            //Send lines
+            var glines = pts.Select(tuple => new GraphicLine
             {
-                var pt1 = tuple.Item1[0];
-                var pt2 = tuple.Item1[1];
-                var penDraw = tuple.Item2;
-                await container.DrawLine(penDraw, pt1, pt2);
-            }
+                ColorHex = tuple.Item2,
+                Point1 = tuple.Item1[0],
+                Point2 = tuple.Item1[1]
+            }).ToList();
 
-            foreach (var tuple in polys)
+            //Send polygons
+            var gpolys = polys.Select(tuple => new GraphicPolygon
             {
-                var poly = tuple.Item1;
-                var penDraw = tuple.Item2;
-                await container.DrawPolygon(penDraw, poly);
-            }
+                ColorHex = tuple.Item2,
+                Points = tuple.Item1
+            }).ToList();
+
+            await container.Draw(glines, gpolys);
         }
 
         public void AddLine(Point ptStart, Point ptEnd, string penColor)
