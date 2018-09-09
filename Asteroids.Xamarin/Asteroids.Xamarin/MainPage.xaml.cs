@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using Asteroids.Standard;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Asteroids.Xamarin
@@ -29,11 +30,14 @@ namespace Asteroids.Xamarin
 
         private System.Drawing.Rectangle GetRectangle()
         {
+            var metrics = DeviceDisplay.ScreenMetrics;
+            var density = metrics.Density;
+
             var rec = new System.Drawing.Rectangle(
                 0
                 , 0
-                , (int)MainContentPage.Width * 2
-                , (int)MainContentPage.Height * 2
+                , (int)(MainContentPage.Width * density)
+                , (int)(MainContentPage.Height * density)
             );
 
             Debug.WriteLine(rec);
