@@ -25,18 +25,6 @@ namespace Asteroids.BlazorComponents.Components
         protected ElementRef CanvasElement;
 
         /// <summary>
-        /// Provides the HTML width to the main canvas element.
-        /// </summary>
-        [Parameter]
-        protected int CanvasWidth { get; set; } = 650;
-
-        /// <summary>
-        /// Provides the HTML height to the main canvas element.
-        /// </summary>
-        [Parameter]
-        protected int CanvasHeight { get; set; } = 500;
-
-        /// <summary>
         /// Proxy to JavaScript SessionStorage collection.
         /// </summary>
         [Inject]
@@ -69,9 +57,8 @@ namespace Asteroids.BlazorComponents.Components
             _controller = new GameController(this);
             _controller.SoundPlayed += OnSoundPlayed;
 
-            Task.Factory.StartNew(async () =>
-                await _controller.Initialize(new Rectangle(0, 0, CanvasWidth, CanvasHeight))
-            );
+            InteropCanvas.SizeChanged += InteropCanvas_SizeChanged;
+            InteropCanvas.Initialized += InteropCanvas_Loaded;
         }
 
         #endregion
@@ -136,8 +123,6 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         public Task SetDimensions(Rectangle rectangle)
         {
-            CanvasWidth = rectangle.Width;
-            CanvasHeight = rectangle.Height;
             return Task.CompletedTask;
         }
 
@@ -151,7 +136,27 @@ namespace Asteroids.BlazorComponents.Components
 
         #endregion
 
-        #region Methods
+        #region JavaScript Canvas Handlers
+
+        /// <summary>
+        /// Initializes the <see cref="GameController"/>.
+        /// </summary>
+        private async void InteropCanvas_Loaded(object sender, Rectangle e)
+        {
+            await _controller.Initialize(e);
+        }
+
+        /// <summary>
+        /// Reizes the <see cref="GameController"/>.
+        /// </summary>
+        private async void InteropCanvas_SizeChanged(object sender, Rectangle e)
+        {
+            await _controller.ResizeGame(e);
+        }
+
+        #endregion
+
+        #region Key press handlers and Sounds
 
         /// <summary>
         /// Sends the equivalent <see cref="PlayKey"/> from a Key Down event to the <see cref="GameController"/>.

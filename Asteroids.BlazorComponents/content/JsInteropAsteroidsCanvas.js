@@ -1,24 +1,62 @@
-﻿let canvas;
-let context;
+﻿let visCanvas;
+let visContext;
 let lastColor;
 
 //pre-render canvas
 const preCanvas = document.createElement("canvas");
 const preContext = preCanvas.getContext("2d");
 
+window.onresize = () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    visCanvas.width = w;
+    visCanvas.height = h;
+
+    preCanvas.width = w;
+    preCanvas.height = h;
+
+    preContext.stroke();
+    preContext.beginPath();
+    preContext.strokeStyle = lastColor;
+
+    //Send dotnet an update
+    DotNet.invokeMethodAsync(
+        'Asteroids.BlazorComponents'
+        , 'UpdateCanvasSize'
+        , window.innerWidth
+        , window.innerHeight
+    );
+};
+
 window.JsInteropAsteroidsCanvas = {
 
     initialize: (canvasElement) => {
-        canvas = canvasElement;
-        if (canvas === null)
+        visCanvas = canvasElement;
+        if (visCanvas === null)
             return false;
 
-        context = canvas.getContext("2d");
-        if (context === null)
+        visContext = visCanvas.getContext("2d");
+        if (visContext === null)
             return false;
 
-        preCanvas.width = canvas.clientWidth;
-        preCanvas.height = canvas.clientHeight;
+        //Set the dimensions
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+
+        visCanvas.width = w;
+        visCanvas.height = h;
+
+        preCanvas.width = w;
+        preCanvas.height = h;
+
+        //let dotnet know it is ready
+        DotNet.invokeMethodAsync(
+            'Asteroids.BlazorComponents'
+            , 'CanvasInitialized'
+            , w
+            , h
+        );
 
         return true;
     },
@@ -27,8 +65,8 @@ window.JsInteropAsteroidsCanvas = {
         preContext.clearRect(
             0,
             0,
-            canvas.clientWidth,
-            canvas.clientHeight
+            visCanvas.clientWidth,
+            visCanvas.clientHeight
         );
 
         preContext.beginPath();
@@ -41,14 +79,14 @@ window.JsInteropAsteroidsCanvas = {
         //commit the queued vectors and paint
         preContext.stroke();
 
-        context.clearRect(
+        visContext.clearRect(
             0,
             0,
-            canvas.clientWidth,
-            canvas.clientHeight
+            visCanvas.clientWidth,
+            visCanvas.clientHeight
         );
 
-        context.drawImage(preCanvas, 0, 0);
+        visContext.drawImage(preCanvas, 0, 0);
     },
 
     drawLines: (lines) => {
