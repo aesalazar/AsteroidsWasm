@@ -16,14 +16,10 @@ namespace Asteroids.Standard.Interfaces
         Task Initialize(Rectangle rectangle);
 
         /// <summary>
-        /// Set or update the dimensions of the container.
-        /// </summary>
-        /// <param name="rectangle">Dimensions to update with.</param>
-        Task SetDimensions(Rectangle rectangle);
-        
-        /// <summary>
         /// Paint or repaint the canvas with the collections of lines and polygons (unfilled).
         /// </summary>
+        /// <param name="lines">Collection of <see cref="IGraphicLine"/>.</param>
+        /// <param name="polygons">Collection of <see cref="IGraphicPolygon"/>.</param>
         Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons);
     }
 }

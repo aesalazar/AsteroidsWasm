@@ -37,7 +37,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Main game controller providing all business logic.
         /// </summary>
-        private readonly GameController _controller;
+        private readonly IGameController _controller;
 
         /// <summary>
         /// Proxy to JavaScript command to draw on the main canvas.
@@ -108,24 +108,20 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Wires the key press handlers.
         /// </summary>
-        /// <param name="controller">Calling <see cref="GameController"/>.</param>
         /// <param name="rectangle">Required <see cref="Rectangle"/> size.</param>
-        public async Task Initialize(Rectangle rectangle)
+        public Task Initialize(Rectangle rectangle)
         {
             InteropKeyPress.KeyUp += OnKeyUp;
             InteropKeyPress.KeyDown += OnKeyDown;
 
-            await SetDimensions(rectangle);
-        }
-
-        /// <summary>
-        /// Sets the height and width of the parent canvas.
-        /// </summary>
-        public Task SetDimensions(Rectangle rectangle)
-        {
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// Paint or repaint the canvas with the collections of lines and polygons (unfilled).
+        /// </summary>
+        /// <param name="lines">Collection of <see cref="IGraphicLine"/>.</param>
+        /// <param name="polygons">Collection of <see cref="IGraphicPolygon"/>.</param>
         public async Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
             await _interopCanvas.Clear();
@@ -139,7 +135,7 @@ namespace Asteroids.BlazorComponents.Components
         #region JavaScript Canvas Handlers
 
         /// <summary>
-        /// Initializes the <see cref="GameController"/>.
+        /// Initializes the <see cref="IGameController"/>.
         /// </summary>
         private async void InteropCanvas_Loaded(object sender, Rectangle e)
         {
@@ -147,11 +143,11 @@ namespace Asteroids.BlazorComponents.Components
         }
 
         /// <summary>
-        /// Reizes the <see cref="GameController"/>.
+        /// Resizes the <see cref="IGameController"/>.
         /// </summary>
-        private async void InteropCanvas_SizeChanged(object sender, Rectangle e)
+        private void InteropCanvas_SizeChanged(object sender, Rectangle e)
         {
-            await _controller.ResizeGame(e);
+            _controller.ResizeGame(e);
         }
 
         #endregion
@@ -159,7 +155,7 @@ namespace Asteroids.BlazorComponents.Components
         #region Key press handlers and Sounds
 
         /// <summary>
-        /// Sends the equivalent <see cref="PlayKey"/> from a Key Down event to the <see cref="GameController"/>.
+        /// Sends the equivalent <see cref="PlayKey"/> from a Key Down event to the <see cref="IGameController"/>.
         /// </summary>
         private void OnKeyDown(object sender, ConsoleKey e)
         {
@@ -207,7 +203,7 @@ namespace Asteroids.BlazorComponents.Components
         }
 
         /// <summary>
-        /// Sends the equivalent <see cref="PlayKey"/> from a Key Up event to the <see cref="GameController"/>.
+        /// Sends the equivalent <see cref="PlayKey"/> from a Key Up event to the <see cref="IGameController"/>.
         /// </summary>
         private void OnKeyUp(object sender, ConsoleKey e)
         {
@@ -254,7 +250,7 @@ namespace Asteroids.BlazorComponents.Components
         }
 
         /// <summary>
-        /// Loads sound <see cref="Stream"/>s stored in <see cref="ActionSounds.SoundDictionary"/>
+        /// Loads sound <see cref="System.IO.Stream"/>s stored in <see cref="ActionSounds.SoundDictionary"/>
         /// to HTML Session Storage via <see cref="sessionStorage"/>.
         /// </summary>
         private async Task LoadSoundStreams()

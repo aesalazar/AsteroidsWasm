@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using Asteroids.Standard;
+using Asteroids.Standard.Interfaces;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace Asteroids.Xamarin
 {
-    public partial class MainPage : ContentPage, IDisposable
+    public partial class MainPage : IDisposable
     {
         public MainPage()
         {
@@ -15,11 +16,11 @@ namespace Asteroids.Xamarin
             _controller = new GameController(MainContainer1);
         }
 
-        private GameController _controller;
+        private readonly IGameController _controller;
 
-        private async void MainContentPage_SizeChanged(object sender, EventArgs e)
+        private void MainContentPage_SizeChanged(object sender, EventArgs e)
         {
-            await _controller.ResizeGame(GetRectangle());
+            _controller.ResizeGame(GetRectangle());
         }
 
         private async void MainContentPage_LayoutChanged(object sender, EventArgs e)

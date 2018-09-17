@@ -14,18 +14,7 @@ namespace Asteroids.WinForms.Classes
 
         public Task Initialize(Rectangle frameRectangle)
         {
-            SetDimensions(frameRectangle);
             Paint += OnPaint;
-            return Task.CompletedTask;
-        }
-
-        public Task SetDimensions(Rectangle rectangle)
-        {
-            Top = rectangle.Top;
-            Left = rectangle.Left;
-            Width = rectangle.Width;
-            Height = rectangle.Height;
-
             return Task.CompletedTask;
         }
 

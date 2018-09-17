@@ -8,22 +8,23 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Asteroids.Standard;
 using Asteroids.Standard.Enums;
+using Asteroids.Standard.Interfaces;
 
-namespace Asteroids
+namespace Asteroids.WinForms
 {
-    public class frmAsteroids : Form, IDisposable
+    public class FrmAsteroids : Form
     {
-        private WinForms.Classes.GraphicPictureBox frame1;
+        private Classes.GraphicPictureBox _frame1;
 
-        private readonly GameController _controller;
+        private readonly IGameController _controller;
         private readonly IDictionary<ActionSound, SoundPlayer> _soundPlayers;
         private SoundPlayer _soundPlaying;
 
-        public frmAsteroids()
+        public FrmAsteroids()
         {
             InitializeComponent();
 
-            _controller = new GameController(frame1);
+            _controller = new GameController(_frame1);
             _controller.SoundPlayed += OnSoundPlayed;
 
             _soundPlayers = Standard
@@ -57,15 +58,15 @@ namespace Asteroids
             _controller.Dispose();
         }
 
-        private async void frmAsteroids_Resize(object sender, EventArgs e)
+        private void frmAsteroids_Resize(object sender, EventArgs e)
         {
             var rec = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
-            await _controller.ResizeGame(rec);
+            _controller.ResizeGame(rec);
         }
 
         private async void frmAsteroids_Activated(object sender, EventArgs e)
         {
-            Activated -= new EventHandler(frmAsteroids_Activated);
+            Activated -= frmAsteroids_Activated;
             var rec = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
             await _controller.Initialize(rec);
         }
@@ -162,14 +163,14 @@ namespace Asteroids
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private Container components = null;
+        private readonly Container _components = null;
 
         protected override void Dispose(bool disposing)
         {
             _controller.SoundPlayed -= OnSoundPlayed;
 
             if (disposing)
-                components?.Dispose();
+                _components?.Dispose();
 
 
             foreach (var player in _soundPlayers)
@@ -190,32 +191,33 @@ namespace Asteroids
         /// </summary>
         private void InitializeComponent()
         {
-            this.frame1 = new Asteroids.WinForms.Classes.GraphicPictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.frame1)).BeginInit();
+            this._frame1 = new Asteroids.WinForms.Classes.GraphicPictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this._frame1)).BeginInit();
             this.SuspendLayout();
             // 
             // frame1
             // 
-            this.frame1.BackColor = System.Drawing.SystemColors.WindowText;
-            this.frame1.Location = new System.Drawing.Point(189, 7);
-            this.frame1.Name = "frame1";
-            this.frame1.Size = new System.Drawing.Size(100, 50);
-            this.frame1.TabIndex = 2;
-            this.frame1.TabStop = false;
+            this._frame1.BackColor = System.Drawing.SystemColors.WindowText;
+            this._frame1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this._frame1.Location = new System.Drawing.Point(0, 0);
+            this._frame1.Name = "_frame1";
+            this._frame1.Size = new System.Drawing.Size(634, 461);
+            this._frame1.TabIndex = 2;
+            this._frame1.TabStop = false;
             // 
             // frmAsteroids
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+            this.AutoScaleBaseSize = new System.Drawing.Size(8, 19);
             this.ClientSize = new System.Drawing.Size(634, 461);
-            this.Controls.Add(this.frame1);
-            this.Name = "frmAsteroids";
+            this.Controls.Add(this._frame1);
+            this.Name = "FrmAsteroids";
             this.Text = "Asteroids";
             this.Activated += new System.EventHandler(this.frmAsteroids_Activated);
             this.Closed += new System.EventHandler(this.frmAsteroids_Closed);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmAsteroids_KeyDown);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.frmAsteroids_KeyUp);
             this.Resize += new System.EventHandler(this.frmAsteroids_Resize);
-            ((System.ComponentModel.ISupportInitialize)(this.frame1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this._frame1)).EndInit();
             this.ResumeLayout(false);
 
         }

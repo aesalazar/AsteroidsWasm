@@ -13,7 +13,7 @@ namespace Asteroids.Wpf.Classes
 {
     public class GraphicContainer : Canvas, IGraphicContainer
     {
-        private Dispatcher _mainDispatcher = Dispatcher.CurrentDispatcher;
+        private readonly Dispatcher _mainDispatcher = Dispatcher.CurrentDispatcher;
 
         public async Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {

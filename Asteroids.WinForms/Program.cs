@@ -3,9 +3,9 @@ using System.Windows.Forms;
 
 namespace Asteroids.WinForms
 {
-    static class Program
+    internal static class Program
     {
-        private static frmAsteroids _mainForm;
+        private static FrmAsteroids _mainForm;
 
         /// <summary>
         /// The main entry point for the application.
@@ -16,7 +16,7 @@ namespace Asteroids.WinForms
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            _mainForm = new frmAsteroids();
+            _mainForm = new FrmAsteroids();
             Application.Run(_mainForm);
 
             Application.ApplicationExit += OnApplicationExit;

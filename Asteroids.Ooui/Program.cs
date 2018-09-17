@@ -1,26 +1,27 @@
 ﻿using System.Threading.Tasks;
 using Asteroids.Ooui.Classes;
 using Asteroids.Standard;
+using Asteroids.Standard.Interfaces;
 using Ooui;
 
 namespace Asteroids.Ooui
 {
-    class Program
+    internal class Program
     {
-        private const int radius = 10;
-
         private static GraphicsContainer _container;
-        private static GameController _gameController;
+        private static IGameController _gameController;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // Create the UI            
-            _container = new GraphicsContainer();
-            _container.Style.BackgroundColor = new Color(0, 0, 0, 255);
+            _container = new GraphicsContainer
+            {
+                Style = {BackgroundColor = new Color(0, 0, 0, 255)}
+            };
 
             _gameController = new GameController(_container);
 
-            Div d = new Div();
+            var d = new Div();
             d.AppendChild(_container);
 
             UI.Port = 8082;

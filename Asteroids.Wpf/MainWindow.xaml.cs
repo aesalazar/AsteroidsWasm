@@ -8,12 +8,13 @@ using System.Windows;
 using System.Windows.Input;
 using Asteroids.Standard;
 using Asteroids.Standard.Enums;
+using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.Wpf
 {
-    public partial class MainWindow : Window, IDisposable
+    public partial class MainWindow : IDisposable
     {
-        private readonly GameController _controller;
+        private readonly IGameController _controller;
         private readonly IDictionary<ActionSound, SoundPlayer> _soundPlayers;
         private SoundPlayer _soundPlaying;
 
@@ -58,9 +59,9 @@ namespace Asteroids.Wpf
             await _controller.Initialize(rec);
         }
 
-        private async void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            await _controller.ResizeGame(new Rectangle(0, 0, (int)e.NewSize.Width, (int)e.NewSize.Height));
+            _controller.ResizeGame(new Rectangle(0, 0, (int)e.NewSize.Width, (int)e.NewSize.Height));
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)

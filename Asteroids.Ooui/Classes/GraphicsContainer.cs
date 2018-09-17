@@ -16,8 +16,7 @@ namespace Asteroids.Ooui.Classes
             _context = GetContext2D();
             _context.LineWidth = 2;
             _context.FillStyle = Colors.Clear;
-
-            return SetDimensions(rectangle);
+            return Task.CompletedTask;
         }
 
         public Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
@@ -73,14 +72,6 @@ namespace Asteroids.Ooui.Classes
 
             //Commit and complete
             _context.Stroke();
-            return Task.CompletedTask;
-        }
-
-        public Task SetDimensions(Rectangle rectangle)
-        {
-            Width = rectangle.Width;
-            Height = rectangle.Height;
-
             return Task.CompletedTask;
         }
     }

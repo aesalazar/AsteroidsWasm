@@ -10,14 +10,14 @@ using Asteroids.Standard.Sounds;
 
 namespace Asteroids.Standard
 {
-    public class GameController : IDisposable
+    public class GameController : IDisposable, IGameController
     {
         #region Constructor
 
         public GameController(IGraphicContainer container)
         {
             GameStatus = GameMode.Prep;
-            bLastDrawn = false;
+            _lastDrawn = false;
             _container = container;
             ActionSounds.SoundTriggered += PlaySound;
 
@@ -28,11 +28,11 @@ namespace Asteroids.Standard
             _frameRectangle = frameRectangle;
             await _container.Initialize(frameRectangle);
 
-            screenCanvas = new ScreenCanvas();
-            score = new Score();
+            _screenCanvas = new ScreenCanvas();
+            _score = new Score();
             GameStatus = GameMode.Title;
-            currTitle = new TitleScreen();
-            currTitle.InitTitleScreen();
+            _currentTitle = new TitleScreen();
+            _currentTitle.InitTitleScreen();
 
             SetFlipTimer();
         }
@@ -41,26 +41,24 @@ namespace Asteroids.Standard
 
         #region Fields
 
-        private const double timerInterval = 1000 / CommonOps.FPS;
+        private const double TimerInterval = 1000 / CommonOps.FPS;
 
-        private IGraphicContainer _container;
+        private readonly IGraphicContainer _container;
         private Rectangle _frameRectangle;
 
-        private Action<ActionSound> _playSound;
+        private bool _lastDrawn;
 
-        private bool bLastDrawn;
+        private TitleScreen _currentTitle;
+        private Game _game;
+        private Score _score;
+        private ScreenCanvas _screenCanvas;
 
-        private TitleScreen currTitle;
-        private Game game;
-        protected Score score;
-        private ScreenCanvas screenCanvas;
-
-        private bool bLeftPressed;
-        private bool bRightPressed;
-        private bool bUpPressed;
-        private bool bHyperspaceLastPressed;
-        private bool bShootingLastPressed;
-        private bool bPauseLastPressed;
+        private bool _leftPressed;
+        private bool _rightPressed;
+        private bool _upPressed;
+        private bool _hyperspaceLastPressed;
+        private bool _shootingLastPressed;
+        private bool _pauseLastPressed;
 
         private Timer _timerFlip;
 
@@ -74,9 +72,6 @@ namespace Asteroids.Standard
 
         #region Events
 
-        /// <summary>
-        /// Fires when the game plays a sound.
-        /// </summary>
         public event EventHandler<ActionSound> SoundPlayed;
 
         #endregion
@@ -90,20 +85,19 @@ namespace Asteroids.Standard
             _timerFlip?.Dispose();
         }
 
-        public async Task ResizeGame(Rectangle frameRectangle)
+        public void ResizeGame(Rectangle frameRectangle)
         {
             _frameRectangle = frameRectangle;
-            await _container.SetDimensions(_frameRectangle);
         }
 
         private async Task Repaint()
         {
             // Only allow the canvas to be drawn once if there is an invalidate, it's ok, the other canvas will soon be drawn
-            if (bLastDrawn)
+            if (_lastDrawn)
                 return;
 
-            bLastDrawn = true;
-            await screenCanvas.Draw(_container);
+            _lastDrawn = true;
+            await _screenCanvas.Draw(_container);
         }
 
         public void KeyDown(PlayKey key)
@@ -120,8 +114,8 @@ namespace Asteroids.Standard
                 // Escape in game goes back to Title Screen
                 else if (GameStatus == GameMode.Game)
                 {
-                    score.CancelGame();
-                    currTitle = new TitleScreen();
+                    _score.CancelGame();
+                    _currentTitle = new TitleScreen();
                     GameStatus = GameMode.Title;
                 }
             }
@@ -130,54 +124,54 @@ namespace Asteroids.Standard
                 // If we are in tht Title Screen, Start a game
                 if (GameStatus == GameMode.Title)
                 {
-                    score.ResetGame();
-                    game = new Game();
+                    _score.ResetGame();
+                    _game = new Game();
                     GameStatus = GameMode.Game;
-                    bLeftPressed = false;
-                    bRightPressed = false;
-                    bUpPressed = false;
-                    bHyperspaceLastPressed = false;
-                    bShootingLastPressed = false;
-                    bPauseLastPressed = false;
+                    _leftPressed = false;
+                    _rightPressed = false;
+                    _upPressed = false;
+                    _hyperspaceLastPressed = false;
+                    _shootingLastPressed = false;
+                    _pauseLastPressed = false;
                 }
 
                 // Rotate Left
                 else if (key == PlayKey.Left)
                 {
-                    bLeftPressed = true;
+                    _leftPressed = true;
                 }
 
                 // Rotate Right
                 else if (key == PlayKey.Right)
                 {
-                    bRightPressed = true;
+                    _rightPressed = true;
                 }
 
                 // Thrust
                 else if (key == PlayKey.Up)
                 {
-                    bUpPressed = true;
+                    _upPressed = true;
                 }
 
                 // Hyperspace (can't be held down)
-                else if (!bHyperspaceLastPressed && key == PlayKey.Down)
+                else if (!_hyperspaceLastPressed && key == PlayKey.Down)
                 {
-                    bHyperspaceLastPressed = true;
-                    game.Hyperspace();
+                    _hyperspaceLastPressed = true;
+                    _game.Hyperspace();
                 }
 
                 // Shooting (can't be held down)
-                else if (!bShootingLastPressed && key == PlayKey.Space)
+                else if (!_shootingLastPressed && key == PlayKey.Space)
                 {
-                    bShootingLastPressed = true;
-                    game.Shoot();
+                    _shootingLastPressed = true;
+                    _game.Shoot();
                 }
 
                 // Pause can't be held down)
-                else if (!bPauseLastPressed && key == PlayKey.P)
+                else if (!_pauseLastPressed && key == PlayKey.P)
                 {
-                    bPauseLastPressed = true;
-                    game.Pause();
+                    _pauseLastPressed = true;
+                    _game.Pause();
                 }
 
             }
@@ -187,63 +181,61 @@ namespace Asteroids.Standard
         {
             // Rotate Left
             if (key == PlayKey.Left)
-                bLeftPressed = false;
+                _leftPressed = false;
 
             // Rotate Right
             else if (key == PlayKey.Right)
-                bRightPressed = false;
+                _rightPressed = false;
 
             // Thrust
             else if (key == PlayKey.Up)
-                bUpPressed = false;
+                _upPressed = false;
 
             // Hyperspace - require key up before key down
             else if (key == PlayKey.Down)
-                bHyperspaceLastPressed = false;
+                _hyperspaceLastPressed = false;
 
             // Shooting - require key up before key down
             else if (key == PlayKey.Space)
-                bShootingLastPressed = false;
+                _shootingLastPressed = false;
 
             // Pause - require key up before key down
             else if (key == PlayKey.P)
-                bPauseLastPressed = false;
+                _pauseLastPressed = false;
         }
 
         #endregion
 
         #region Methods (private)
 
-        private bool TitleScreen()
+        private void TitleScreen()
         {
-            score.Draw(screenCanvas, _frameRectangle.Width, _frameRectangle.Height);
-            currTitle.DrawScreen(screenCanvas, _frameRectangle.Width, _frameRectangle.Height);
-
-            return GameStatus == GameMode.Title;
+            _score.Draw(_screenCanvas, _frameRectangle.Width, _frameRectangle.Height);
+            _currentTitle.DrawScreen(_screenCanvas, _frameRectangle.Width, _frameRectangle.Height);
         }
 
         private bool PlayGame()
         {
-            if (bLeftPressed)
-                game.Left();
+            if (_leftPressed)
+                _game.Left();
 
-            if (bRightPressed)
-                game.Right();
+            if (_rightPressed)
+                _game.Right();
 
-            game.Thrust(bUpPressed);
-            game.DrawScreen(screenCanvas, _frameRectangle.Width, _frameRectangle.Height, ref score);
+            _game.Thrust(_upPressed);
+            _game.DrawScreen(_screenCanvas, _frameRectangle.Width, _frameRectangle.Height, ref _score);
 
             // If the game is over, display the title screen
-            if (game.Done())
+            if (_game.Done())
                 GameStatus = GameMode.Title;
 
             return GameStatus == GameMode.Game;
         }
 
-        private async Task FlipDisplay(object source, ElapsedEventArgs e)
+        private async Task FlipDisplay()
         {
             // Draw the next screen
-            screenCanvas.Clear();
+            _screenCanvas.Clear();
 
             switch (GameStatus)
             {
@@ -253,14 +245,14 @@ namespace Asteroids.Standard
                 case GameMode.Game:
                     if (!PlayGame())
                     {
-                        currTitle = new TitleScreen();
-                        currTitle.InitTitleScreen();
+                        _currentTitle = new TitleScreen();
+                        _currentTitle.InitTitleScreen();
                     }
                     break;
             }
 
             // Flip the screen to show the updated image
-            bLastDrawn = false;
+            _lastDrawn = false;
 
             try
             {
@@ -276,8 +268,8 @@ namespace Asteroids.Standard
         private void SetFlipTimer()
         {
             // Screen Flip Timer
-            _timerFlip = new Timer(timerInterval);
-            _timerFlip.Elapsed += new ElapsedEventHandler(async (s, e) => await FlipDisplay(s, e));
+            _timerFlip = new Timer(TimerInterval);
+            _timerFlip.Elapsed += async (s, e) => await FlipDisplay();
             _timerFlip.AutoReset = true;
             _timerFlip.Enabled = true;
         }

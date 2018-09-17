@@ -17,9 +17,7 @@ namespace Asteroids.Xamarin.Classes
 
         public Task Initialize(Rectangle rectangle)
         {
-            SetDimensions(rectangle);
             PaintSurface += OnPaintSurface;
-
             return Task.CompletedTask;
         }
 
@@ -65,11 +63,6 @@ namespace Asteroids.Xamarin.Classes
 
                 canvas.DrawPath(path, paint);
             }
-        }
-
-        public Task SetDimensions(Rectangle rectangle)
-        {
-            return Task.CompletedTask;
         }
 
         #region Color
