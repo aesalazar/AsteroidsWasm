@@ -18,9 +18,9 @@ Currently, the project is made of the following:
 
 - Asteroids.Standard - .Net Standard Library containing the game engine.
 
-- Asteroids.WinForms - Reconstructed WinForms GUI that uses the game engine that mostly follows the same technique used by Uman via two [PictureBoxes](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.picturebox) as the renders.
+- Asteroids.WinForms - Reconstructed WinForms GUI that uses the game engine with a [PictureBox](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.picturebox) as the main renderer.
 
-- Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [Canvas](https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.canvas) as the main render.
+- Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [Canvas](https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.canvas) as the main renderer.
 
 - Asteroids.Xamarin - The core Xamarin application that uses SkiaSharp for 2D rendering via a [SKCanvasView](https://docs.microsoft.com/en-us/dotnet/api/skiasharp.views.forms.skcanvasview).
 
@@ -28,17 +28,17 @@ Currently, the project is made of the following:
 
 - Asteroid.Xamarin.UWP - UWP GUI that uses the core Xamarin library.
 
-- Asteroids.Ooui - This is a WASM project that uses the very cool [OOUI](https://github.com/praeclarum/Ooui) library to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
+- Asteroids.Ooui (broken) - WASM project that uses the very cool [OOUI](https://github.com/praeclarum/Ooui) library to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
 
-- Asteroids.Blazor - This is a WASM project that uses Microsoft's experimental [Blazor](https://github.com/aspnet/blazor) to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
+- Asteroids.Blazor - WASM project that uses Microsoft's experimental [Blazor](https://github.com/aspnet/blazor) to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
 
-- Asteroids.BlazorComponents - This is a Blazor library project that contains the actual game engine instantiated object and associated HTML and JavaScript bridge to allow rendering in the browser.
+- Asteroids.BlazorComponents - Blazor library that contains the actual game engine instantiated object and associated HTML and JavaScript bridge to allow rendering in the browser.
 
 ## General Notes
 
 All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance` except Asteroids.Ooui as explained below.   The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
 
-The WinForms, WPF, Blazor apps a fully functioning at this point in terms of keyboard and sound support.  The others are still a WIP since each requires unique configuration.
+The WinForms, WPF, and Blazor apps are fully functional at this point in terms of keyboard and sound support.  The others are still a WIP since each requires unique configuration.
 
 ## Xamarin Notes
 
@@ -48,7 +48,7 @@ The UWP application is set to require the Windows 10 Fall Creators Update at a m
 
 ## OOUI Notes
 
-Currently, the OOUI is not building properly.  That is, it builds but logs errors as warnings but they are actually fatal and the project will not run.  This is because of the async-await pattern and the need to reference `Task` types.  Seems there are still some issues with Mono and type mapping they are working on.  Hopefully, that will be in the next release.
+Currently, the OOUI project is not building properly.  That is, it builds but logs errors as warnings but they are actually fatal and the project will not run.  This is because of the async-await pattern and the need to reference `Task` types.  Seems there are still some issues with Mono and type mapping they are working on.  Hopefully, that will be in their next release.
 
 To run the OOUI application, when working, it requires some command line (VS could probably be configured somehow but CLI seems easier).  For this project, run the following in the Asteroids.Ooui folder to build it:
 
@@ -58,7 +58,7 @@ You then need to serve it via a web server.  OOUI GitHub page talks about differ
 
 `dotnet tool install --global dotnet-serve`
 
-To start the serve and load the WASM app, run this:
+To then serve and load the WASM app, run this:
 
 `dotnet serve -p 8000 -d bin/Debug/netcoreapp2.1/dist`
 
