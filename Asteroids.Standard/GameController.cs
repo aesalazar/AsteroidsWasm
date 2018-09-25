@@ -14,17 +14,17 @@ namespace Asteroids.Standard
     {
         #region Constructor
 
-        public GameController(IGraphicContainer container)
+        public GameController()
         {
             GameStatus = GameMode.Prep;
             _lastDrawn = false;
-            _container = container;
             ActionSounds.SoundTriggered += PlaySound;
 
         }
 
-        public async Task Initialize(Rectangle frameRectangle)
+        public async Task Initialize(IGraphicContainer container, Rectangle frameRectangle)
         {
+            _container = container;
             _frameRectangle = frameRectangle;
             await _container.Initialize(frameRectangle);
 
@@ -43,7 +43,7 @@ namespace Asteroids.Standard
 
         private const double TimerInterval = 1000 / CommonOps.FPS;
 
-        private readonly IGraphicContainer _container;
+        private IGraphicContainer _container;
         private Rectangle _frameRectangle;
 
         private bool _lastDrawn;

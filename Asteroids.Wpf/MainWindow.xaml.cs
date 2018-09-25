@@ -22,7 +22,7 @@ namespace Asteroids.Wpf
         {
             InitializeComponent();
 
-            _controller = new GameController(MainContainer);
+            _controller = new GameController();
 
             _soundPlayers = Standard
                 .Sounds.ActionSounds.SoundDictionary
@@ -56,7 +56,7 @@ namespace Asteroids.Wpf
         {
             Activated -= Window_Activated;
             var rec = new Rectangle(0, 0, (int)MainContainer.ActualWidth, (int)MainContainer.ActualHeight);
-            await _controller.Initialize(rec);
+            await _controller.Initialize(MainContainer, rec);
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)

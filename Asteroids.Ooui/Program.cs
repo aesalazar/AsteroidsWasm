@@ -19,7 +19,7 @@ namespace Asteroids.Ooui
                 Style = {BackgroundColor = new Color(0, 0, 0, 255)}
             };
 
-            _gameController = new GameController(_container);
+            _gameController = new GameController();
 
             var d = new Div();
             d.AppendChild(_container);
@@ -28,7 +28,7 @@ namespace Asteroids.Ooui
             UI.Publish("/", d);
 
             Task.Factory.StartNew(async () => 
-                await _gameController.Initialize(new System.Drawing.Rectangle(0, 0, 650, 500))
+                await _gameController.Initialize(_container, new System.Drawing.Rectangle(0, 0, 650, 500))
             );
 
         }

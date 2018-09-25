@@ -54,7 +54,7 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         public GraphicsContainerComponent()
         {
-            _controller = new GameController(this);
+            _controller = new GameController();
             _controller.SoundPlayed += OnSoundPlayed;
 
             InteropCanvas.SizeChanged += InteropCanvas_SizeChanged;
@@ -139,7 +139,7 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         private async void InteropCanvas_Loaded(object sender, Rectangle e)
         {
-            await _controller.Initialize(e);
+            await _controller.Initialize(this, e);
         }
 
         /// <summary>

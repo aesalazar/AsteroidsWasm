@@ -24,7 +24,7 @@ namespace Asteroids.WinForms
         {
             InitializeComponent();
 
-            _controller = new GameController(_frame1);
+            _controller = new GameController();
             _controller.SoundPlayed += OnSoundPlayed;
 
             _soundPlayers = Standard
@@ -68,7 +68,7 @@ namespace Asteroids.WinForms
         {
             Activated -= frmAsteroids_Activated;
             var rec = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);
-            await _controller.Initialize(rec);
+            await _controller.Initialize(_frame1, rec);
         }
 
         private void frmAsteroids_KeyDown(object sender, KeyEventArgs e)

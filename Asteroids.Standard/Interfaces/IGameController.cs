@@ -13,8 +13,9 @@ namespace Asteroids.Standard.Interfaces
         /// <summary>
         /// Start the game engine.
         /// </summary>
+        /// <param name="container">Primary <see cref="IGraphicContainer"/> to draw on.</param>
         /// <param name="frameRectangle">Initial game <see cref="Rectangle"/> dimensions to base calculations one.</param>
-        Task Initialize(Rectangle frameRectangle);
+        Task Initialize(IGraphicContainer container, Rectangle frameRectangle);
 
         /// <summary>
         /// Current state of the game.

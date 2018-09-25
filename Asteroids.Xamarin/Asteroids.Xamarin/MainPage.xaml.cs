@@ -13,7 +13,7 @@ namespace Asteroids.Xamarin
         {
             InitializeComponent();
 
-            _controller = new GameController(MainContainer1);
+            _controller = new GameController();
         }
 
         private readonly IGameController _controller;
@@ -26,7 +26,7 @@ namespace Asteroids.Xamarin
         private async void MainContentPage_LayoutChanged(object sender, EventArgs e)
         {
             MainContentPage.LayoutChanged -= MainContentPage_LayoutChanged;
-            await _controller.Initialize(GetRectangle());
+            await _controller.Initialize(MainContainer1, GetRectangle());
         }
 
         private System.Drawing.Rectangle GetRectangle()
