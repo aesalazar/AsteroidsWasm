@@ -12,8 +12,7 @@ namespace Asteroids.Standard.Interfaces
         /// <summary>
         /// Initialize the container before painting starts.
         /// </summary>
-        /// <param name="rectangle">Dimensions to setup with.</param>
-        Task Initialize(Rectangle rectangle);
+        Task Initialize();
 
         /// <summary>
         /// Paint or repaint the canvas with the collections of lines and polygons (unfilled).

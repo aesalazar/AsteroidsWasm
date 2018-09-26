@@ -108,8 +108,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Wires the key press handlers.
         /// </summary>
-        /// <param name="rectangle">Required <see cref="Rectangle"/> size.</param>
-        public Task Initialize(Rectangle rectangle)
+        public Task Initialize()
         {
             InteropKeyPress.KeyUp += OnKeyUp;
             InteropKeyPress.KeyDown += OnKeyDown;

@@ -15,7 +15,7 @@ namespace Asteroids.Xamarin.Classes
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
         private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
 
-        public Task Initialize(Rectangle rectangle)
+        public Task Initialize()
         {
             PaintSurface += OnPaintSurface;
             return Task.CompletedTask;

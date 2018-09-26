@@ -12,7 +12,7 @@ namespace Asteroids.WinForms.Classes
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
         private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
 
-        public Task Initialize(Rectangle frameRectangle)
+        public Task Initialize()
         {
             Paint += OnPaint;
             return Task.CompletedTask;

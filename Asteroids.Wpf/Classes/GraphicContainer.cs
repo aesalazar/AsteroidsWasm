@@ -62,12 +62,7 @@ namespace Asteroids.Wpf.Classes
             });
         }
 
-        public async Task Initialize(System.Drawing.Rectangle rectangle)
-        {
-            await SetDimensions(rectangle);
-        }
-
-        public Task SetDimensions(System.Drawing.Rectangle rectangle)
+        public Task Initialize()
         {
             return Task.CompletedTask;
         }

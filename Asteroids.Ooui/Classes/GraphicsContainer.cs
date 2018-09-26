@@ -11,7 +11,7 @@ namespace Asteroids.Ooui.Classes
         private CanvasRenderingContext2D _context;
         private string _lastColorHex;
 
-        public Task Initialize(Rectangle rectangle)
+        public Task Initialize()
         {
             _context = GetContext2D();
             _context.LineWidth = 2;

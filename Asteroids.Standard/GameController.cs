@@ -26,7 +26,7 @@ namespace Asteroids.Standard
         {
             _container = container;
             _frameRectangle = frameRectangle;
-            await _container.Initialize(frameRectangle);
+            await _container.Initialize();
 
             _screenCanvas = new ScreenCanvas();
             _score = new Score();
