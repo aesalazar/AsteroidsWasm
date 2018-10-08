@@ -17,12 +17,30 @@ namespace Asteroids.BlazorComponents.Components
 {
     public class GraphicsContainerComponent : BlazorComponent, IGraphicContainer
     {
+        #region Statics
+
+        public static SvgContentContainer MainSvgContainer { get; set; }
+
+        #endregion
+
         #region Blazor Parameters
 
         /// <summary>
         /// Primary HTML canvas to render the game in.
         /// </summary>
         protected ElementRef CanvasElement;
+
+        /// <summary>
+        /// Available width in the current window for the main container.
+        /// </summary>
+        [Parameter]
+        protected int ElementHeight { get; set; }
+
+        /// <summary>
+        /// Available height in the current window for the main container.
+        /// </summary>
+        [Parameter]
+        protected int ElementWidth { get; set; }
 
         /// <summary>
         /// Proxy to JavaScript SessionStorage collection.
@@ -57,8 +75,8 @@ namespace Asteroids.BlazorComponents.Components
             _controller = new GameController();
             _controller.SoundPlayed += OnSoundPlayed;
 
-            InteropCanvas.SizeChanged += InteropCanvas_SizeChanged;
             InteropCanvas.Initialized += InteropCanvas_Loaded;
+            InteropCanvas.SizeChanged += InteropCanvas_SizeChanged;
         }
 
         #endregion
@@ -121,12 +139,10 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         /// <param name="lines">Collection of <see cref="IGraphicLine"/>.</param>
         /// <param name="polygons">Collection of <see cref="IGraphicPolygon"/>.</param>
-        public async Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
+        public Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
-            await _interopCanvas.Clear();
-            await _interopCanvas.DrawLines(lines);
-            await _interopCanvas.DrawPolygons(polygons);
-            await _interopCanvas.Paint();
+            MainSvgContainer.Draw(lines, polygons);
+            return Task.CompletedTask;
         }
 
         #endregion
@@ -138,6 +154,9 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         private async void InteropCanvas_Loaded(object sender, Rectangle e)
         {
+            ElementWidth = e.Width;
+            ElementHeight = e.Height;
+
             await _controller.Initialize(this, e);
         }
 
@@ -146,6 +165,9 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         private void InteropCanvas_SizeChanged(object sender, Rectangle e)
         {
+            ElementWidth = e.Width;
+            ElementHeight = e.Height;
+
             _controller.ResizeGame(e);
         }
 
@@ -272,6 +294,5 @@ namespace Asteroids.BlazorComponents.Components
         }
 
         #endregion
-
     }
 }
