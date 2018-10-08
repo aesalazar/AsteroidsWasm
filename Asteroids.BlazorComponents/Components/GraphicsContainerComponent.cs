@@ -26,11 +26,6 @@ namespace Asteroids.BlazorComponents.Components
         #region Blazor Parameters
 
         /// <summary>
-        /// Primary HTML Window to render the game in.
-        /// </summary>
-        protected ElementRef WindowElement;
-
-        /// <summary>
         /// Available width in the current window for the main container.
         /// </summary>
         [Parameter]
@@ -116,7 +111,7 @@ namespace Asteroids.BlazorComponents.Components
                 return;
 
             _interopWindow = new InteropWindow();
-            await _interopWindow.Initialize(WindowElement);
+            await _interopWindow.Initialize();
         }
 
         #endregion

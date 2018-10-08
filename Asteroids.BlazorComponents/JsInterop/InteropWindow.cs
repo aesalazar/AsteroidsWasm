@@ -30,12 +30,10 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <summary>
         /// Call JavaScript to prep the Window.
         /// </summary>
-        /// <param name="WindowElement">Window element to apply to.</param>
-        public async Task<string> Initialize(ElementRef WindowElement)
+        public async Task<string> Initialize()
         {
             return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropAsteroidsWindow}.{initialize}"
-                , WindowElement
             );
         }
 
