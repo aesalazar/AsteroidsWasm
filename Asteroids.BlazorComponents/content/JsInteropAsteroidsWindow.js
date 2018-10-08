@@ -2,20 +2,20 @@
     //Send dotnet an update
     DotNet.invokeMethodAsync(
         'Asteroids.BlazorComponents'
-        , 'UpdateCanvasSize'
+        , 'UpdateWindowSize'
         , window.innerWidth
         , window.innerHeight
     );
 };
 
-window.JsInteropAsteroidsCanvas = {
+window.JsInteropAsteroidsWindow = {
 
     initialize: () => {
 
         //let dotnet know it is ready
         DotNet.invokeMethodAsync(
             'Asteroids.BlazorComponents'
-            , 'CanvasInitialized'
+            , 'WindowInitialized'
             , window.innerWidth
             , window.innerHeight
         );

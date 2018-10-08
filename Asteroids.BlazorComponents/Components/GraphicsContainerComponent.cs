@@ -26,9 +26,9 @@ namespace Asteroids.BlazorComponents.Components
         #region Blazor Parameters
 
         /// <summary>
-        /// Primary HTML canvas to render the game in.
+        /// Primary HTML Window to render the game in.
         /// </summary>
-        protected ElementRef CanvasElement;
+        protected ElementRef WindowElement;
 
         /// <summary>
         /// Available width in the current window for the main container.
@@ -58,9 +58,9 @@ namespace Asteroids.BlazorComponents.Components
         private readonly IGameController _controller;
 
         /// <summary>
-        /// Proxy to JavaScript command to draw on the main canvas.
+        /// Proxy to JavaScript command to draw on the main Window.
         /// </summary>
-        private InteropCanvas _interopCanvas;
+        private InteropWindow _interopWindow;
 
         /// <summary>
         /// Proxy to JavaScript sound collection.
@@ -75,8 +75,8 @@ namespace Asteroids.BlazorComponents.Components
             _controller = new GameController();
             _controller.SoundPlayed += OnSoundPlayed;
 
-            InteropCanvas.Initialized += InteropCanvas_Loaded;
-            InteropCanvas.SizeChanged += InteropCanvas_SizeChanged;
+            InteropWindow.Initialized += InteropWindow_Loaded;
+            InteropWindow.SizeChanged += InteropWindow_SizeChanged;
         }
 
         #endregion
@@ -104,7 +104,7 @@ namespace Asteroids.BlazorComponents.Components
         }
 
         /// <summary>
-        ///  Initializes the <see cref="InteropCanvas"/>.
+        ///  Initializes the <see cref="InteropWindow"/>.
         /// </summary>
         /// <remarks>
         ///  Base <see cref="BlazorComponent.OnAfterRenderAsync"/> returns null so do not call.
@@ -112,11 +112,11 @@ namespace Asteroids.BlazorComponents.Components
         protected override async Task OnAfterRenderAsync()
         {
             //This can be called more then once
-            if (_interopCanvas != null)
+            if (_interopWindow != null)
                 return;
 
-            _interopCanvas = new InteropCanvas();
-            await _interopCanvas.Initialize(CanvasElement);
+            _interopWindow = new InteropWindow();
+            await _interopWindow.Initialize(WindowElement);
         }
 
         #endregion
@@ -135,7 +135,7 @@ namespace Asteroids.BlazorComponents.Components
         }
 
         /// <summary>
-        /// Paint or repaint the canvas with the collections of lines and polygons (unfilled).
+        /// Paint or repaint the Window with the collections of lines and polygons (unfilled).
         /// </summary>
         /// <param name="lines">Collection of <see cref="IGraphicLine"/>.</param>
         /// <param name="polygons">Collection of <see cref="IGraphicPolygon"/>.</param>
@@ -147,12 +147,12 @@ namespace Asteroids.BlazorComponents.Components
 
         #endregion
 
-        #region JavaScript Canvas Handlers
+        #region JavaScript Window Handlers
 
         /// <summary>
         /// Initializes the <see cref="IGameController"/>.
         /// </summary>
-        private async void InteropCanvas_Loaded(object sender, Rectangle e)
+        private async void InteropWindow_Loaded(object sender, Rectangle e)
         {
             ElementWidth = e.Width;
             ElementHeight = e.Height;
@@ -163,7 +163,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Resizes the <see cref="IGameController"/>.
         /// </summary>
-        private void InteropCanvas_SizeChanged(object sender, Rectangle e)
+        private void InteropWindow_SizeChanged(object sender, Rectangle e)
         {
             ElementWidth = e.Width;
             ElementHeight = e.Height;
