@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Blazor;
 using Microsoft.JSInterop;
 
 namespace Asteroids.BlazorComponents.JsInterop

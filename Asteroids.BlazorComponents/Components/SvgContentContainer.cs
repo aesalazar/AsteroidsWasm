@@ -29,16 +29,6 @@ namespace Asteroids.BlazorComponents.Components
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
         private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
 
-        //TODO: Find better way to store the element and avoid static
-        /// <summary>
-        /// Store the element reference
-        /// </summary>
-        protected override void OnAfterRender()
-        {
-            if (GraphicsContainerComponent.MainSvgContainer is null)
-                GraphicsContainerComponent.MainSvgContainer = this;
-        }
-
         /// <summary>
         /// Repaint the SVG content with the collections of lines and polygons (unfilled).
         /// </summary>

@@ -10,20 +10,18 @@ using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using Asteroids.Standard.Sounds;
 using Blazor.Extensions.Storage;
-using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
 
 namespace Asteroids.BlazorComponents.Components
 {
     public class GraphicsContainerComponent : BlazorComponent, IGraphicContainer
     {
-        #region Statics
-
-        public static SvgContentContainer MainSvgContainer { get; set; }
-
-        #endregion
-
         #region Blazor Parameters
+
+        /// <summary>
+        /// Child <see cref="SvgContentContainer"/> to draw into.
+        /// </summary>
+        protected SvgContentContainer ChildSvgContainer;
 
         /// <summary>
         /// Available width in the current window for the main container.
@@ -136,7 +134,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <param name="polygons">Collection of <see cref="IGraphicPolygon"/>.</param>
         public Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
-            MainSvgContainer.Draw(lines, polygons);
+            ChildSvgContainer.Draw(lines, polygons);
             return Task.CompletedTask;
         }
 
