@@ -1,6 +1,11 @@
 ﻿@inherits Components.GraphicsContainerComponent
 
-<canvas style="background-color: black;"
-        ref="CanvasElement"
-        >
-</canvas>
+<svg style="background-color: black;" 
+     xmlns="http://www.w3.org/2000/svg"
+     height="@ElementHeight"
+     width="@ElementWidth"
+     >
+
+    <SvgContentContainer ref="ChildSvgContainer" />
+
+</svg>
