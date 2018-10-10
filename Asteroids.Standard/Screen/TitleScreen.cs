@@ -9,7 +9,8 @@ namespace Asteroids.Standard.Screen
     /// </summary>
     public class TitleScreen : CommonOps
     {
-        private const String strCopyright = "BY HOWARD UMAN";
+        private const string copyright1 = "CREATED BY HOWARD UMAN";
+        private const string copyright2 = "PORTED BY ERNIE SALAZAR";
         private String strTitle;
         private int iLetterSize;
         private int iIncrement;
@@ -48,9 +49,13 @@ namespace Asteroids.Standard.Screen
 
             // Draw copyright notice
             const int iTitleWidth = 200;
-            const int iTitleHeight = iTitleWidth * 2;
-            TextDraw.DrawText(screenCanvas, strCopyright, TextDraw.Justify.CENTER,
-                              iMaxY - iTitleWidth * 3, iTitleWidth, iTitleHeight, iPictX, iPictY);
+            const int iTitleHeight = iTitleWidth;
+
+            TextDraw.DrawText(screenCanvas, copyright1, TextDraw.Justify.CENTER,
+                              iMaxY - iTitleWidth * 4, iTitleWidth, iTitleHeight, iPictX, iPictY);
+
+            TextDraw.DrawText(screenCanvas, copyright2, TextDraw.Justify.CENTER,
+                              iMaxY - iTitleWidth * 2, iTitleWidth, iTitleHeight, iPictX, iPictY);
 
             // Draw the asteroid belt
             asteroids.Move();
