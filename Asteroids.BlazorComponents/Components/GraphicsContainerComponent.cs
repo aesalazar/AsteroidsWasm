@@ -162,6 +162,8 @@ namespace Asteroids.BlazorComponents.Components
             ElementHeight = e.Height;
 
             _controller.ResizeGame(e);
+
+            StateHasChanged();
         }
 
         #endregion
