@@ -22,6 +22,11 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// </summary>
         private const string initialize = nameof(initialize);
 
+        /// <summary>
+        /// JavaScript method to set focus an a spectific element.
+        /// </summary>
+        private const string setFocus = nameof(setFocus);
+
         #endregion
 
         #region Methods
@@ -33,6 +38,18 @@ namespace Asteroids.BlazorComponents.JsInterop
         {
             return await JSRuntime.Current.InvokeAsync<string>(
                 $"{JsInteropAsteroidsWindow}.{initialize}"
+            );
+        }
+
+        /// <summary>
+        /// Call JavaScript to set focus on an element.
+        /// </summary>
+        /// <param name="elementId">Element id to pass when called <code>getElementById</code>.</param>
+        public async Task<string> SetFocus(string elementId)
+        {
+            return await JSRuntime.Current.InvokeAsync<string>(
+                $"{JsInteropAsteroidsWindow}.{setFocus}"
+                , elementId
             );
         }
 

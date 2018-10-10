@@ -10,6 +10,7 @@ using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using Asteroids.Standard.Sounds;
 using Blazor.Extensions.Storage;
+using Microsoft.AspNetCore.Blazor;
 using Microsoft.AspNetCore.Blazor.Components;
 
 namespace Asteroids.BlazorComponents.Components
@@ -34,6 +35,12 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         [Parameter]
         protected int ElementWidth { get; set; }
+
+        /// <summary>
+        /// HTML id for the main SVG container.
+        /// </summary>
+        [Parameter]
+        protected string ElementId { get; set; }
 
         /// <summary>
         /// Proxy to JavaScript SessionStorage collection.
@@ -65,6 +72,7 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         public GraphicsContainerComponent()
         {
+            ElementId = "svgMainContainer";
             _controller = new GameController();
             _controller.SoundPlayed += OnSoundPlayed;
 
@@ -110,6 +118,7 @@ namespace Asteroids.BlazorComponents.Components
 
             _interopWindow = new InteropWindow();
             await _interopWindow.Initialize();
+            await _interopWindow.SetFocus(ElementId);
         }
 
         #endregion
@@ -117,13 +126,10 @@ namespace Asteroids.BlazorComponents.Components
         #region Implementation of IGraphicContainer
 
         /// <summary>
-        /// Wires the key press handlers.
+        /// Does nothing under this implementation.
         /// </summary>
         public Task Initialize()
         {
-            InteropKeyPress.KeyUp += OnKeyUp;
-            InteropKeyPress.KeyDown += OnKeyDown;
-
             return Task.CompletedTask;
         }
 
@@ -173,12 +179,12 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Sends the equivalent <see cref="PlayKey"/> from a Key Down event to the <see cref="IGameController"/>.
         /// </summary>
-        private void OnKeyDown(object sender, ConsoleKey e)
+        protected void OnKeyDown(UIKeyboardEventArgs e)
         {
             PlayKey key;
-            switch (e)
+            switch (e.Code.ToLower())
             {
-                case ConsoleKey.Escape:
+                case "escape":
                     //Do not send exit command
                     if (_controller.GameStatus != GameMode.Game)
                         return;
@@ -186,27 +192,27 @@ namespace Asteroids.BlazorComponents.Components
                     key = PlayKey.Escape;
                     break;
 
-                case ConsoleKey.LeftArrow:
+                case "arrowleft":
                     key = PlayKey.Left;
                     break;
 
-                case ConsoleKey.RightArrow:
+                case "arrowright":
                     key = PlayKey.Right;
                     break;
 
-                case ConsoleKey.UpArrow:
+                case "arrowup":
                     key = PlayKey.Up;
                     break;
 
-                case ConsoleKey.DownArrow:
+                case "arrowdown":
                     key = PlayKey.Down;
                     break;
 
-                case ConsoleKey.Spacebar:
+                case "space":
                     key = PlayKey.Space;
                     break;
 
-                case ConsoleKey.P:
+                case "keyp":
                     key = PlayKey.P;
                     break;
 
@@ -221,12 +227,12 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Sends the equivalent <see cref="PlayKey"/> from a Key Up event to the <see cref="IGameController"/>.
         /// </summary>
-        private void OnKeyUp(object sender, ConsoleKey e)
+        protected void OnKeyUp(UIKeyboardEventArgs e)
         {
             PlayKey key;
-            switch (e)
+            switch (e.Code.ToLower())
             {
-                case ConsoleKey.Escape:
+                case "escape":
                     //Do not send exit command
                     if (_controller.GameStatus != GameMode.Game)
                         return;
@@ -234,27 +240,27 @@ namespace Asteroids.BlazorComponents.Components
                     key = PlayKey.Escape;
                     break;
 
-                case ConsoleKey.LeftArrow:
+                case "arrowleft":
                     key = PlayKey.Left;
                     break;
 
-                case ConsoleKey.RightArrow:
+                case "arrowright":
                     key = PlayKey.Right;
                     break;
 
-                case ConsoleKey.UpArrow:
+                case "arrowup":
                     key = PlayKey.Up;
                     break;
 
-                case ConsoleKey.DownArrow:
+                case "arrowdown":
                     key = PlayKey.Down;
                     break;
 
-                case ConsoleKey.Spacebar:
+                case "space":
                     key = PlayKey.Space;
                     break;
 
-                case ConsoleKey.P:
+                case "keyp":
                     key = PlayKey.P;
                     break;
 
