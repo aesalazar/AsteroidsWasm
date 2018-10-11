@@ -26,7 +26,7 @@ window.JsInteropAsteroidsWindow = {
     setFocus: function (id) {
         try {
             document.getElementById(id).focus();
-        } catch {
+        } catch (err) {
             return false;
         }
         return true;
