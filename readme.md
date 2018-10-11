@@ -1,5 +1,7 @@
 # Asteroids WebAssembly
 
+## Live Demo: https://aesalazar.github.io/AsteroidsWasm/
+
 This project is a POC to determine the plausibility of writing a .NET Standard library and using it across devices INCLUDING WebAssembly (WASM).  The root library, Asteroids.Standard, encapsulates all logic for rendering the classic '80s video game.  None of this is meant to be production-worthy.  It is more me just messing around trying to see what works.
 
 <div style="text-align: center;">
@@ -28,15 +30,13 @@ Currently, the project is made of the following:
 
 - Asteroid.Xamarin.UWP - UWP GUI that uses the core Xamarin library.
 
-- Asteroids.Ooui (broken) - WASM project that uses the very cool [OOUI](https://github.com/praeclarum/Ooui) library to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
-
 - Asteroids.Blazor - WASM project that uses Microsoft's experimental [Blazor](https://github.com/aspnet/blazor) to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
 
 - Asteroids.BlazorComponents - Blazor library that contains the actual game engine instantiated object and associated HTML and JavaScript bridge to allow rendering in the browser.
 
 ## General Notes
 
-All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance` except Asteroids.Ooui as explained below.   The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
+All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance`.   The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
 
 The WinForms, WPF, and Blazor apps are fully functional at this point in terms of keyboard and sound support.  The others are still a WIP since each requires unique configuration.
 
@@ -46,29 +46,11 @@ There is no Xamarin iOS app at this point only because Apple does not allow deve
 
 The UWP application is set to require the Windows 10 Fall Creators Update at a minimum.  This is necessary to run the latest .NET Core and Standard versions.
 
-## OOUI Notes
-
-Currently, the OOUI project is not building properly.  That is, it builds but logs errors as warnings but they are actually fatal and the project will not run.  This is because of the async-await pattern and the need to reference `Task` types.  Seems there are still some issues with Mono and type mapping they are working on.  Hopefully, that will be in their next release.
-
-To run the OOUI application, when working, it requires some command line (VS could probably be configured somehow but CLI seems easier).  For this project, run the following in the Asteroids.Ooui folder to build it:
-
-`dotnet build`
-
-You then need to serve it via a web server.  OOUI GitHub page talks about different options but I like to use the [dotnet-serve plugin](https://github.com/natemcmaster/dotnet-serve).  It can be installed with:
-
-`dotnet tool install --global dotnet-serve`
-
-To then serve and load the WASM app, run this:
-
-`dotnet serve -p 8000 -d bin/Debug/netcoreapp2.1/dist`
-
-Now, in your any WASM-supported browser, go to http://localhost:8000/ and you should see the game load.
-
 ## Blazor Notes
 
-Microsoft has labeled Blazor as "experimental" (as of the time of this writing) and, as such, has allow themselves the luxury to break anything at any time :).  So version control will be important when trying to build and run this app.
+Microsoft has labeled Blazor as "experimental" (as of the time of this writing) and, as such, has allow themselves the luxury to break anything at any time :).  So, version control will be important when trying to build and run this app.
 
-To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their [GitHub](https://github.com/aspnet/blazor) page. Visual Studio seems to hang occasionally when trying to build.  Usually, canceling and retrying fixes it.  Doing it from CLI in the Asteroids.Blazor project folder seems to be the most reliable:
+To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their [GitHub](https://github.com/aspnet/blazor) page. If Visual Studio hangs occasionally when trying to build, do Ctrl+Shift+S to get around a bug in it that they plan to fix in an upcoming release.  Doing it from CLI in the Asteroids.Blazor project folder is also an option:
 
 `dotnet build`
 
