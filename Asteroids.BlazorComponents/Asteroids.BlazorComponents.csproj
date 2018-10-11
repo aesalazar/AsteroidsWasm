@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="content\JsInteropAsteroidsKeyPress.js" />
     <None Remove="content\JsInteropAsteroidsSound.js" />
     <None Remove="content\JsInteropAsteroidsWindow.js" />
   </ItemGroup>
