@@ -22,13 +22,4 @@ window.JsInteropAsteroidsWindow = {
 
         return true;
     },
-
-    setFocus: function (id) {
-        try {
-            document.getElementById(id).focus();
-        } catch (err) {
-            return false;
-        }
-        return true;
-    },
 };
