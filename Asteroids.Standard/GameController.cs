@@ -125,7 +125,7 @@ namespace Asteroids.Standard
                 if (GameStatus == GameMode.Title)
                 {
                     _score.ResetGame();
-                    _game = new Game();
+                    _game = new Game(_score);
                     GameStatus = GameMode.Game;
                     _leftPressed = false;
                     _rightPressed = false;
@@ -223,7 +223,7 @@ namespace Asteroids.Standard
                 _game.Right();
 
             _game.Thrust(_upPressed);
-            _game.DrawScreen(_screenCanvas, _frameRectangle.Width, _frameRectangle.Height, ref _score);
+            _game.DrawScreen(_screenCanvas, _frameRectangle.Width, _frameRectangle.Height);
 
             // If the game is over, display the title screen
             if (_game.Done())

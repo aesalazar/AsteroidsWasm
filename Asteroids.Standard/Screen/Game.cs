@@ -21,8 +21,12 @@ namespace Asteroids.Standard.Screen
         const int PAUSE_INTERVAL = (int)FPS;
         int iPauseTimer;
 
-        public Game()
+        private Score _score;
+
+        public Game(Score score)
         {
+            _score = score;
+
             iLevel = 4; // start with 4 asteroids
             inProcess = true;
             ship = new Ship(true); // new game - we know ship is alive
@@ -71,7 +75,10 @@ namespace Asteroids.Standard.Screen
 
         public void Shoot()
         {
-            if (!paused && ship.IsAlive())
+            if (paused)
+                return;
+
+            if (ship.IsAlive())
             {
                 foreach (Bullet bullet in shipBullets)
                 {
@@ -83,6 +90,11 @@ namespace Asteroids.Standard.Screen
                     }
                 }
             }
+            else if (explosions.Count() == 0 && _score.HasReserveShips())
+            {
+                _score.GetNewShip();
+                ship = new Ship(true);
+            }
         }
 
         public void Pause()
@@ -91,12 +103,12 @@ namespace Asteroids.Standard.Screen
             paused = !paused;
         }
 
-        private bool CheckPointInAsteroid(Point ptCheck, ref Score score)
+        private bool CheckPointInAsteroid(Point ptCheck)
         {
             int pointValue = asteroids.CheckPointCollisions(ptCheck);
             if (pointValue > 0)
             {
-                score.AddScore(pointValue);
+                _score.AddScore(pointValue);
                 return true;
             }
             return false;
@@ -119,7 +131,7 @@ namespace Asteroids.Standard.Screen
             }
         }
 
-        public void DrawScreen(ScreenCanvas sc, int iPictX, int iPictY, ref Score score)
+        public void DrawScreen(ScreenCanvas sc, int iPictX, int iPictY)
         {
             Point ptCheck = new Point(0);
 
@@ -141,7 +153,7 @@ namespace Asteroids.Standard.Screen
                 if (!ship.IsAlive() &&
                    (explosions.Count() == 0))
                 {
-                    if (!score.HasReserveShips())
+                    if (!_score.HasReserveShips())
                     {
                         // Game over
                         inProcess = false;
@@ -150,7 +162,7 @@ namespace Asteroids.Standard.Screen
                     {
                         if (asteroids.IsCenterSafe())
                         {
-                            score.GetNewShip();
+                            _score.GetNewShip();
                             ship = new Ship(true);
                         }
                     }
@@ -177,7 +189,7 @@ namespace Asteroids.Standard.Screen
                 foreach (Bullet bullet in shipBullets)
                 {
                     if (bullet.AcquireLoc(ref ptCheck) &&
-                       CheckPointInAsteroid(ptCheck, ref score))
+                       CheckPointInAsteroid(ptCheck))
                     {
                         explosions.AddExplosion(ptCheck);
                         bullet.Disable();
@@ -191,7 +203,7 @@ namespace Asteroids.Standard.Screen
                     {
                         ptCheck.X = ptInShip.X + ship.GetCurrLoc().X;
                         ptCheck.Y = ptInShip.Y + ship.GetCurrLoc().Y;
-                        if (CheckPointInAsteroid(ptCheck, ref score))
+                        if (CheckPointInAsteroid(ptCheck))
                         {
                             ExplodeShip();
                             break;
@@ -211,7 +223,7 @@ namespace Asteroids.Standard.Screen
             explosions.Draw(sc, iPictX, iPictY);
 
             // Draw the score
-            score.Draw(sc, iPictX, iPictY);
+            _score.Draw(sc, iPictX, iPictY);
         }
     }
 }
