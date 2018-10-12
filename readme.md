@@ -40,6 +40,10 @@ All applications are written in Visual Studio so they can be launch simply by do
 
 The WinForms, WPF, and Blazor apps are fully functional at this point in terms of keyboard and sound support.  The others are still a WIP since each requires unique configuration.
 
+## WinForms and WPF Notes
+
+Currently, the application performs best in WinForms when running on the Desktop.  In WPF, a Canvas is used which is constantly cleared and repainted with new lines and polygons.  This technique does not perform well.  I have to find a more optimal solution to render the screen.
+
 ## Xamarin Notes
 
 There is no Xamarin iOS app at this point only because Apple does not allow development on non-macs (which is what I am on) without connected hardware.  But there is no technical reason for it not to be possible.
