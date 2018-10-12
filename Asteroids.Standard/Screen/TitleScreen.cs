@@ -9,8 +9,16 @@ namespace Asteroids.Standard.Screen
     /// </summary>
     public class TitleScreen : CommonOps
     {
+        private const string instructions = "PRESS SPACE TO PLAY";
+        private const int instructionSize = 200;
+        private const int instructionOffset = instructionSize * 5;
+
+        private const int titleSize = 200;
+        private const int titleOffset1 = iMaxY - titleSize * 4;
+        private const int titleOffset2 = iMaxY - titleSize * 2;
         private const string copyright1 = "CREATED BY HOWARD UMAN";
         private const string copyright2 = "PORTED BY ERNIE SALAZAR";
+
         private String strTitle;
         private int iLetterSize;
         private int iIncrement;
@@ -31,6 +39,16 @@ namespace Asteroids.Standard.Screen
 
         public void DrawScreen(ScreenCanvas screenCanvas, int iPictX, int iPictY)
         {
+            //Draw instructions
+            TextDraw.DrawText(
+                screenCanvas
+                , instructions
+                , TextDraw.Justify.CENTER
+                , instructionOffset
+                , instructionSize, instructionSize
+                , iPictX, iPictY
+                );
+
             // Flip back and forth between "Game Over" and "Asteroids"
             if ((iLetterSize > 1000) || (iLetterSize < 40))
             {
@@ -48,14 +66,11 @@ namespace Asteroids.Standard.Screen
                               iMaxY / 2 - iLetterSize, iLetterSize, iLetterSize * 2, iPictX, iPictY);
 
             // Draw copyright notice
-            const int iTitleWidth = 200;
-            const int iTitleHeight = iTitleWidth;
-
             TextDraw.DrawText(screenCanvas, copyright1, TextDraw.Justify.CENTER,
-                              iMaxY - iTitleWidth * 4, iTitleWidth, iTitleHeight, iPictX, iPictY);
+                              titleOffset1, titleSize, titleSize, iPictX, iPictY);
 
             TextDraw.DrawText(screenCanvas, copyright2, TextDraw.Justify.CENTER,
-                              iMaxY - iTitleWidth * 2, iTitleWidth, iTitleHeight, iPictX, iPictY);
+                              titleOffset2, titleSize, titleSize, iPictX, iPictY);
 
             // Draw the asteroid belt
             asteroids.Move();
