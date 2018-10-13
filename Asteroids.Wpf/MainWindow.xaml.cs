@@ -52,9 +52,9 @@ namespace Asteroids.Wpf
             });
         }
 
-        private async void Window_Activated(object sender, EventArgs e)
+        private async void Window_Rendered(object sender, EventArgs e)
         {
-            Activated -= Window_Activated;
+            ContentRendered -= Window_Rendered;
             var rec = new Rectangle(0, 0, (int)MainContainer.ActualWidth, (int)MainContainer.ActualHeight);
             await _controller.Initialize(MainContainer, rec);
         }
@@ -159,6 +159,7 @@ namespace Asteroids.Wpf
                 player.Value.Dispose();
 
             _controller.Dispose();
+            MainContainer.Dispose();
         }
     }
 }

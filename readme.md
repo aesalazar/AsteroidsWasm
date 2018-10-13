@@ -22,7 +22,7 @@ Currently, the project is made of the following:
 
 - Asteroids.WinForms - Reconstructed WinForms GUI that uses the game engine with a [PictureBox](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.picturebox) as the main renderer.
 
-- Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [Canvas](https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.canvas) as the main renderer.
+- Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [WriteableBitmap](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap) as the main renderer with help from the [WritableBitmapEx](https://github.com/teichgraf/WriteableBitmapEx/) library.
 
 - Asteroids.Xamarin - The core Xamarin application that uses SkiaSharp for 2D rendering via a [SKCanvasView](https://docs.microsoft.com/en-us/dotnet/api/skiasharp.views.forms.skcanvasview).
 
@@ -39,10 +39,6 @@ Currently, the project is made of the following:
 All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance`.   The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
 
 The WinForms, WPF, and Blazor apps are fully functional at this point in terms of keyboard and sound support.  The others are still a WIP since each requires unique configuration.
-
-## WinForms and WPF Notes
-
-Currently, the application performs best in WinForms when running on the Desktop.  In WPF, a Canvas is used which is constantly cleared and repainted with new lines and polygons.  This technique does not perform well.  I have to find a more optimal solution to render the screen.
 
 ## Xamarin Notes
 

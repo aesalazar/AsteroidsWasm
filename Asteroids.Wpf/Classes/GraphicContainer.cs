@@ -2,85 +2,128 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.Wpf.Classes
 {
-    public class GraphicContainer : Canvas, IGraphicContainer
+    /// <summary>
+    /// Control to paint vectors based on <see cref="WriteableBitmap"/>.
+    /// </summary>
+    public class GraphicContainer : Image, IGraphicContainer, IDisposable
     {
         private readonly Dispatcher _mainDispatcher = Dispatcher.CurrentDispatcher;
+        private WriteableBitmap _bitmap;
 
+        /// <summary>
+        /// Creates a new instance of <see cref="GraphicContainer"/>.
+        /// </summary>
+        public GraphicContainer()
+        {
+            SizeChanged += OnSizeChanged;
+        }
+
+        /// <summary>
+        /// Reisize the <see cref="WriteableBitmap"/> based on new control size.
+        /// </summary>
+        private void OnSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+        {
+            //Resize the current bitmap
+            _bitmap = _bitmap.Resize(
+                (int)e.NewSize.Width
+                , (int)e.NewSize.Height
+                , WriteableBitmapExtensions.Interpolation.Bilinear
+            );
+
+            Source = _bitmap;
+        }
+
+        /// <summary>
+        /// Initialize the <see cref="WriteableBitmap"/> with the current width and height.
+        /// </summary>
+        public Task Initialize()
+        {
+            //Since the control has no size yet simply draw a size bitmap
+            _bitmap = BitmapFactory.New(0, 0);
+            Source = _bitmap;
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Draws the collection of <see cref="IGraphicLine"/>s and <see cref="IGraphicPolygon"/>s
+        /// to the screen.
+        /// </summary>
         public async Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
-            await _mainDispatcher.InvokeAsync(() =>
+            try
             {
-                try
+                await _mainDispatcher.InvokeAsync(() =>
                 {
-                    Children.Clear();
+                    _bitmap.Clear();
 
                     foreach (var gline in lines)
                     {
-                        var point1 = gline.Point1;
-                        var point2 = gline.Point2;
-
-                        var line = new  Line
-                        {
-                            X1 = point1.X,
-                            Y1 = point1.Y,
-                            X2 = point2.X,
-                            Y2 = point2.Y,
-                            Stroke = ColorHexToBrush(gline.ColorHex),
-                            StrokeThickness = 1
-                        };
-
-                        Children.Add(line);
+                        _bitmap.DrawLine(
+                            gline.Point1.X
+                            , gline.Point1.Y
+                            , gline.Point2.X
+                            , gline.Point2.Y
+                            , HexToColor(gline.ColorHex)
+                        );
                     }
 
                     foreach (var gpoly in polygons)
                     {
-                        var points = gpoly.Points;
-                        var poly = new Polygon
-                        {
-                            Stroke = ColorHexToBrush(gpoly.ColorHex),
-                            StrokeThickness = 1
-                        };
+                        var points = gpoly
+                            .Points
+                            .SelectMany(p => new[] { p.X, p.Y })
+                            .ToList();
 
-                        var pts = points.ToList();
-                        pts.ForEach(p => poly.Points.Add(new Point(p.X, p.Y)));
-                        Children.Add(poly);
+                        var first = gpoly.Points.First();
+                        points.Add(first.X);
+                        points.Add(first.Y);
+
+                        _bitmap.DrawPolyline(
+                            points.ToArray()
+                            , HexToColor(gpoly.ColorHex)
+                        );
                     }
-                }
-                catch (Exception)
-                {
-                    //Ignore
-                }
-            });
+                });
+            }
+            catch (Exception)
+            {
+                //Ignore
+            }
         }
 
-        public Task Initialize()
+        /// <summary>
+        /// Cleanup handlers.
+        /// </summary>
+        public void Dispose()
         {
-            return Task.CompletedTask;
+            SizeChanged -= OnSizeChanged;
         }
 
-        #region Color Brush
+        #region Color
 
         private string _lastColorHex;
-        private SolidColorBrush _lastBrush;
+        private Color _lastColor;
 
-        private SolidColorBrush ColorHexToBrush(string colorHex)
+        /// <summary>
+        /// Converts color hex string to <see cref="Color"/>.
+        /// </summary>
+        private Color HexToColor(string colorHex)
         {
             if (colorHex == _lastColorHex)
-                return _lastBrush;
+                return _lastColor;
 
             _lastColorHex = colorHex;
-            _lastBrush = (SolidColorBrush)new BrushConverter().ConvertFrom(_lastColorHex);
+            _lastColor = (Color)ColorConverter.ConvertFromString(_lastColorHex);
 
-            return _lastBrush;
+            return _lastColor;
         }
 
         #endregion

@@ -4,15 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:classes="clr-namespace:Asteroids.Wpf.Classes"
-        Activated="Window_Activated"
+        ContentRendered="Window_Rendered"
         KeyDown="Window_KeyDown"
         KeyUp="Window_KeyUp"
         Background="Black" mc:Ignorable="d"
-        Title="MainWindow" Width="650" Height="500">
+        Title="MainWindow" Width="800" Height="600">
 
     <classes:GraphicContainer 
         x:Name="MainContainer" 
         SizeChanged="Window_SizeChanged"
-        />
+        Stretch="Fill"
+     />
 
 </Window>
