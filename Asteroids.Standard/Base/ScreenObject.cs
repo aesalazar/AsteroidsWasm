@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Helpers;
@@ -15,8 +14,12 @@ namespace Asteroids.Standard.Base
     abstract class ScreenObject : CommonOps
     {
         // points is used for the internal cartesian system
-        protected IList<Point> points;
-        public IList<Point> pointsTransformed; // exposed to simplify explosions
+        private IList<Point> _points;
+        protected IList<Point> _pointsTransformed; // exposed to simplify explosions
+
+        private readonly object updatePointsLock;
+        protected readonly object _updatePointsTransformedLock;
+
         protected Point currLoc;
         protected double velocityX;
         protected double velocityY;
@@ -29,12 +32,17 @@ namespace Asteroids.Standard.Base
 
         public ScreenObject(Point location)
         {
+            updatePointsLock = new object();
+            _updatePointsTransformedLock = new object();
+
             radians = 180 * Math.PI / 180;
-            points = new List<Point>
+
+            _points = new List<Point>
             {
                 Capacity = 20
             };
-            pointsTransformed = new List<Point>
+
+            _pointsTransformed = new List<Point>
             {
                 Capacity = 20
             };
@@ -50,26 +58,64 @@ namespace Asteroids.Standard.Base
         // Used to add points to a polygon
         public int AddPoint(Point pt)
         {
-            points.Add(pt);
-            pointsTransformed.Add(pt);
-            return pointsTransformed.Count - 1;
+            lock (updatePointsLock)
+                _points.Add(pt);
+
+            lock (_updatePointsTransformedLock)
+                _pointsTransformed.Add(pt);
+
+            return _pointsTransformed.Count - 1;
+        }
+
+        public IList<Point> GetPoints()
+        {
+            var points = new List<Point>();
+            lock (_updatePointsTransformedLock)
+                points.AddRange(_pointsTransformed);
+
+            return points;
+        }
+
+        public void ClearPoints()
+        {
+            lock (updatePointsLock)
+                _points.Clear();
+
+            lock (_updatePointsTransformedLock)
+                _pointsTransformed.Clear();
         }
 
         protected void Rotate(double degrees)
         {
             double radiansAdjust = degrees * 0.0174532925;
             radians += radiansAdjust / FPS;
+
             double SinVal = Math.Sin(radians);
             double CosVal = Math.Cos(radians);
 
-            pointsTransformed.Clear();
+            //Get points with some thread safety
+            var newPointsTransformed = new List<Point>();
+
+            var points = new List<Point>();
+            lock (updatePointsLock)
+                points.AddRange(_points);
+
+            //Retransform the points
             var ptTransformed = new Point(0, 0);
-            for (int i = 0; i < points.Count; i++)
+            for (int i = 0; i < _points.Count; i++)
             {
-                var pt = points[i];
+                var pt = _points[i];
                 ptTransformed.X = (int)(pt.X * CosVal + pt.Y * SinVal);
                 ptTransformed.Y = (int)(pt.X * SinVal - pt.Y * CosVal);
-                pointsTransformed.Add(ptTransformed);
+                newPointsTransformed.Add(ptTransformed);
+            }
+
+            //Add the points
+            lock (_updatePointsTransformedLock)
+            {
+                _pointsTransformed.Clear();
+                foreach (var pt in newPointsTransformed)
+                    _pointsTransformed.Add(pt);
             }
         }
 
@@ -123,12 +169,12 @@ namespace Asteroids.Standard.Base
 
         public virtual void Draw(ScreenCanvas sc, int iPictX, int iPictY)
         {
-            DrawPolyToSC(pointsTransformed, sc, iPictX, iPictY, ColorHexStrings.WhiteHex);
+            DrawPolyToSC(_pointsTransformed, sc, iPictX, iPictY, ColorHexStrings.WhiteHex);
         }
 
         public virtual void Draw(ScreenCanvas sc, int iPictX, int iPictY, string penColor)
         {
-            DrawPolyToSC(pointsTransformed, sc, iPictX, iPictY, penColor);
+            DrawPolyToSC(_pointsTransformed, sc, iPictX, iPictY, penColor);
         }
     }
 }

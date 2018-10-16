@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Screen;
@@ -13,37 +14,47 @@ namespace Asteroids.Standard.Components
     /// </summary>
     class AsteroidBelt : CommonOps
     {
-        const int SAFE_DISTANCE = 2000;
-        private IList<Asteroid> asteroids;
+        private const int SAFE_DISTANCE = 2000;
 
-        public AsteroidBelt(int iNumAsteroids)
+        private readonly object _updateAsteroidsLock;
+        private IList<Asteroid> _asteroids;
+
+        public AsteroidBelt(int iNumAsteroids) : this(iNumAsteroids, Asteroid.ASTEROID_SIZE.LARGE)
         {
-            StartBelt(iNumAsteroids, Asteroid.ASTEROID_SIZE.LARGE);
         }
 
         public AsteroidBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize)
         {
+            _updateAsteroidsLock = new object();
             StartBelt(iNumAsteroids, iMinSize);
         }
 
         public void StartBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize)
         {
-            asteroids = new List<Asteroid>();
+            var asteroids = new List<Asteroid>();
             Asteroid.ASTEROID_SIZE aAsteroidSize;
             for (int i = 0; i < iNumAsteroids; i++)
             {
                 aAsteroidSize = Asteroid.ASTEROID_SIZE.LARGE - rndGen.Next(Asteroid.ASTEROID_SIZE.LARGE - iMinSize + 1);
                 asteroids.Add(new Asteroid(aAsteroidSize));
             }
+
+            lock (_updateAsteroidsLock)
+                _asteroids = asteroids;
         }
 
         public int Count()
         {
-            return asteroids.Count;
+            return _asteroids.Count;
         }
 
         public void Move()
         {
+            var asteroids = new List<Asteroid>();
+
+            lock (_updateAsteroidsLock)
+                asteroids.AddRange(_asteroids);
+
             foreach (var asteroid in asteroids)
                 asteroid.Move();
         }
@@ -52,6 +63,12 @@ namespace Asteroids.Standard.Components
         {
             bool bCenterSafe = true;
             Point ptAsteroid;
+
+            var asteroids = new List<Asteroid>();
+
+            lock (_updateAsteroidsLock)
+                asteroids.AddRange(_asteroids);
+
             foreach (var asteroid in asteroids)
             {
                 ptAsteroid = asteroid.GetCurrLoc();
@@ -66,14 +83,28 @@ namespace Asteroids.Standard.Components
 
         public void Draw(ScreenCanvas sc, int iPictX, int iPictY)
         {
+            var asteroids = new List<Asteroid>();
+
+            lock (_updateAsteroidsLock)
+                asteroids.AddRange(_asteroids);
+
             foreach (var asteroid in asteroids)
                 asteroid.Draw(sc, iPictX, iPictY);
         }
 
         public int CheckPointCollisions(Point ptCheck)
         {
+            //get the asteroids
+            var asteroids = new List<Asteroid>();
+
+            lock (_updateAsteroidsLock)
+                asteroids.AddRange(_asteroids);
+
+            //Go through each
+            var newAsteroids = new List<Asteroid>();
             int pointValue = 0;
             int iCount = asteroids.Count;
+
             for (int i = iCount - 1; i >= 0; i--)
             {
                 if (asteroids[i].CheckPointInside(ptCheck))
@@ -102,6 +133,10 @@ namespace Asteroids.Standard.Components
                     break;
                 }
             }
+
+            //Update
+            _asteroids = asteroids;
+
             return pointValue;
         }
     }
