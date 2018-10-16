@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Screen;
@@ -123,11 +124,14 @@ namespace Asteroids.Standard.Components
                             Capacity = 3
                         };
 
-                        alPoly.Add(pointsTransformed[iPointThrust1]);
-                        alPoly.Add(pointsTransformed[iPointThrust2]);
+                        var pts = _pointsTransformed.ToList();
+
+                        alPoly.Add(pts[iPointThrust1]);
+                        alPoly.Add(pts[iPointThrust2]);
+
                         int iThrustSize = rndGen.Next(200) + 100; // random thrust effect
-                        alPoly.Add(new Point((pointsTransformed[iPointThrust1].X + pointsTransformed[iPointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
-                                             (pointsTransformed[iPointThrust1].Y + pointsTransformed[iPointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))));
+                        alPoly.Add(new Point((pts[iPointThrust1].X + pts[iPointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
+                                             (pts[iPointThrust1].Y + pts[iPointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))));
                         // Draw thrust directly to ScreenCanvas
                         // it's not really part of the ship object
                         DrawPolyToSC(alPoly, sc, iPictX, iPictY, GetRandomFireColor());

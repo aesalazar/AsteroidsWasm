@@ -67,8 +67,7 @@ namespace Asteroids.Standard.Components
         {
             double radPt;
 
-            points.Clear();
-            pointsTransformed.Clear();
+            ClearPoints();
 
             for (int i = 0; i < 9; i++)
             {

@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Enums;
@@ -80,7 +81,8 @@ namespace Asteroids.Standard.Screen
 
             if (ship.IsAlive())
             {
-                foreach (Bullet bullet in shipBullets)
+                var bullets = shipBullets.ToList();
+                foreach (Bullet bullet in bullets)
                 {
                     if (bullet.Available())
                     {
@@ -122,7 +124,8 @@ namespace Asteroids.Standard.Screen
             PlaySound(this, ActionSound.Explode2);
             PlaySound(this, ActionSound.Explode3);
 
-            foreach (Point ptExp in ship.pointsTransformed)
+            var points = ship.GetPoints();
+            foreach (var ptExp in points)
             {
                 ship.Explode();
                 ptCheck.X = ptExp.X + ship.GetCurrLoc().X;
@@ -134,6 +137,7 @@ namespace Asteroids.Standard.Screen
         public void DrawScreen(ScreenCanvas sc, int iPictX, int iPictY)
         {
             Point ptCheck = new Point(0);
+            var bullets = shipBullets.ToList();
 
             if (paused)
             {
@@ -178,15 +182,16 @@ namespace Asteroids.Standard.Screen
 
                 // Move all objects
                 ship.Move();
-                foreach (Bullet bullet in shipBullets)
+
+                foreach (Bullet bullet in bullets)
                 {
                     bullet.Move();
                 }
                 asteroids.Move();
                 explosions.Move();
 
-                // Check bullets for collisions         
-                foreach (Bullet bullet in shipBullets)
+                // Check bullets for collisions        
+                foreach (Bullet bullet in bullets)
                 {
                     if (bullet.AcquireLoc(ref ptCheck) &&
                        CheckPointInAsteroid(ptCheck))
@@ -199,7 +204,8 @@ namespace Asteroids.Standard.Screen
                 // Check ship for collisions
                 if (ship.IsAlive())
                 {
-                    foreach (Point ptInShip in ship.pointsTransformed)
+                    var points = ship.GetPoints();
+                    foreach (Point ptInShip in points)
                     {
                         ptCheck.X = ptInShip.X + ship.GetCurrLoc().X;
                         ptCheck.Y = ptInShip.Y + ship.GetCurrLoc().Y;
@@ -214,10 +220,8 @@ namespace Asteroids.Standard.Screen
 
             // Draw all objects
             ship.Draw(sc, iPictX, iPictY);
-            foreach (Bullet bullet in shipBullets)
-            {
+            foreach (Bullet bullet in bullets)
                 bullet.Draw(sc, iPictX, iPictY);
-            }
 
             asteroids.Draw(sc, iPictX, iPictY);
             explosions.Draw(sc, iPictX, iPictY);
