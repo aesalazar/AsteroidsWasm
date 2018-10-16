@@ -38,7 +38,7 @@ Currently, the project is made of the following:
 
 All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance`.   The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
 
-The WinForms, WPF, and Blazor apps are fully functional at this point in terms of keyboard and sound support.  The others are still a WIP since each requires unique configuration.
+All applications are fully functional at this point in terms sound and keyboard support.  Performance varies among the technologies with the UWP app being the clear winner for desktop.
 
 ## Xamarin Notes
 

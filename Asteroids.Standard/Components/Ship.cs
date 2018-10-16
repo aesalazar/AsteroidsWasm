@@ -109,7 +109,7 @@ namespace Asteroids.Standard.Components
             Rotate(ROTATE_SPEED);
         }
 
-        public new void Draw(ScreenCanvas sc, int iPictX, int iPictY)
+        public override void Draw(ScreenCanvas sc, int iPictX, int iPictY)
         {
             switch (state)
             {
@@ -124,7 +124,7 @@ namespace Asteroids.Standard.Components
                             Capacity = 3
                         };
 
-                        var pts = _pointsTransformed.ToList();
+                        var pts = GetPoints();
 
                         alPoly.Add(pts[iPointThrust1]);
                         alPoly.Add(pts[iPointThrust2]);
@@ -134,7 +134,7 @@ namespace Asteroids.Standard.Components
                                              (pts[iPointThrust1].Y + pts[iPointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))));
                         // Draw thrust directly to ScreenCanvas
                         // it's not really part of the ship object
-                        DrawPolyToSC(alPoly, sc, iPictX, iPictY, GetRandomFireColor());
+                        DrawPolygons(alPoly, sc, iPictX, iPictY, GetRandomFireColor());
                     }
                     break;
             }
