@@ -92,6 +92,10 @@
     <Folder Include="Resources\drawable\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Asteroids.Standard\Asteroids.Standard.csproj">
+      <Project>{10AB7D83-5711-4C7B-A216-94BB8F25660F}</Project>
+      <Name>Asteroids.Standard</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Asteroids.Xamarin\Asteroids.Xamarin.csproj">
       <Project>{77A3A063-9930-4CEB-BD21-1BECA51124AC}</Project>
       <Name>Asteroids.Xamarin</Name>
