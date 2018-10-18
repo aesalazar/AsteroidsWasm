@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Screen;
@@ -17,13 +18,10 @@ namespace Asteroids.Standard.Components
             iLife = 0;
         }
 
-        public override void InitPoints()
+        protected override void InitPoints()
         {
-            const int bulletSize = 35;
-            AddPoint(new Point(0, -bulletSize));
-            AddPoint(new Point(bulletSize, 0));
-            AddPoint(new Point(0, bulletSize));
-            AddPoint(new Point(-bulletSize, 0));
+            ClearPoints();
+            AddPoints(PointsTemplate);
         }
 
         public bool Available()
@@ -73,5 +71,27 @@ namespace Asteroids.Standard.Components
                 base.Draw(sc, iPictX, iPictY, GetRandomFireColor());
             }
         }
+
+        #region Statics
+
+        /// <summary>
+        /// Non-transformed point template for creating a new bullet.
+        /// </summary>
+        private static IList<Point> PointsTemplate = new List<Point>();
+
+        /// <summary>
+        /// Setup the point templates.
+        /// </summary>
+        static Bullet()
+        {
+            const int bulletSize = 35;
+
+            PointsTemplate.Add(new Point(0, -bulletSize));
+            PointsTemplate.Add(new Point(bulletSize, 0));
+            PointsTemplate.Add(new Point(0, bulletSize));
+            PointsTemplate.Add(new Point(-bulletSize, 0));
+        }
+
+        #endregion
     }
 }

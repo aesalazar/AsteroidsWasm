@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Screen;
@@ -17,8 +16,6 @@ namespace Asteroids.Standard.Components
         enum SHIP_STATE { WAITING, ALIVE, EXPLODING, DONE };
         SHIP_STATE state;
         const double ROTATE_SPEED = 12000 / FPS;
-        int iPointThrust1;
-        int iPointThrust2;
         bool bThrustOn;
 
         public Ship() : base(new Point(iMaxX / 2, iMaxY / 2))
@@ -32,19 +29,10 @@ namespace Asteroids.Standard.Components
             state = SHIP_STATE.ALIVE;
         }
 
-        public override void InitPoints()
+        protected override void InitPoints()
         {
-            const int shipWidthHalf = 100;
-            const int shipHeightHalf = shipWidthHalf * 2;
-            const int shipHeightInUp = (int)(shipHeightHalf * .6);
-            const int shipWidthInSide = (int)(shipWidthHalf * .3);
-            AddPoint(new Point(0, -shipHeightHalf));
-            AddPoint(new Point(shipWidthHalf / 2, 0)); // midpoint for collisions
-            AddPoint(new Point(shipWidthHalf, shipHeightHalf));
-            iPointThrust1 = AddPoint(new Point(shipWidthInSide, shipHeightInUp));
-            iPointThrust2 = AddPoint(new Point(-shipWidthInSide, shipHeightInUp));
-            AddPoint(new Point(-shipWidthHalf, shipHeightHalf));
-            AddPoint(new Point(-shipWidthHalf / 2, 0)); // midpoint for collisions
+            ClearPoints();
+            AddPoints(PointsTemplate);
         }
 
         public bool Hyperspace()
@@ -62,7 +50,7 @@ namespace Asteroids.Standard.Components
         }
         public bool IsAlive()
         {
-            return (state == SHIP_STATE.ALIVE);
+            return state == SHIP_STATE.ALIVE;
         }
 
         public void DecayThrust()
@@ -117,8 +105,7 @@ namespace Asteroids.Standard.Components
                     base.Draw(sc, iPictX, iPictY);
                     if (bThrustOn)
                     {
-                        // We have points transformed 
-                        // so...  we know where the bottom of the ship is
+                        // We have points transformed so we know where the bottom of the ship is
                         var alPoly = new List<Point>
                         {
                             Capacity = 3
@@ -126,18 +113,63 @@ namespace Asteroids.Standard.Components
 
                         var pts = GetPoints();
 
-                        alPoly.Add(pts[iPointThrust1]);
-                        alPoly.Add(pts[iPointThrust2]);
+                        alPoly.Add(pts[PointThrust1]);
+                        alPoly.Add(pts[PointThrust2]);
 
                         int iThrustSize = rndGen.Next(200) + 100; // random thrust effect
-                        alPoly.Add(new Point((pts[iPointThrust1].X + pts[iPointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
-                                             (pts[iPointThrust1].Y + pts[iPointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))));
-                        // Draw thrust directly to ScreenCanvas
-                        // it's not really part of the ship object
+
+                        alPoly.Add(new Point(
+                            (pts[PointThrust1].X + pts[PointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
+                            (pts[PointThrust1].Y + pts[PointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))
+                        ));
+                        
+                        // Draw thrust directly to ScreenCanvas; it's not really part of the ship object
                         DrawPolygons(alPoly, sc, iPictX, iPictY, GetRandomFireColor());
                     }
                     break;
             }
         }
+
+        #region Statics
+
+        /// <summary>
+        /// Non-transformed point template for creating a new ship.
+        /// </summary>
+        private static IList<Point> PointsTemplate = new List<Point>();
+
+        /// <summary>
+        /// Index location in <see cref="PointsTemplate"/> for thrust point 1.
+        /// </summary>
+        private static int PointThrust1;
+
+        /// <summary>
+        /// Index location in <see cref="PointsTemplate"/> for thrust point 2.
+        /// </summary>
+        private static int PointThrust2;
+
+        /// <summary>
+        /// Setup update the <see cref="PointsTemplate"/>.
+        /// </summary>
+        static Ship()
+        {
+
+            const int shipWidthHalf = 100;
+            const int shipHeightHalf = shipWidthHalf * 2;
+            const int shipHeightInUp = (int)(shipHeightHalf * .6);
+            const int shipWidthInSide = (int)(shipWidthHalf * .3);
+
+            PointsTemplate.Add(new Point(0, -shipHeightHalf));
+            PointsTemplate.Add(new Point(shipWidthHalf / 2, 0)); // midpoint for collisions
+            PointsTemplate.Add(new Point(shipWidthHalf, shipHeightHalf));
+            PointsTemplate.Add(new Point(shipWidthInSide, shipHeightInUp));
+            PointsTemplate.Add(new Point(-shipWidthInSide, shipHeightInUp));
+            PointsTemplate.Add(new Point(-shipWidthHalf, shipHeightHalf));
+            PointsTemplate.Add(new Point(-shipWidthHalf / 2, 0)); // midpoint for collisions
+
+            PointThrust1 = 3;
+            PointThrust2 = 4;
+        }
+
+        #endregion
     }
 }

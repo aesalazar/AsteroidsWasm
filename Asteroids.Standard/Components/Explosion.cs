@@ -28,7 +28,7 @@ namespace Asteroids.Standard.Components
             }
         }
 
-        public override void InitPoints()
+        protected override void InitPoints()
         {
             // Explosions are self-drawn
             // so do not initialize points in the base class

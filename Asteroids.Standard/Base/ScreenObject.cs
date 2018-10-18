@@ -26,7 +26,7 @@ namespace Asteroids.Standard.Base
         protected double radians;
 
         /// <summary>
-        /// Get the current absolute origin (bottom-left) of the object.
+        /// Get the current absolute origin (top-left) of the object.
         /// </summary>
         public Point GetCurrLoc() => currLoc;
 
@@ -56,15 +56,9 @@ namespace Asteroids.Standard.Base
 
             radians = 180 * Math.PI / 180;
 
-            _points = new List<Point>
-            {
-                Capacity = 20
-            };
+            _points = new List<Point>();
+            _pointsTransformed = new List<Point>();
 
-            _pointsTransformed = new List<Point>
-            {
-                Capacity = 20
-            };
             velocityX = 0;
             velocityY = 0;
             currLoc = location;
@@ -76,10 +70,10 @@ namespace Asteroids.Standard.Base
         /// Generates intial <see cref="Point"/>s needed to render the
         /// when drawing on the screen.
         /// </summary>
-        public abstract void InitPoints();
+        protected abstract void InitPoints();
 
         /// <summary>
-        /// Add points to internal collection used to calculate drawn polygons.
+        /// Add point to internal collection used to calculate drawn polygons.
         /// </summary>
         /// <param name="point"><see cref="Point"/> to add to internal collections.</param>
         /// <returns>Index the point was inserted at.</returns>
@@ -90,6 +84,25 @@ namespace Asteroids.Standard.Base
 
             lock (_updatePointsTransformedLock)
                 _pointsTransformed.Add(point);
+
+            return _pointsTransformed.Count - 1;
+        }
+
+
+        /// <summary>
+        /// Add points to internal collection used to calculate drawn polygons.
+        /// </summary>
+        /// <param name="points"><see cref="Point"/> collection to add to internal collections.</param>
+        /// <returns>Index of the last point inserted.</returns>
+        public int AddPoints(IList<Point> points)
+        {
+            lock (updatePointsLock)
+                foreach(var point in points)
+                    _points.Add(point);
+
+            lock (_updatePointsTransformedLock)
+                foreach(var point in points)
+                    _pointsTransformed.Add(point);
 
             return _pointsTransformed.Count - 1;
         }
