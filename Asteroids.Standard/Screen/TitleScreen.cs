@@ -24,10 +24,13 @@ namespace Asteroids.Standard.Screen
         private int iIncrement;
         private AsteroidBelt asteroids;
 
-        public TitleScreen()
+        private readonly TextDraw _textDraw;
+
+        public TitleScreen(TextDraw textDraw, ScreenCanvas canvas) : base(canvas)
         {
+            _textDraw = textDraw;
             InitTitleScreen();
-            asteroids = new AsteroidBelt(15, Asteroid.ASTEROID_SIZE.SMALL);
+            asteroids = new AsteroidBelt(15, canvas, Asteroid.ASTEROID_SIZE.SMALL);
         }
 
         public void InitTitleScreen()
@@ -37,17 +40,15 @@ namespace Asteroids.Standard.Screen
             strTitle = "GAME OVER";
         }
 
-        public void DrawScreen(ScreenCanvas screenCanvas, int iPictX, int iPictY)
+        public void DrawScreen()
         {
             //Draw instructions
-            TextDraw.DrawText(
-                screenCanvas
-                , instructions
+            _textDraw.DrawText(
+                instructions
                 , TextDraw.Justify.CENTER
                 , instructionOffset
                 , instructionSize, instructionSize
-                , iPictX, iPictY
-                );
+            );
 
             // Flip back and forth between "Game Over" and "Asteroids"
             if ((iLetterSize > 1000) || (iLetterSize < 40))
@@ -62,19 +63,19 @@ namespace Asteroids.Standard.Screen
                 }
             }
             iLetterSize += iIncrement;
-            TextDraw.DrawText(screenCanvas, strTitle, TextDraw.Justify.CENTER,
-                              iMaxY / 2 - iLetterSize, iLetterSize, iLetterSize * 2, iPictX, iPictY);
+            _textDraw.DrawText(strTitle, TextDraw.Justify.CENTER,
+                              iMaxY / 2 - iLetterSize, iLetterSize, iLetterSize * 2);
 
             // Draw copyright notice
-            TextDraw.DrawText(screenCanvas, copyright1, TextDraw.Justify.CENTER,
-                              titleOffset1, titleSize, titleSize, iPictX, iPictY);
+            _textDraw.DrawText( copyright1, TextDraw.Justify.CENTER,
+                              titleOffset1, titleSize, titleSize);
 
-            TextDraw.DrawText(screenCanvas, copyright2, TextDraw.Justify.CENTER,
-                              titleOffset2, titleSize, titleSize, iPictX, iPictY);
+            _textDraw.DrawText(copyright2, TextDraw.Justify.CENTER,
+                              titleOffset2, titleSize, titleSize);
 
             // Draw the asteroid belt
             asteroids.Move();
-            asteroids.Draw(screenCanvas, iPictX, iPictY);
+            asteroids.Draw();
         }
     }
 }

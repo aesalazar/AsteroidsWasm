@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Screen;
@@ -19,11 +18,11 @@ namespace Asteroids.Standard.Components
         private readonly object _updateAsteroidsLock;
         private IList<Asteroid> _asteroids;
 
-        public AsteroidBelt(int iNumAsteroids) : this(iNumAsteroids, Asteroid.ASTEROID_SIZE.LARGE)
+        public AsteroidBelt(int iNumAsteroids, ScreenCanvas canvas) : this(iNumAsteroids, canvas, Asteroid.ASTEROID_SIZE.LARGE)
         {
         }
 
-        public AsteroidBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize)
+        public AsteroidBelt(int iNumAsteroids, ScreenCanvas canvas, Asteroid.ASTEROID_SIZE iMinSize) : base(canvas)
         {
             _updateAsteroidsLock = new object();
             StartBelt(iNumAsteroids, iMinSize);
@@ -36,7 +35,7 @@ namespace Asteroids.Standard.Components
             for (int i = 0; i < iNumAsteroids; i++)
             {
                 aAsteroidSize = Asteroid.ASTEROID_SIZE.LARGE - rndGen.Next(Asteroid.ASTEROID_SIZE.LARGE - iMinSize + 1);
-                asteroids.Add(new Asteroid(aAsteroidSize));
+                asteroids.Add(new Asteroid(aAsteroidSize, Canvas));
             }
 
             lock (_updateAsteroidsLock)
@@ -72,7 +71,7 @@ namespace Asteroids.Standard.Components
             foreach (var asteroid in asteroids)
             {
                 ptAsteroid = asteroid.GetCurrLoc();
-                if (Math.Sqrt(Math.Pow(ptAsteroid.X - iMaxX / 2, 2) + Math.Pow(ptAsteroid.Y - iMaxY / 2, 2)) <= SAFE_DISTANCE)
+                if (Math.Sqrt(Math.Pow(ptAsteroid.X - Canvas.Size.Width / 2, 2) + Math.Pow(ptAsteroid.Y - Canvas.Size.Height / 2, 2)) <= SAFE_DISTANCE)
                 {
                     bCenterSafe = false;
                     break;
@@ -81,7 +80,7 @@ namespace Asteroids.Standard.Components
             return bCenterSafe;
         }
 
-        public void Draw(ScreenCanvas sc, int iPictX, int iPictY)
+        public void Draw()
         {
             var asteroids = new List<Asteroid>();
 
@@ -89,7 +88,7 @@ namespace Asteroids.Standard.Components
                 asteroids.AddRange(_asteroids);
 
             foreach (var asteroid in asteroids)
-                asteroid.Draw(sc, iPictX, iPictY);
+                asteroid.Draw();
         }
 
         public int CheckPointCollisions(Point ptCheck)
@@ -128,7 +127,7 @@ namespace Asteroids.Standard.Components
                     }
                     // Add a new asteroid if it wasn't small
                     if (sizeReduced != Asteroid.ASTEROID_SIZE.DNE)
-                        asteroids.Add(new Asteroid(asteroids[i]));
+                        asteroids.Add(new Asteroid(asteroids[i], Canvas));
 
                     break;
                 }

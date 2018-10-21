@@ -15,7 +15,7 @@ namespace Asteroids.Standard.Components
         Point[] ptPoints;
         Point[] ptPointsVelocity;
 
-        public Explosion(Point ptExplosion, double timeFactor) : base(ptExplosion)
+        public Explosion(Point ptExplosion, double timeFactor, ScreenCanvas canvas) : base(ptExplosion, canvas)
         {
             lifeLeft = (int)(EXPLOSION_LIFE * timeFactor);
             ptPoints = new Point[NUM_EXP_POINTS];
@@ -59,16 +59,16 @@ namespace Asteroids.Standard.Components
                 return false;
         }
 
-        public override void Draw(ScreenCanvas sc, int iPictX, int iPictY)
+        public override void Draw()
         {
             for (int i = 0; i < NUM_EXP_POINTS; i++)
             {
-                Point ptDraw = new Point((int)(ptPoints[i].X / (double)iMaxX * iPictX),
-                                         (int)(ptPoints[i].Y / (double)iMaxY * iPictY));
+                Point ptDraw = new Point((int)(ptPoints[i].X / (double)iMaxX * Canvas.Size.Width),
+                                         (int)(ptPoints[i].Y / (double)iMaxY * Canvas.Size.Height));
 
                 Point ptDraw2 = new Point(ptDraw.X + 1, ptDraw.Y + 1);
 
-                sc.AddLine(ptDraw, ptDraw2, GetRandomFireColor());
+                Canvas.AddLine(ptDraw, ptDraw2, GetRandomFireColor());
             }
         }
     }

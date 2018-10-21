@@ -20,18 +20,21 @@ namespace Asteroids.Standard
             _lastDrawn = false;
             ActionSounds.SoundTriggered += PlaySound;
 
+            _screenCanvas = new ScreenCanvas(new Rectangle());
         }
 
         public async Task Initialize(IGraphicContainer container, Rectangle frameRectangle)
         {
             _container = container;
-            _frameRectangle = frameRectangle;
+
+            GameStatus = GameMode.Title;
+            ResizeGame(frameRectangle);
+
             await _container.Initialize();
 
-            _screenCanvas = new ScreenCanvas();
-            _score = new Score();
-            GameStatus = GameMode.Title;
-            _currentTitle = new TitleScreen();
+            _textDraw = new TextDraw(_screenCanvas);
+            _score = new Score(_textDraw, _screenCanvas);
+            _currentTitle = new TitleScreen(_textDraw, _screenCanvas);
             _currentTitle.InitTitleScreen();
 
             SetFlipTimer();
@@ -48,6 +51,7 @@ namespace Asteroids.Standard
 
         private bool _lastDrawn;
 
+        private TextDraw _textDraw;
         private TitleScreen _currentTitle;
         private Game _game;
         private Score _score;
@@ -85,9 +89,14 @@ namespace Asteroids.Standard
             _timerFlip?.Dispose();
         }
 
+        /// <summary>
+        /// Update the size of the screen.
+        /// </summary>
+        /// <param name="frameRectangle">New size.</param>
         public void ResizeGame(Rectangle frameRectangle)
         {
             _frameRectangle = frameRectangle;
+            _screenCanvas.Size = _frameRectangle;
         }
 
         private async Task Repaint()
@@ -115,7 +124,7 @@ namespace Asteroids.Standard
                 else if (GameStatus == GameMode.Game)
                 {
                     _score.CancelGame();
-                    _currentTitle = new TitleScreen();
+                    _currentTitle = new TitleScreen(_textDraw, _screenCanvas);
                     GameStatus = GameMode.Title;
                 }
             }
@@ -125,7 +134,7 @@ namespace Asteroids.Standard
                 if (GameStatus == GameMode.Title)
                 {
                     _score.ResetGame();
-                    _game = new Game(_score);
+                    _game = new Game(_score, _textDraw, _screenCanvas);
                     GameStatus = GameMode.Game;
                     _leftPressed = false;
                     _rightPressed = false;
@@ -210,8 +219,8 @@ namespace Asteroids.Standard
 
         private void TitleScreen()
         {
-            _score.Draw(_screenCanvas, _frameRectangle.Width, _frameRectangle.Height);
-            _currentTitle.DrawScreen(_screenCanvas, _frameRectangle.Width, _frameRectangle.Height);
+            _score.Draw();
+            _currentTitle.DrawScreen();
         }
 
         private bool PlayGame()
@@ -223,7 +232,7 @@ namespace Asteroids.Standard
                 _game.Right();
 
             _game.Thrust(_upPressed);
-            _game.DrawScreen(_screenCanvas, _frameRectangle.Width, _frameRectangle.Height);
+            _game.DrawScreen();
 
             // If the game is over, display the title screen
             if (_game.Done())
@@ -245,7 +254,7 @@ namespace Asteroids.Standard
                 case GameMode.Game:
                     if (!PlayGame())
                     {
-                        _currentTitle = new TitleScreen();
+                        _currentTitle = new TitleScreen(_textDraw, _screenCanvas);
                         _currentTitle.InitTitleScreen();
                     }
                     break;
@@ -263,7 +272,6 @@ namespace Asteroids.Standard
                 //ignore
             }
         }
-
 
         private void SetFlipTimer()
         {

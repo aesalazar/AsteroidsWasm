@@ -26,6 +26,30 @@ namespace Asteroids.Standard.Base
         protected double radians;
 
         /// <summary>
+        /// Creates a new instance of <see cref="ScreenObject"/>.
+        /// </summary>
+        /// <param name="location">Absolute origin (bottom-left) of the object.</param>
+        /// <param name="canvas">Canvas to draw on.</param>
+        public ScreenObject(Point location, ScreenCanvas canvas) : base(canvas)
+        {
+            updatePointsLock = new object();
+            _updatePointsTransformedLock = new object();
+
+            radians = 180 * Math.PI / 180;
+
+            _points = new List<Point>();
+            _pointsTransformed = new List<Point>();
+
+            velocityX = 0;
+            velocityY = 0;
+            currLoc = location;
+
+            InitPoints();
+        }
+
+        /// <summary>
+
+        /// <summary>
         /// Get the current absolute origin (top-left) of the object.
         /// </summary>
         public Point GetCurrLoc() => currLoc;
@@ -44,27 +68,6 @@ namespace Asteroids.Standard.Base
         /// Get the current rotational radians.
         /// </summary>
         public double GetRadians() => radians;
-
-        /// <summary>
-        /// Creates a new instance of <see cref="ScreenObject"/>.
-        /// </summary>
-        /// <param name="location">Absolute origin (bottom-left) of the object.</param>
-        public ScreenObject(Point location)
-        {
-            updatePointsLock = new object();
-            _updatePointsTransformedLock = new object();
-
-            radians = 180 * Math.PI / 180;
-
-            _points = new List<Point>();
-            _pointsTransformed = new List<Point>();
-
-            velocityX = 0;
-            velocityY = 0;
-            currLoc = location;
-
-            InitPoints();
-        }
 
         /// <summary>
         /// Generates intial <see cref="Point"/>s needed to render the
@@ -87,7 +90,6 @@ namespace Asteroids.Standard.Base
 
             return _pointsTransformed.Count - 1;
         }
-
 
         /// <summary>
         /// Add points to internal collection used to calculate drawn polygons.
@@ -176,19 +178,17 @@ namespace Asteroids.Standard.Base
         /// Draw a collection of polygons (unpersisted) to a <see cref="ScreenCanvas"/>.
         /// </summary>
         /// <param name="alPoly">Collection of points to draw on the canvas.</param>
-        /// <param name="sc"><see cref="ScreenCanvas"/> to draw on.</param>
-        /// <param name="iPictX">Canvas horizontal dimension to scale to.</param>
-        /// <param name="iPictY">Canvas vertical dimension to scale to.</param>
         /// <param name="penColor">Hex color to apply to the polygon.</param>
-        protected void DrawPolygons(IList<Point> alPoly, ScreenCanvas sc, int iPictX, int iPictY, string penColor)
+        protected void DrawPolygons(IList<Point> alPoly, string penColor)
         {
             var ptsPoly = new Point[alPoly.Count];
             for (int i = 0; i < alPoly.Count; i++)
             {
-                ptsPoly[i].X = (int)((currLoc.X + alPoly[i].X) / (double)iMaxX * iPictX);
-                ptsPoly[i].Y = (int)((currLoc.Y + alPoly[i].Y) / (double)iMaxY * iPictY);
+                ptsPoly[i].X = (int)((currLoc.X + alPoly[i].X) / (double)iMaxX * Canvas.Size.Width);
+                ptsPoly[i].Y = (int)((currLoc.Y + alPoly[i].Y) / (double)iMaxY * Canvas.Size.Height);
             }
-            sc.AddPolygon(ptsPoly, penColor);
+
+            Canvas.AddPolygon(ptsPoly, penColor);
         }
 
         /// <summary>
@@ -200,6 +200,7 @@ namespace Asteroids.Standard.Base
         {
             currLoc.X += (int)velocityX;
             currLoc.Y += (int)velocityY;
+
             if (currLoc.X < 0)
                 currLoc.X = iMaxX - 1;
             if (currLoc.X >= iMaxX)
@@ -219,6 +220,7 @@ namespace Asteroids.Standard.Base
         protected string GetRandomFireColor()
         {
             string penDraw;
+
             switch (rndGen.Next(3))
             {
                 case 0:
@@ -241,24 +243,18 @@ namespace Asteroids.Standard.Base
         /// Draws the current internal collection of <see cref="Point"/>s to a <see cref="ScreenCanvas"/> 
         /// in the default <see cref="ColorHexStrings.WhiteHex"/>.
         /// </summary>
-        /// <param name="sc"><see cref="ScreenCanvas"/> to draw on.</param>
-        /// <param name="iPictX">Canvas horizontal dimension to scale to.</param>
-        /// <param name="iPictY">Canvas vertical dimension to scale to.</param>
-        public virtual void Draw(ScreenCanvas sc, int iPictX, int iPictY)
+        public virtual void Draw()
         {
-            Draw(sc, iPictX, iPictY, ColorHexStrings.WhiteHex);
+            Draw(ColorHexStrings.WhiteHex);
         }
 
         /// <summary>
         /// Draws the current internal collection of <see cref="Point"/>s to a <see cref="ScreenCanvas"/>.
         /// </summary>
-        /// <param name="sc"><see cref="ScreenCanvas"/> to draw on.</param>
-        /// <param name="iPictX">Canvas horizontal dimension to scale to.</param>
-        /// <param name="iPictY">Canvas vertical dimension to scale to.</param>
         /// <param name="penColor">Hex color to apply to the polygon.</param>
-        public virtual void Draw(ScreenCanvas sc, int iPictX, int iPictY, string penColor)
+        public virtual void Draw(string penColor)
         {
-            DrawPolygons(GetPoints(), sc, iPictX, iPictY, penColor);
+            DrawPolygons(GetPoints(), penColor);
         }
     }
 }

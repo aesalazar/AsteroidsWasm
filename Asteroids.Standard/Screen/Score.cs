@@ -16,8 +16,11 @@ namespace Asteroids.Standard.Screen
         protected int iFreeShip;
         const int iFreeShipIncrement = 10000;
 
-        public Score()
+        private readonly TextDraw _textDraw;
+
+        public Score(TextDraw textDraw, ScreenCanvas canvas) : base(canvas)
         {
+            _textDraw = textDraw;
             iShips = 0;
             iScore = 0;
             iHiScore = 0;
@@ -63,7 +66,7 @@ namespace Asteroids.Standard.Screen
                 iHiScore = iScore;
         }
 
-        public void Draw(ScreenCanvas screenCanvas, int iPictX, int iPictY)
+        public void Draw()
         {
             const int iWriteTop = 100;
             const int iLetterWidth = 200;
@@ -81,13 +84,13 @@ namespace Asteroids.Standard.Screen
                 for (int i = 0; i < iShips - 1; i++)
                     strScore += "^";
             }
-            TextDraw.DrawText(screenCanvas, strScore, TextDraw.Justify.LEFT,
-               iWriteTop, iLetterWidth, iLetterHeight, iPictX, iPictY);
+            _textDraw.DrawText(strScore, TextDraw.Justify.LEFT,
+               iWriteTop, iLetterWidth, iLetterHeight);
 
             // Draw HiScore Centered
             strScore = iHiScore.ToString("000000");
-            TextDraw.DrawText(screenCanvas, strScore, TextDraw.Justify.CENTER,
-               iWriteTop, iLetterWidth, iLetterHeight, iPictX, iPictY);
+            _textDraw.DrawText(strScore, TextDraw.Justify.CENTER,
+               iWriteTop, iLetterWidth, iLetterHeight);
         }
     }
 }

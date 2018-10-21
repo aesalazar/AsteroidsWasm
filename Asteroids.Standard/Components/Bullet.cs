@@ -13,7 +13,8 @@ namespace Asteroids.Standard.Components
     {
         int iLife;
         const double speedPerSec = 1000 / FPS;
-        public Bullet() : base(new Point(0, 0))
+
+        public Bullet(ScreenCanvas canvas) : base(new Point(0, 0), canvas)
         {
             iLife = 0;
         }
@@ -57,19 +58,16 @@ namespace Asteroids.Standard.Components
         {
             // only draw things that are not available
             if (!Available())
-            {
                 iLife -= 1;
-            }
+
             base.Move();
         }
 
-        public new void Draw(ScreenCanvas sc, int iPictX, int iPictY)
+        public override void Draw()
         {
             // only draw things that are not available
             if (!Available())
-            {
-                base.Draw(sc, iPictX, iPictY, GetRandomFireColor());
-            }
+                base.Draw(GetRandomFireColor());
         }
 
         #region Statics

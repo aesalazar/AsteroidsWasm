@@ -18,13 +18,13 @@ namespace Asteroids.Standard.Components
         const double ROTATE_SPEED = 12000 / FPS;
         bool bThrustOn;
 
-        public Ship() : base(new Point(iMaxX / 2, iMaxY / 2))
+        public Ship(ScreenCanvas canvas) : base(new Point(iMaxX / 2, iMaxY / 2), canvas)
         {
             bThrustOn = false;
             state = SHIP_STATE.WAITING;
         }
 
-        public Ship(bool bAlive) : this()
+        public Ship(bool bAlive, ScreenCanvas canvas) : this(canvas)
         {
             state = SHIP_STATE.ALIVE;
         }
@@ -37,9 +37,9 @@ namespace Asteroids.Standard.Components
 
         public bool Hyperspace()
         {
-            bool bSafeHyperspace = (rndGen.Next(10) != 1);
-            currLoc.X = (rndGen.Next((int)(iMaxX * .8))) + (int)(iMaxX * .1);
-            currLoc.Y = (rndGen.Next((int)(iMaxY * .8))) + (int)(iMaxY * .1);
+            bool bSafeHyperspace = rndGen.Next(10) != 1;
+            currLoc.X = rndGen.Next((int)(iMaxX * .8)) + (int)(iMaxX * .1);
+            currLoc.Y = rndGen.Next((int)(iMaxY * .8)) + (int)(iMaxY * .1);
             return bSafeHyperspace;
         }
 
@@ -97,12 +97,12 @@ namespace Asteroids.Standard.Components
             Rotate(ROTATE_SPEED);
         }
 
-        public override void Draw(ScreenCanvas sc, int iPictX, int iPictY)
+        public override void Draw()
         {
             switch (state)
             {
                 case SHIP_STATE.ALIVE:
-                    base.Draw(sc, iPictX, iPictY);
+                    base.Draw();
                     if (bThrustOn)
                     {
                         // We have points transformed so we know where the bottom of the ship is
@@ -124,7 +124,7 @@ namespace Asteroids.Standard.Components
                         ));
                         
                         // Draw thrust directly to ScreenCanvas; it's not really part of the ship object
-                        DrawPolygons(alPoly, sc, iPictX, iPictY, GetRandomFireColor());
+                        DrawPolygons(alPoly, GetRandomFireColor());
                     }
                     break;
             }
@@ -152,6 +152,7 @@ namespace Asteroids.Standard.Components
         /// </summary>
         static Ship()
         {
+            PointsTemplate.Clear();
 
             const int shipWidthHalf = 100;
             const int shipHeightHalf = shipWidthHalf * 2;

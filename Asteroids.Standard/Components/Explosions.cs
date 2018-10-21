@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Base;
@@ -14,7 +13,7 @@ namespace Asteroids.Standard.Components
         private IList<Explosion> _explosions;
         private object _updateExplosionLock;
 
-        public Explosions()
+        public Explosions(ScreenCanvas canvas) : base(canvas)
         {
             _updateExplosionLock = new object();
             _explosions = new List<Explosion>();
@@ -32,7 +31,7 @@ namespace Asteroids.Standard.Components
 
         public void AddExplosion(Point ptExplosion, double timeFactor)
         {
-            var explosion = new Explosion(ptExplosion, timeFactor);
+            var explosion = new Explosion(ptExplosion, timeFactor, Canvas);
 
             lock(_updateExplosionLock)
                 _explosions.Add(explosion);
@@ -52,7 +51,7 @@ namespace Asteroids.Standard.Components
             _explosions = explosions;
         }
 
-        public void Draw(ScreenCanvas sc, int iPictX, int iPictY)
+        public void Draw()
         {
 
             var explosions = new List<Explosion>();
@@ -61,7 +60,7 @@ namespace Asteroids.Standard.Components
                 explosions.AddRange(_explosions);
 
             foreach (var explosion in explosions)
-                explosion.Draw(sc, iPictX, iPictY);
+                explosion.Draw();
         }
     }
 }

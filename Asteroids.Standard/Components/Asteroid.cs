@@ -17,7 +17,7 @@ namespace Asteroids.Standard.Components
         protected double rotateSpeed;
         protected ASTEROID_SIZE aSize;
 
-        public Asteroid(ASTEROID_SIZE size) : base(new Point(0, 0))
+        public Asteroid(ASTEROID_SIZE size, ScreenCanvas canvas) : base(new Point(0, 0), canvas)
         {
             aSize = size;
 
@@ -33,7 +33,7 @@ namespace Asteroids.Standard.Components
             InitPoints();
         }
 
-        public Asteroid(Asteroid astCopy) : base(astCopy.currLoc)
+        public Asteroid(Asteroid astCopy, ScreenCanvas canvas) : base(astCopy.currLoc, canvas)
         {
             aSize = astCopy.aSize;
             RandomVelocity();
@@ -49,6 +49,7 @@ namespace Asteroids.Standard.Components
         {
             // choose random rotate speed
             rotateSpeed = (rndGen.Next(10000) - 5000) / FPS;
+
             // choose a velocity for the asteroid (smaller asteroids can go faster)
             velocityX = ((rndGen.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
             velocityY = ((rndGen.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
@@ -97,14 +98,11 @@ namespace Asteroids.Standard.Components
             return base.Move();
         }
 
-        public override void Draw(ScreenCanvas sc, int iPictX, int iPictY)
+        public override void Draw()
         {
             // only draw things that are not available
             if (aSize != ASTEROID_SIZE.DNE)
-            {
-                //Rotate(rotateSpeed);
-                base.Draw(sc, iPictX, iPictY);
-            }
+                base.Draw();
         }
 
         public bool CheckPointInside(Point ptCheck)
@@ -159,6 +157,7 @@ namespace Asteroids.Standard.Components
                 addPoint(PointsTemplateLarge, radPt, ASTEROID_SIZE.LARGE);
             }
         }
+
         #endregion
     }
 }

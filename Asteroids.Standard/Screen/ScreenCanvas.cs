@@ -19,8 +19,10 @@ namespace Asteroids.Standard.Screen
         private Point _lastPoint;
         private string _lastPen;
 
-        public ScreenCanvas()
+        public ScreenCanvas(Rectangle size)
         {
+            Size = size;
+
             _updatePointsLock = new object();
             _updatePolysLock = new object();
             _points = new List<Tuple<Point[], string>>();
@@ -30,6 +32,8 @@ namespace Asteroids.Standard.Screen
             _lastPoint = new Point(0, 0);
             _lastPen = ColorHexStrings.TransparentHex;
         }
+
+        public Rectangle Size { get; set; }
 
         public void Clear()
         {

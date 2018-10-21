@@ -22,27 +22,29 @@ namespace Asteroids.Standard.Screen
         const int PAUSE_INTERVAL = (int)FPS;
         int iPauseTimer;
 
-        private Score _score;
+        private readonly Score _score;
+        private readonly TextDraw _textDraw;
 
-        public Game(Score score)
+        public Game(Score score, TextDraw textDraw, ScreenCanvas canvas) : base(canvas)
         {
             _score = score;
+            _textDraw = textDraw;
 
             iLevel = 4; // start with 4 asteroids
             inProcess = true;
-            ship = new Ship(true); // new game - we know ship is alive
+            ship = new Ship(true, canvas); // new game - we know ship is alive
             shipBullets = new Bullet[4];
             for (int i = 0; i < 4; i++)
-                shipBullets[i] = new Bullet();
-            asteroids = new AsteroidBelt(iLevel);
-            explosions = new Explosions();
+                shipBullets[i] = new Bullet(canvas);
+            asteroids = new AsteroidBelt(iLevel, canvas);
+            explosions = new Explosions(canvas);
             paused = false;
             iPauseTimer = PAUSE_INTERVAL;
         }
 
         public bool Done()
         {
-            return (!inProcess);
+            return !inProcess;
         }
 
         public void Thrust(bool bThrustOn)
@@ -50,6 +52,7 @@ namespace Asteroids.Standard.Screen
             if (!paused && ship.IsAlive())
             {
                 ship.DecayThrust();
+
                 if (bThrustOn)
                     ship.Thrust();
             }
@@ -95,7 +98,7 @@ namespace Asteroids.Standard.Screen
             else if (explosions.Count() == 0 && _score.HasReserveShips())
             {
                 _score.GetNewShip();
-                ship = new Ship(true);
+                ship = new Ship(true, Canvas);
             }
         }
 
@@ -134,7 +137,7 @@ namespace Asteroids.Standard.Screen
             }
         }
 
-        public void DrawScreen(ScreenCanvas sc, int iPictX, int iPictY)
+        public void DrawScreen()
         {
             Point ptCheck = new Point(0);
             var bullets = shipBullets.ToList();
@@ -144,8 +147,8 @@ namespace Asteroids.Standard.Screen
                 // Pause flashes on and off
                 if (iPauseTimer > PAUSE_INTERVAL / 2)
                 {
-                    TextDraw.DrawText(sc, "PAUSE", TextDraw.Justify.CENTER,
-                       iMaxY / 3, 200, 400, iPictX, iPictY);
+                    _textDraw.DrawText("PAUSE", TextDraw.Justify.CENTER,
+                       iMaxY / 3, 200, 400);
                 }
                 if (--iPauseTimer < 0)
                     iPauseTimer = PAUSE_INTERVAL;
@@ -167,7 +170,7 @@ namespace Asteroids.Standard.Screen
                         if (asteroids.IsCenterSafe())
                         {
                             _score.GetNewShip();
-                            ship = new Ship(true);
+                            ship = new Ship(true, Canvas);
                         }
                     }
                 }
@@ -177,7 +180,7 @@ namespace Asteroids.Standard.Screen
                 if ((explosions.Count() == 0) &&
                    (asteroids.Count() == 0))
                 {
-                    asteroids = new AsteroidBelt(++iLevel);
+                    asteroids = new AsteroidBelt(++iLevel, Canvas);
                 }
 
                 // Move all objects
@@ -209,6 +212,7 @@ namespace Asteroids.Standard.Screen
                     {
                         ptCheck.X = ptInShip.X + ship.GetCurrLoc().X;
                         ptCheck.Y = ptInShip.Y + ship.GetCurrLoc().Y;
+
                         if (CheckPointInAsteroid(ptCheck))
                         {
                             ExplodeShip();
@@ -219,15 +223,15 @@ namespace Asteroids.Standard.Screen
             }
 
             // Draw all objects
-            ship.Draw(sc, iPictX, iPictY);
+            ship.Draw();
             foreach (Bullet bullet in bullets)
-                bullet.Draw(sc, iPictX, iPictY);
+                bullet.Draw();
 
-            asteroids.Draw(sc, iPictX, iPictY);
-            explosions.Draw(sc, iPictX, iPictY);
+            asteroids.Draw();
+            explosions.Draw();
 
             // Draw the score
-            _score.Draw(sc, iPictX, iPictY);
+            _score.Draw();
         }
     }
 }
