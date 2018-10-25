@@ -48,8 +48,6 @@ namespace Asteroids.Standard.Base
         }
 
         /// <summary>
-
-        /// <summary>
         /// Get the current absolute origin (top-left) of the object.
         /// </summary>
         public Point GetCurrLoc() => currLoc;
@@ -184,8 +182,8 @@ namespace Asteroids.Standard.Base
             var ptsPoly = new Point[alPoly.Count];
             for (int i = 0; i < alPoly.Count; i++)
             {
-                ptsPoly[i].X = (int)((currLoc.X + alPoly[i].X) / (double)iMaxX * Canvas.Size.Width);
-                ptsPoly[i].Y = (int)((currLoc.Y + alPoly[i].Y) / (double)iMaxY * Canvas.Size.Height);
+                ptsPoly[i].X = (int)((currLoc.X + alPoly[i].X) / (double)CanvasWidth * Canvas.Size.Width);
+                ptsPoly[i].Y = (int)((currLoc.Y + alPoly[i].Y) / (double)CanvasHeight * Canvas.Size.Height);
             }
 
             Canvas.AddPolygon(ptsPoly, penColor);
@@ -202,12 +200,13 @@ namespace Asteroids.Standard.Base
             currLoc.Y += (int)velocityY;
 
             if (currLoc.X < 0)
-                currLoc.X = iMaxX - 1;
-            if (currLoc.X >= iMaxX)
+                currLoc.X = CanvasWidth - 1;
+            if (currLoc.X >= CanvasWidth)
                 currLoc.X = 0;
+
             if (currLoc.Y < 0)
-                currLoc.Y = iMaxY - 1;
-            if (currLoc.Y >= iMaxY)
+                currLoc.Y = CanvasHeight - 1;
+            if (currLoc.Y >= CanvasHeight)
                 currLoc.Y = 0;
 
             return true;
@@ -221,7 +220,7 @@ namespace Asteroids.Standard.Base
         {
             string penDraw;
 
-            switch (rndGen.Next(3))
+            switch (Random.Next(3))
             {
                 case 0:
                     penDraw = ColorHexStrings.RedHex;

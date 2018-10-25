@@ -22,8 +22,8 @@ namespace Asteroids.Standard.Components
             aSize = size;
 
             // Can't place the object randomly in constructor - stinky
-            currLoc.X = rndGen.Next(2) * (iMaxX - 1);
-            currLoc.Y = rndGen.Next(iMaxY - 1);
+            currLoc.X = Random.Next(2) * (CanvasWidth - 1);
+            currLoc.Y = Random.Next(CanvasHeight - 1);
 
             RandomVelocity();
 
@@ -48,11 +48,11 @@ namespace Asteroids.Standard.Components
         protected void RandomVelocity()
         {
             // choose random rotate speed
-            rotateSpeed = (rndGen.Next(10000) - 5000) / FPS;
+            rotateSpeed = (Random.Next(10000) - 5000) / FPS;
 
             // choose a velocity for the asteroid (smaller asteroids can go faster)
-            velocityX = ((rndGen.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
-            velocityY = ((rndGen.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
+            velocityX = ((Random.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
+            velocityY = ((Random.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
         }
 
         public ASTEROID_SIZE ReduceSize()

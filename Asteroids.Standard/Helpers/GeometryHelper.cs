@@ -7,11 +7,19 @@ namespace Asteroids.Standard.Helpers
     public static class GeometryHelper
     {
         /// <summary>
-        /// Calculate the distance between two points
+        /// Calculate the distance between two points.
         /// </summary>
         public static double DistanceTo(this Point point1, Point point2)
         {
-            return Math.Sqrt(Math.Pow(point1.X - point2.X, 2) + Math.Pow(point1.Y - point2.Y, 2));
+            return point1.DistanceTo(point2.X, point2.Y);
+        }
+
+        /// <summary>
+        /// Calculate the distance between two points.
+        /// </summary>
+        public static double DistanceTo(this Point point1, int X2, int Y2)
+        {
+            return Math.Sqrt(Math.Pow(point1.X - X2, 2) + Math.Pow(point1.Y - Y2, 2));
         }
 
         /// <summary>

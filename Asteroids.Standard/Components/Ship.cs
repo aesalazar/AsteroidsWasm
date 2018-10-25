@@ -18,7 +18,7 @@ namespace Asteroids.Standard.Components
         const double ROTATE_SPEED = 12000 / FPS;
         bool bThrustOn;
 
-        public Ship(ScreenCanvas canvas) : base(new Point(iMaxX / 2, iMaxY / 2), canvas)
+        public Ship(ScreenCanvas canvas) : base(new Point(CanvasWidth / 2, CanvasHeight / 2), canvas)
         {
             bThrustOn = false;
             state = SHIP_STATE.WAITING;
@@ -37,16 +37,30 @@ namespace Asteroids.Standard.Components
 
         public bool Hyperspace()
         {
-            bool bSafeHyperspace = rndGen.Next(10) != 1;
-            currLoc.X = rndGen.Next((int)(iMaxX * .8)) + (int)(iMaxX * .1);
-            currLoc.Y = rndGen.Next((int)(iMaxY * .8)) + (int)(iMaxY * .1);
+            bool bSafeHyperspace = Random.Next(10) != 1;
+            currLoc.X = Random.Next((int)(CanvasWidth * .8)) + (int)(CanvasWidth * .1);
+            currLoc.Y = Random.Next((int)(CanvasHeight * .8)) + (int)(CanvasHeight * .1);
             return bSafeHyperspace;
         }
 
-        public void Explode()
+        public void Explode(Explosions explosions)
         {
+            var ptCheck = new Point(0);
+
+            var points = GetPoints();
+            foreach (var ptExp in points)
+            {
+                ptCheck.X = ptExp.X + currLoc.X;
+                ptCheck.Y = ptExp.Y + currLoc.Y;
+                explosions.AddExplosion(ptCheck, 2);
+            }
+
             state = SHIP_STATE.EXPLODING;
             velocityX = velocityY = 0;
+
+            PlaySound(this, ActionSound.Explode1);
+            PlaySound(this, ActionSound.Explode2);
+            PlaySound(this, ActionSound.Explode3);
         }
         public bool IsAlive()
         {
@@ -116,7 +130,7 @@ namespace Asteroids.Standard.Components
                         alPoly.Add(pts[PointThrust1]);
                         alPoly.Add(pts[PointThrust2]);
 
-                        int iThrustSize = rndGen.Next(200) + 100; // random thrust effect
+                        int iThrustSize = Random.Next(200) + 100; // random thrust effect
 
                         alPoly.Add(new Point(
                             (pts[PointThrust1].X + pts[PointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
@@ -148,7 +162,7 @@ namespace Asteroids.Standard.Components
         private static int PointThrust2;
 
         /// <summary>
-        /// Setup update the <see cref="PointsTemplate"/>.
+        /// Setup the <see cref="PointsTemplate"/>.
         /// </summary>
         static Ship()
         {

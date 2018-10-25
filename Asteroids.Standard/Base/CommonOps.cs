@@ -11,9 +11,9 @@ namespace Asteroids.Standard.Base
         }
 
         /// <summary>
-        /// Drawing canvas.
+        /// Drawing canvas to which all heights and widths will be scaled.
         /// </summary>
-        public ScreenCanvas Canvas { get; }
+        protected readonly ScreenCanvas Canvas;
 
         /// <summary>
         /// Refresh rate.
@@ -21,18 +21,18 @@ namespace Asteroids.Standard.Base
         public const double FPS = 60;
 
         /// <summary>
-        /// Horizontal scale factor to avoid decimal errors.
+        /// Horizontal width (effective) of the drawing plane.
         /// </summary>
-        protected const int iMaxX = 10000;
+        protected const int CanvasWidth = 10000;
 
         /// <summary>
-        /// Vertical scale factor to avoid decimal errors.
+        /// Vertical heigth (effective) of the drawing plane.
         /// </summary>
-        protected const int iMaxY = 7500;
+        protected const int CanvasHeight = 7500;
 
         /// <summary>
         /// Static random number generator.
         /// </summary>
-        protected static Random rndGen = new Random();
+        protected static Random Random = new Random();
     }
 }

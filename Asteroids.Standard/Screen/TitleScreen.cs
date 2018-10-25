@@ -14,8 +14,8 @@ namespace Asteroids.Standard.Screen
         private const int instructionOffset = instructionSize * 5;
 
         private const int titleSize = 200;
-        private const int titleOffset1 = iMaxY - titleSize * 4;
-        private const int titleOffset2 = iMaxY - titleSize * 2;
+        private const int titleOffset1 = CanvasHeight - titleSize * 4;
+        private const int titleOffset2 = CanvasHeight - titleSize * 2;
         private const string copyright1 = "CREATED BY HOWARD UMAN";
         private const string copyright2 = "PORTED BY ERNIE SALAZAR";
 
@@ -64,7 +64,7 @@ namespace Asteroids.Standard.Screen
             }
             iLetterSize += iIncrement;
             _textDraw.DrawText(strTitle, TextDraw.Justify.CENTER,
-                              iMaxY / 2 - iLetterSize, iLetterSize, iLetterSize * 2);
+                              CanvasHeight / 2 - iLetterSize, iLetterSize, iLetterSize * 2);
 
             // Draw copyright notice
             _textDraw.DrawText( copyright1, TextDraw.Justify.CENTER,

@@ -16,11 +16,16 @@ namespace Asteroids.Standard.Screen
         private Bullet[] shipBullets;
         private AsteroidBelt asteroids;
         private Explosions explosions;
+        private Saucer _saucer;
+
         private bool inProcess;
         private int iLevel;
         private bool paused;
-        const int PAUSE_INTERVAL = (int)FPS;
-        int iPauseTimer;
+        private const int PAUSE_INTERVAL = (int)FPS;
+        private int iPauseTimer;
+
+        private const int SAUCER_SCORE = 75;
+        private int _neededSaucerPoints = SAUCER_SCORE;
 
         private readonly Score _score;
         private readonly TextDraw _textDraw;
@@ -74,7 +79,7 @@ namespace Asteroids.Standard.Screen
         {
             if (!paused && ship.IsAlive())
                 if (!ship.Hyperspace())
-                    ExplodeShip();
+                    ship.Explode(explosions);
         }
 
         public void Shoot()
@@ -108,7 +113,7 @@ namespace Asteroids.Standard.Screen
             paused = !paused;
         }
 
-        private bool CheckPointInAsteroid(Point ptCheck)
+        private bool CheckAsteroidHit(Point ptCheck)
         {
             int pointValue = asteroids.CheckPointCollisions(ptCheck);
             if (pointValue > 0)
@@ -119,22 +124,20 @@ namespace Asteroids.Standard.Screen
             return false;
         }
 
-        private void ExplodeShip()
+        private bool CheckSaucerHit(Point point)
         {
-            Point ptCheck = new Point(0);
+            if (_saucer == null || !_saucer.IsAlive())
+                return false;
 
-            PlaySound(this, ActionSound.Explode1);
-            PlaySound(this, ActionSound.Explode2);
-            PlaySound(this, ActionSound.Explode3);
-
-            var points = ship.GetPoints();
-            foreach (var ptExp in points)
+            var pointValue = _saucer.CheckPointCollision(point);
+            if (pointValue > 0)
             {
-                ship.Explode();
-                ptCheck.X = ptExp.X + ship.GetCurrLoc().X;
-                ptCheck.Y = ptExp.Y + ship.GetCurrLoc().Y;
-                explosions.AddExplosion(ptCheck, 2);
+                _score.AddScore(pointValue);
+                _saucer.Explode(explosions);
+                return true;
             }
+
+            return false;
         }
 
         public void DrawScreen()
@@ -148,56 +151,59 @@ namespace Asteroids.Standard.Screen
                 if (iPauseTimer > PAUSE_INTERVAL / 2)
                 {
                     _textDraw.DrawText("PAUSE", TextDraw.Justify.CENTER,
-                       iMaxY / 3, 200, 400);
+                       CanvasHeight / 3, 200, 400);
                 }
                 if (--iPauseTimer < 0)
                     iPauseTimer = PAUSE_INTERVAL;
             }
             else // Do all game processing if game is not paused
             {
+                var origScore = _score.CurrentScore;
+
                 // If no ship displaying, after explosions are done
                 // get a new one - or end the game
-                if (!ship.IsAlive() &&
-                   (explosions.Count() == 0))
+                if (!ship.IsAlive() && explosions.Count() == 0)
                 {
                     if (!_score.HasReserveShips())
                     {
                         // Game over
                         inProcess = false;
                     }
-                    else
+                    else if (asteroids.IsCenterSafe())
                     {
-                        if (asteroids.IsCenterSafe())
-                        {
-                            _score.GetNewShip();
-                            ship = new Ship(true, Canvas);
-                        }
+                        _score.GetNewShip();
+                        ship = new Ship(true, Canvas);
                     }
                 }
 
                 // Create a new asteroid belt if 
                 // no explosions and no asteroids
-                if ((explosions.Count() == 0) &&
-                   (asteroids.Count() == 0))
-                {
+                if ((explosions.Count() == 0) && asteroids.Count() == 0)
                     asteroids = new AsteroidBelt(++iLevel, Canvas);
-                }
 
                 // Move all objects
                 ship.Move();
 
-                foreach (Bullet bullet in bullets)
+                if (_saucer != null && !_saucer.Move())
                 {
-                    bullet.Move();
+                    //Saucer has completed its passes
+                    _saucer = null;
+                    _neededSaucerPoints = SAUCER_SCORE;
                 }
+
+                foreach (Bullet bullet in bullets)
+                    bullet.Move();
+
                 asteroids.Move();
                 explosions.Move();
 
                 // Check bullets for collisions        
                 foreach (Bullet bullet in bullets)
                 {
-                    if (bullet.AcquireLoc(ref ptCheck) &&
-                       CheckPointInAsteroid(ptCheck))
+                    if (!bullet.AcquireLoc(ref ptCheck))
+                        continue;
+
+                    if (CheckAsteroidHit(ptCheck) || CheckSaucerHit(ptCheck))
                     {
                         explosions.AddExplosion(ptCheck);
                         bullet.Disable();
@@ -213,17 +219,41 @@ namespace Asteroids.Standard.Screen
                         ptCheck.X = ptInShip.X + ship.GetCurrLoc().X;
                         ptCheck.Y = ptInShip.Y + ship.GetCurrLoc().Y;
 
-                        if (CheckPointInAsteroid(ptCheck))
+                        if (CheckAsteroidHit(ptCheck) || CheckSaucerHit(ptCheck))
                         {
-                            ExplodeShip();
+                            ship.Explode(explosions);
                             break;
                         }
+                    }
+                }
+
+                //See if a bullet or the ship hit the saucer
+                if (_saucer != null && !_saucer.IsAlive())
+                {
+                    _saucer = null;
+                    _neededSaucerPoints = SAUCER_SCORE;
+                }
+
+                //See if the score is enough to show a suacer
+                else if (_saucer == null)
+                {
+                    _neededSaucerPoints -= _score.CurrentScore - origScore;
+
+                    if (_neededSaucerPoints <= 0)
+                    {
+                        var pt = new Point(
+                            Random.Next(2) == 0 ? 0 : CanvasWidth 
+                            , (Random.Next(10, 100) * CanvasHeight) / 100
+                        );
+
+                        _saucer = new Saucer(pt, Canvas);
                     }
                 }
             }
 
             // Draw all objects
             ship.Draw();
+            _saucer?.Draw();
             foreach (Bullet bullet in bullets)
                 bullet.Draw();
 

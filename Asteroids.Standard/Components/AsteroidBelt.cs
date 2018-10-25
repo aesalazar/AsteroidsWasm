@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
+using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
@@ -34,7 +34,7 @@ namespace Asteroids.Standard.Components
             Asteroid.ASTEROID_SIZE aAsteroidSize;
             for (int i = 0; i < iNumAsteroids; i++)
             {
-                aAsteroidSize = Asteroid.ASTEROID_SIZE.LARGE - rndGen.Next(Asteroid.ASTEROID_SIZE.LARGE - iMinSize + 1);
+                aAsteroidSize = Asteroid.ASTEROID_SIZE.LARGE - Random.Next(Asteroid.ASTEROID_SIZE.LARGE - iMinSize + 1);
                 asteroids.Add(new Asteroid(aAsteroidSize, Canvas));
             }
 
@@ -71,7 +71,7 @@ namespace Asteroids.Standard.Components
             foreach (var asteroid in asteroids)
             {
                 ptAsteroid = asteroid.GetCurrLoc();
-                if (Math.Sqrt(Math.Pow(ptAsteroid.X - Canvas.Size.Width / 2, 2) + Math.Pow(ptAsteroid.Y - Canvas.Size.Height / 2, 2)) <= SAFE_DISTANCE)
+                if (ptAsteroid.DistanceTo(CanvasWidth / 2, CanvasHeight / 2) <= SAFE_DISTANCE)
                 {
                     bCenterSafe = false;
                     break;

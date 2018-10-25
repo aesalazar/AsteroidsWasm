@@ -10,7 +10,7 @@
     <None Remove="Sounds\explode3.wav" />
     <None Remove="Sounds\fire.WAV" />
     <None Remove="Sounds\life.wav" />
-    <None Remove="Sounds\lsaucer.WAV" />
+    <None Remove="Sounds\lsaucer.wav" />
     <None Remove="Sounds\sfire.WAV" />
     <None Remove="Sounds\ssaucer.WAV" />
     <None Remove="Sounds\thrust.wav" />
@@ -34,22 +34,22 @@
     <EmbeddedResource Include="Sounds\life.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\lsaucer.WAV">
+    <EmbeddedResource Include="Sounds\lsaucer.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\sfire.WAV">
+    <EmbeddedResource Include="Sounds\sfire.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\ssaucer.WAV">
+    <EmbeddedResource Include="Sounds\ssaucer.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="Sounds\thrust.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\thumphi.WAV">
+    <EmbeddedResource Include="Sounds\thumphi.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\thumplo.WAV">
+    <EmbeddedResource Include="Sounds\thumplo.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>

@@ -24,10 +24,10 @@ namespace Asteroids.Standard.Screen
                     iPrintStart = 100;
                     break;
                 case Justify.CENTER:
-                    iPrintStart = (int)((iMaxX - strText.Length * iLetterWidth) / 2.0);
+                    iPrintStart = (int)((CanvasWidth - strText.Length * iLetterWidth) / 2.0);
                     break;
                 case Justify.RIGHT:
-                    iPrintStart = iMaxX - 100 - strText.Length * iLetterWidth;
+                    iPrintStart = CanvasWidth - 100 - strText.Length * iLetterWidth;
                     break;
                 default:
                     return;
@@ -38,10 +38,10 @@ namespace Asteroids.Standard.Screen
 
             for (int i = 0; i < strText.Length; i++)
                 DrawLetter(strText[i],
-                   (int)((iPrintStart + i * iLetterWidth) / (double)iMaxX * x),
-                   (int)(iTopLoc / (double)iMaxY * y),
-                   (int)(iLetterWidth / (double)iMaxX * x),
-                   (int)(iLetterHeight / (double)iMaxY * y));
+                   (int)((iPrintStart + i * iLetterWidth) / (double)CanvasWidth * x),
+                   (int)(iTopLoc / (double)CanvasHeight * y),
+                   (int)(iLetterWidth / (double)CanvasWidth * x),
+                   (int)(iLetterHeight / (double)CanvasHeight * y));
         }
 
         private void DrawLetter(char chDraw, int letterLeft, int letterTop, int letterWidth, int letterHeight)
