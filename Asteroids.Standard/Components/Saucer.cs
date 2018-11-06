@@ -9,21 +9,35 @@ using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Components
 {
+    /// <summary>
+    /// Flying saucer to attack primary ship with guided missiles.
+    /// </summary>
     class Saucer : ScreenObject
     {
         public const int MaximumPasses = 3;
         public const int KillScore = 1000;
+        private const double Velocity = 3000 / FPS;
 
         private enum STATE { ALIVE, EXPLODING, DONE };
         private STATE _state;
         private int _currentPass = 0;
 
+        private Missile _missile;
+
+        /// <summary>
+        /// Creates a new instance of <see cref="Saucer"/>.
+        /// </summary>
+        /// <param name="location">Absolute origin (bottom-left) of the object.</param>
+        /// <param name="canvas">Canvas to draw on.</param>
         public Saucer(Point location, ScreenCanvas canvas) : base(location, canvas)
         {
             _state = STATE.ALIVE;
             SetVelocity();
         }
 
+        /// <summary>
+        /// Populates the base template collection of points to draw.
+        /// </summary>
         protected override void InitPoints()
         {
             ClearPoints();
@@ -46,11 +60,30 @@ namespace Asteroids.Standard.Components
             return base.Move();
         }
 
+        /// <summary>
+        /// Adjusts velocity to match the targeted <see cref="Ship"/> if it is
+        /// <see cref="Ship.IsAlive()"/>, otherwise it continues straight.
+        /// </summary>
+        /// <param name="ship"><see cref="Ship"/> to target.</param>
+        public void Target(Ship ship)
+        {
+            if (_missile == null)
+                _missile = new Missile(this, Canvas);
+
+            if (ship?.IsAlive() == true)
+                _missile.Move(ship);
+            else
+                _missile.Move();
+        }
+
+        /// <summary>
+        /// Updates the X-axis velocity.
+        /// </summary>
         protected void SetVelocity()
         {
             var factor = currLoc.X < CanvasWidth / 2 ? 1 : -1;
 
-            velocityX = factor * 3000 / FPS;
+            velocityX = factor * Velocity;
             velocityY = 0;
             PlaySound(this, ActionSound.Saucer);
         }
@@ -73,6 +106,10 @@ namespace Asteroids.Standard.Components
                 : 0;
         }
 
+        /// <summary>
+        /// Blow up the saucer.
+        /// </summary>
+        /// <param name="explosions">Explosion collection to add to.</param>
         public void Explode(Explosions explosions)
         {
             _state = STATE.EXPLODING;
@@ -92,6 +129,9 @@ namespace Asteroids.Standard.Components
             PlaySound(this, ActionSound.Explode1);
         }
 
+        /// <summary>
+        /// Indicates if the Saucer is <see cref="STATE.ALIVE"/>
+        /// </summary>
         public bool IsAlive()
         {
             return _state == STATE.ALIVE;
@@ -106,6 +146,7 @@ namespace Asteroids.Standard.Components
             {
                 case STATE.ALIVE:
                     base.Draw();
+                    _missile?.Draw();
                     break;
             }
         }
@@ -126,8 +167,6 @@ namespace Asteroids.Standard.Components
         /// </summary>
         static Saucer()
         {
-            PointsTemplate.Clear();
-
             PointsTemplate.Add(new Point(-SizeLong, 0));
             PointsTemplate.Add(new Point(-SizeMedium, -SizeShort));
             PointsTemplate.Add(new Point(-SizeShort, -SizeShort));

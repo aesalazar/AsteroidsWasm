@@ -6,6 +6,8 @@ namespace Asteroids.Standard.Helpers
 {
     public static class GeometryHelper
     {
+        #region Distance Between Two Points
+
         /// <summary>
         /// Calculate the distance between two points.
         /// </summary>
@@ -21,6 +23,10 @@ namespace Asteroids.Standard.Helpers
         {
             return Math.Sqrt(Math.Pow(point1.X - X2, 2) + Math.Pow(point1.Y - Y2, 2));
         }
+
+        #endregion
+
+        #region IsInsidePolygon
 
         /// <summary>
         /// Determines is a <see cref="Point"/> is inside a polygon.
@@ -54,6 +60,68 @@ namespace Asteroids.Standard.Helpers
             // if the point is outside the polygon.
             return Math.Abs(total_angle) > 0.000001;
         }
+
+        #endregion
+
+        #region GetAngle
+
+        /// <summary>
+        /// Return the angle ABC.
+        /// </summary>
+        /// <returns>Angle in radians.</returns>
+        /// <remarks>
+        /// Return a value between PI and -PI. Note that the value is the opposite of what you 
+        /// might expect because Y coordinates increase downward.
+        /// </remarks>
+        public static double GetAngle(double Ax, double Ay, double Bx, double By, double Cx, double Cy)
+        {
+            // Get the dot product.
+            var dot_product = DotProduct(Ax, Ay, Bx, By, Cx, Cy);
+
+            // Get the cross product.
+            var cross_product = CrossProductLength(Ax, Ay, Bx, By, Cx, Cy);
+
+            // Calculate the angle.
+            return Math.Atan2(cross_product, dot_product);
+        }
+
+        /// <summary>
+        /// Get the angle of line AB from angle 0 assuming a right-angle triangle.
+        /// </summary>
+        /// <returns>Angle in radians.</returns>
+        /// <remarks>
+        /// Return a value between PI and -PI. Note that the value is the opposite of what you 
+        /// might expect because Y coordinates increase downward.
+        /// </remarks>
+        public static double GetAngle(double Ax, double Ay, double Bx, double By)
+        {
+            //dot product, cross product from the 0 angle
+            var cross_product = Ax - Bx;
+            var dot_product = By - Ay;
+
+            return Math.Atan2(cross_product, dot_product);
+        }
+
+        /// <summary>
+        /// Get the angle of line AB from angle 0 assuming a right-angle triangle.
+        /// </summary>
+        /// <returns>Angle in radians.</returns>
+        /// <remarks>
+        /// Return a value between PI and -PI. Note that the value is the opposite of what you 
+        /// might expect because Y coordinates increase downward.
+        /// </remarks>
+        public static double GetAngle(Point A, Point B)
+        {
+            //dot product, cross product from the 0 angle
+            var cross_product = A.X - B.X;
+            var dot_product = B.Y - A.Y;
+
+            return Math.Atan2(cross_product, dot_product);
+        }
+
+        #endregion
+
+        #region Cross and Dot products
 
         /// <summary>
         /// Return the cross product AB x BC.
@@ -93,24 +161,6 @@ namespace Asteroids.Standard.Helpers
             return BAx * BCx + BAy * BCy;
         }
 
-        /// <summary>
-        /// Return the angle ABC.
-        /// </summary>
-        /// <remarks>
-        /// Return a value between PI and -PI. Note that the value is the opposite of what you 
-        /// might expect because Y coordinates increase downward.
-        /// </remarks>
-        public static double GetAngle(double Ax, double Ay, double Bx, double By, double Cx, double Cy)
-        {
-            // Get the dot product.
-            var dot_product = DotProduct(Ax, Ay, Bx, By, Cx, Cy);
-
-            // Get the cross product.
-            var cross_product = CrossProductLength(Ax, Ay, Bx, By, Cx, Cy);
-
-            // Calculate the angle.
-            return Math.Atan2(cross_product, dot_product);
-        }
-
+        #endregion
     }
 }

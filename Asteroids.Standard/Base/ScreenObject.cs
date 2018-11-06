@@ -35,13 +35,12 @@ namespace Asteroids.Standard.Base
             updatePointsLock = new object();
             _updatePointsTransformedLock = new object();
 
-            radians = 180 * Math.PI / 180;
+            //templatrs are drawn nose "up"
+            radians = 180 * RADIANS_PER_DEGREE;
 
             _points = new List<Point>();
             _pointsTransformed = new List<Point>();
 
-            velocityX = 0;
-            velocityY = 0;
             currLoc = location;
 
             InitPoints();
@@ -97,11 +96,11 @@ namespace Asteroids.Standard.Base
         public int AddPoints(IList<Point> points)
         {
             lock (updatePointsLock)
-                foreach(var point in points)
+                foreach (var point in points)
                     _points.Add(point);
 
             lock (_updatePointsTransformedLock)
-                foreach(var point in points)
+                foreach (var point in points)
                     _pointsTransformed.Add(point);
 
             return _pointsTransformed.Count - 1;
@@ -135,14 +134,37 @@ namespace Asteroids.Standard.Base
         }
 
         /// <summary>
-        /// Rotates all internal <see cref="Point"/>s used to generate polygons on draw.
+        /// Rotates all internal <see cref="Point"/>s used to generate polygons on draw
+        /// based on the alignment with the target point.
+        /// </summary>
+        /// <param name="alignPoint"><see cref="Point"/> to target.</param>
+        protected void Align(Point alignPoint)
+        {
+            radians = GeometryHelper.GetAngle(currLoc, alignPoint);
+            RotateInternal();
+        }
+
+        /// <summary>
+        /// Rotates all internal <see cref="Point"/>s used to generate polygons on draw
+        /// by a number of decimal degrees.
         /// </summary>
         /// <param name="degrees">Rotation amount in degrees.</param>
         protected void Rotate(double degrees)
         {
-            double radiansAdjust = degrees * 0.0174532925;
+            //Get radians in 1/FPS'th increment
+            var radiansAdjust = degrees * RADIANS_PER_DEGREE;
             radians += radiansAdjust / FPS;
+            radians = radians % RADIANS_PER_CIRCLE;
 
+            RotateInternal();
+        }
+
+        /// <summary>
+        /// Rotates all internal <see cref="Point"/>s used to generate polygons on draw
+        /// based on decimal degrees.
+        /// </summary>
+        private void RotateInternal()
+        {
             double SinVal = Math.Sin(radians);
             double CosVal = Math.Cos(radians);
 

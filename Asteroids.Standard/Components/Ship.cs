@@ -9,23 +9,23 @@ using static Asteroids.Standard.Sounds.ActionSounds;
 namespace Asteroids.Standard.Components
 {
     /// <summary>
-    /// Summary description for CShip.
+    /// Primary craft for the user to control.
     /// </summary>
     class Ship : ScreenObject
     {
+        const double ROTATE_SPEED = 12000 / FPS;
+
         enum SHIP_STATE { WAITING, ALIVE, EXPLODING, DONE };
         SHIP_STATE state;
-        const double ROTATE_SPEED = 12000 / FPS;
         bool bThrustOn;
 
+        /// <summary>
+        /// Creates and immediately draws an instance of <see cref="Ship"/>.
+        /// </summary>
+        /// <param name="canvas">Canvas to draw on.</param>
         public Ship(ScreenCanvas canvas) : base(new Point(CanvasWidth / 2, CanvasHeight / 2), canvas)
         {
             bThrustOn = false;
-            state = SHIP_STATE.WAITING;
-        }
-
-        public Ship(bool bAlive, ScreenCanvas canvas) : this(canvas)
-        {
             state = SHIP_STATE.ALIVE;
         }
 
@@ -117,6 +117,7 @@ namespace Asteroids.Standard.Components
             {
                 case SHIP_STATE.ALIVE:
                     base.Draw();
+
                     if (bThrustOn)
                     {
                         // We have points transformed so we know where the bottom of the ship is
@@ -166,8 +167,6 @@ namespace Asteroids.Standard.Components
         /// </summary>
         static Ship()
         {
-            PointsTemplate.Clear();
-
             const int shipWidthHalf = 100;
             const int shipHeightHalf = shipWidthHalf * 2;
             const int shipHeightInUp = (int)(shipHeightHalf * .6);
