@@ -25,6 +25,7 @@ namespace Asteroids.Standard.Sounds
                 { ActionSound.Explode1, assembly.GetManifestResourceStream($"{assemName}.{SOUND_DIR}.explode1.wav") },
                 { ActionSound.Explode2, assembly.GetManifestResourceStream($"{assemName}.{SOUND_DIR}.explode2.wav") },
                 { ActionSound.Explode3, assembly.GetManifestResourceStream($"{assemName}.{SOUND_DIR}.explode3.wav") },
+                { ActionSound.Saucer, assembly.GetManifestResourceStream($"{assemName}.{SOUND_DIR}.lsaucer.wav") },
             };
         }
 

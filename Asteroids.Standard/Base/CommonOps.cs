@@ -3,17 +3,29 @@ using Asteroids.Standard.Screen;
 
 namespace Asteroids.Standard.Base
 {
+    /// <summary>
+    /// Base class for a <see cref="ScreenCanvas"/>-based concept.  Meaning that the concept
+    /// can have a phsical manifestation on the canvas or interact with the canvas to
+    /// draw objects.
+    /// </summary>
     public abstract class CommonOps
     {
+        /// <summary>
+        /// Creates instance of <see cref="CommonOps"/>.
+        /// </summary>
+        /// <param name="canvas">Drawing canvas to which all heights and widths will be scaled.</param>
         public CommonOps(ScreenCanvas canvas)
         {
             Canvas = canvas;
         }
 
         /// <summary>
-        /// Drawing canvas.
+        /// Drawing canvas to which all heights and widths will be scaled.
         /// </summary>
-        public ScreenCanvas Canvas { get; }
+        /// <remarks>
+        /// Angle 0 is pointing "down", 90 is "left" on the canvas
+        /// </remarks>
+        protected readonly ScreenCanvas Canvas;
 
         /// <summary>
         /// Refresh rate.
@@ -21,18 +33,28 @@ namespace Asteroids.Standard.Base
         public const double FPS = 60;
 
         /// <summary>
-        /// Horizontal scale factor to avoid decimal errors.
+        /// Conversion from degrees to radians.
         /// </summary>
-        protected const int iMaxX = 10000;
+        protected const double RADIANS_PER_DEGREE = Math.PI / 180;
 
         /// <summary>
-        /// Vertical scale factor to avoid decimal errors.
+        /// Amount of radians in a full circle (i.e. 360 degrees)
         /// </summary>
-        protected const int iMaxY = 7500;
+        protected const double RADIANS_PER_CIRCLE = Math.PI * 2;
+
+        /// <summary>
+        /// Horizontal width (effective) of the drawing plane.
+        /// </summary>
+        protected const int CanvasWidth = 10000;
+
+        /// <summary>
+        /// Vertical heigth (effective) of the drawing plane.
+        /// </summary>
+        protected const int CanvasHeight = 7500;
 
         /// <summary>
         /// Static random number generator.
         /// </summary>
-        protected static Random rndGen = new Random();
+        protected static Random Random = new Random();
     }
 }

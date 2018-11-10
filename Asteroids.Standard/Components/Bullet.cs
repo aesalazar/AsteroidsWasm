@@ -40,18 +40,21 @@ namespace Asteroids.Standard.Components
             ptLoc = currLoc;
             return (!Available());
         }
-
-        public void Shoot(Point locParent, double radParent,
-           double velXParent, double velYParent)
+        /// <summary>
+        /// Fire the bullet from a parent ship.
+        /// </summary>
+        /// <param name="parentShip">Parent <see cref="Ship"/> the bullet was fired from.</param>
+        public void Shoot(Ship parentShip)
         {
             iLife = (int)(FPS * 1); // bullets live 1 sec
-            currLoc = locParent;
-            radians = radParent;
+            currLoc = parentShip.GetCurrLoc();
+            radians = parentShip.GetRadians();
+
             double SinVal = Math.Sin(radians);
             double CosVal = Math.Cos(radians);
 
-            velocityX = (int)(-100 * SinVal) + velXParent;
-            velocityY = (int)(100 * CosVal) + velYParent;
+            velocityX = (int)(-100 * SinVal) + parentShip.GetVelocityX();
+            velocityY = (int)(100 * CosVal) + parentShip.GetVelocityY();
         }
 
         public new void Move()
@@ -67,7 +70,7 @@ namespace Asteroids.Standard.Components
         {
             // only draw things that are not available
             if (!Available())
-                base.Draw(GetRandomFireColor());
+                DrawPolygons(GetPoints(), GetRandomFireColor());
         }
 
         #region Statics

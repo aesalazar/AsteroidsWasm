@@ -22,8 +22,8 @@ namespace Asteroids.Standard.Components
             aSize = size;
 
             // Can't place the object randomly in constructor - stinky
-            currLoc.X = rndGen.Next(2) * (iMaxX - 1);
-            currLoc.Y = rndGen.Next(iMaxY - 1);
+            currLoc.X = Random.Next(2) * (CanvasWidth - 1);
+            currLoc.Y = Random.Next(CanvasHeight - 1);
 
             RandomVelocity();
 
@@ -48,11 +48,11 @@ namespace Asteroids.Standard.Components
         protected void RandomVelocity()
         {
             // choose random rotate speed
-            rotateSpeed = (rndGen.Next(10000) - 5000) / FPS;
+            rotateSpeed = (Random.Next(10000) - 5000) / FPS;
 
             // choose a velocity for the asteroid (smaller asteroids can go faster)
-            velocityX = ((rndGen.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
-            velocityY = ((rndGen.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
+            velocityX = ((Random.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
+            velocityY = ((Random.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
         }
 
         public ASTEROID_SIZE ReduceSize()
@@ -105,11 +105,28 @@ namespace Asteroids.Standard.Components
                 base.Draw();
         }
 
-        public bool CheckPointInside(Point ptCheck)
+        /// <summary>
+        /// Determine if a point is in contact with the asteroid.
+        /// </summary>
+        /// <param name="ptsCheck">Point collection to check.</param>
+        /// <returns>Indication if the point is inside the polygon.</returns>
+        public bool ContainsAnyPoint(IList<Point> ptsCheck)
         {
-            var dist = ptCheck.DistanceTo(currLoc);
-            var size = (int)aSize * SIZE_INCR;
-            return dist <= size;
+            var inside = false;
+
+            foreach (var ptCheck in ptsCheck)
+            {
+                var dist = ptCheck.DistanceTo(currLoc);
+                var size = (int)aSize * SIZE_INCR;
+
+                if (dist > size)
+                    continue;
+
+                inside = true;
+                break;
+            }
+
+            return inside;
         }
 
         #region Statics

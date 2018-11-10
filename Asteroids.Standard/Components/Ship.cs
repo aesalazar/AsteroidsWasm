@@ -9,24 +9,20 @@ using static Asteroids.Standard.Sounds.ActionSounds;
 namespace Asteroids.Standard.Components
 {
     /// <summary>
-    /// Summary description for CShip.
+    /// Primary craft for the user to control.
     /// </summary>
     class Ship : ScreenObject
     {
-        enum SHIP_STATE { WAITING, ALIVE, EXPLODING, DONE };
-        SHIP_STATE state;
         const double ROTATE_SPEED = 12000 / FPS;
         bool bThrustOn;
 
-        public Ship(ScreenCanvas canvas) : base(new Point(iMaxX / 2, iMaxY / 2), canvas)
+        /// <summary>
+        /// Creates and immediately draws an instance of <see cref="Ship"/>.
+        /// </summary>
+        /// <param name="canvas">Canvas to draw on.</param>
+        public Ship(ScreenCanvas canvas) : base(new Point(CanvasWidth / 2, CanvasHeight / 2), canvas)
         {
             bThrustOn = false;
-            state = SHIP_STATE.WAITING;
-        }
-
-        public Ship(bool bAlive, ScreenCanvas canvas) : this(canvas)
-        {
-            state = SHIP_STATE.ALIVE;
         }
 
         protected override void InitPoints()
@@ -37,20 +33,19 @@ namespace Asteroids.Standard.Components
 
         public bool Hyperspace()
         {
-            bool bSafeHyperspace = rndGen.Next(10) != 1;
-            currLoc.X = rndGen.Next((int)(iMaxX * .8)) + (int)(iMaxX * .1);
-            currLoc.Y = rndGen.Next((int)(iMaxY * .8)) + (int)(iMaxY * .1);
+            bool bSafeHyperspace = Random.Next(10) != 1;
+            currLoc.X = Random.Next((int)(CanvasWidth * .8)) + (int)(CanvasWidth * .1);
+            currLoc.Y = Random.Next((int)(CanvasHeight * .8)) + (int)(CanvasHeight * .1);
             return bSafeHyperspace;
         }
 
-        public void Explode()
+        public override void Explode(Explosions explosions)
         {
-            state = SHIP_STATE.EXPLODING;
-            velocityX = velocityY = 0;
-        }
-        public bool IsAlive()
-        {
-            return state == SHIP_STATE.ALIVE;
+            base.Explode(explosions);
+
+            PlaySound(this, ActionSound.Explode1);
+            PlaySound(this, ActionSound.Explode2);
+            PlaySound(this, ActionSound.Explode3);
         }
 
         public void DecayThrust()
@@ -92,6 +87,7 @@ namespace Asteroids.Standard.Components
         {
             Rotate(-ROTATE_SPEED);
         }
+
         public void RotateRight()
         {
             Rotate(ROTATE_SPEED);
@@ -99,34 +95,34 @@ namespace Asteroids.Standard.Components
 
         public override void Draw()
         {
-            switch (state)
+            if (!IsAlive)
+                return;
+
+            base.Draw();
+
+            //Draw flame if thrust is on
+            if (bThrustOn)
             {
-                case SHIP_STATE.ALIVE:
-                    base.Draw();
-                    if (bThrustOn)
-                    {
-                        // We have points transformed so we know where the bottom of the ship is
-                        var alPoly = new List<Point>
-                        {
-                            Capacity = 3
-                        };
+                // We have points transformed so we know where the bottom of the ship is
+                var alPoly = new List<Point>
+                {
+                    Capacity = 3
+                };
 
-                        var pts = GetPoints();
+                var pts = GetPoints();
 
-                        alPoly.Add(pts[PointThrust1]);
-                        alPoly.Add(pts[PointThrust2]);
+                alPoly.Add(pts[PointThrust1]);
+                alPoly.Add(pts[PointThrust2]);
 
-                        int iThrustSize = rndGen.Next(200) + 100; // random thrust effect
+                int iThrustSize = Random.Next(200) + 100; // random thrust effect
 
-                        alPoly.Add(new Point(
-                            (pts[PointThrust1].X + pts[PointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
-                            (pts[PointThrust1].Y + pts[PointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))
-                        ));
-                        
-                        // Draw thrust directly to ScreenCanvas; it's not really part of the ship object
-                        DrawPolygons(alPoly, GetRandomFireColor());
-                    }
-                    break;
+                alPoly.Add(new Point(
+                    (pts[PointThrust1].X + pts[PointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
+                    (pts[PointThrust1].Y + pts[PointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))
+                ));
+
+                // Draw thrust directly to ScreenCanvas; it's not really part of the ship object
+                DrawPolygons(alPoly, GetRandomFireColor());
             }
         }
 
@@ -148,12 +144,10 @@ namespace Asteroids.Standard.Components
         private static int PointThrust2;
 
         /// <summary>
-        /// Setup update the <see cref="PointsTemplate"/>.
+        /// Setup the <see cref="PointsTemplate"/>.
         /// </summary>
         static Ship()
         {
-            PointsTemplate.Clear();
-
             const int shipWidthHalf = 100;
             const int shipHeightHalf = shipWidthHalf * 2;
             const int shipHeightInUp = (int)(shipHeightHalf * .6);

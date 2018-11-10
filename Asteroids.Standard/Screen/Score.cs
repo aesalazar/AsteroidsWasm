@@ -10,7 +10,8 @@ namespace Asteroids.Standard.Screen
     /// </summary>
     public class Score : CommonOps
     {
-        protected int iScore;
+        public int CurrentScore { get; private set; }
+
         protected int iShips;
         protected int iHiScore;
         protected int iFreeShip;
@@ -22,7 +23,7 @@ namespace Asteroids.Standard.Screen
         {
             _textDraw = textDraw;
             iShips = 0;
-            iScore = 0;
+            CurrentScore = 0;
             iHiScore = 0;
             iFreeShip = iFreeShipIncrement;
         }
@@ -41,7 +42,7 @@ namespace Asteroids.Standard.Screen
         public void ResetGame()
         {
             iShips = 3;
-            iScore = 0;
+            CurrentScore = 0;
             iFreeShip = iFreeShipIncrement;
         }
 
@@ -52,18 +53,18 @@ namespace Asteroids.Standard.Screen
 
         public void AddScore(int iAddScore)
         {
-            iScore += iAddScore;
-            if (iScore >= iFreeShip)
+            CurrentScore += iAddScore;
+            if (CurrentScore >= iFreeShip)
             {
                 iShips += 1;
                 iFreeShip += iFreeShipIncrement;
                 PlaySound(this, ActionSound.Life);
 
             }
-            if (iScore >= 1000000)
-                iScore = iScore % 1000000;
-            if (iScore > iHiScore)
-                iHiScore = iScore;
+            if (CurrentScore >= 1000000)
+                CurrentScore = CurrentScore % 1000000;
+            if (CurrentScore > iHiScore)
+                iHiScore = CurrentScore;
         }
 
         public void Draw()
@@ -74,7 +75,7 @@ namespace Asteroids.Standard.Screen
             String strScore;
 
             // Draw Score + Ships left justified
-            strScore = iScore.ToString("000000") + " ";
+            strScore = CurrentScore.ToString("000000") + " ";
             if (iShips > 10)
             {
                 strScore += "^x" + (iShips - 1);
