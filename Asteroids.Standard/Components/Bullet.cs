@@ -70,7 +70,7 @@ namespace Asteroids.Standard.Components
         {
             // only draw things that are not available
             if (!Available())
-                base.Draw(GetRandomFireColor());
+                DrawPolygons(GetPoints(), GetRandomFireColor());
         }
 
         #region Statics

@@ -105,11 +105,28 @@ namespace Asteroids.Standard.Components
                 base.Draw();
         }
 
-        public bool CheckPointInside(Point ptCheck)
+        /// <summary>
+        /// Determine if a point is in contact with the asteroid.
+        /// </summary>
+        /// <param name="ptsCheck">Point collection to check.</param>
+        /// <returns>Indication if the point is inside the polygon.</returns>
+        public bool ContainsAnyPoint(IList<Point> ptsCheck)
         {
-            var dist = ptCheck.DistanceTo(currLoc);
-            var size = (int)aSize * SIZE_INCR;
-            return dist <= size;
+            var inside = false;
+
+            foreach (var ptCheck in ptsCheck)
+            {
+                var dist = ptCheck.DistanceTo(currLoc);
+                var size = (int)aSize * SIZE_INCR;
+
+                if (dist > size)
+                    continue;
+
+                inside = true;
+                break;
+            }
+
+            return inside;
         }
 
         #region Statics

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Helpers;
@@ -18,11 +17,12 @@ namespace Asteroids.Standard.Components
         public const int KillScore = 1000;
         private const double Velocity = 3000 / FPS;
 
-        private enum STATE { ALIVE, EXPLODING, DONE };
-        private STATE _state;
         private int _currentPass = 0;
 
-        private Missile _missile;
+        /// <summary>
+        /// Guided <see cref="Missile"/> for targeting a <see cref="Ship"/>.
+        /// </summary>
+        public Missile Missile { get; private set; }
 
         /// <summary>
         /// Creates a new instance of <see cref="Saucer"/>.
@@ -31,7 +31,6 @@ namespace Asteroids.Standard.Components
         /// <param name="canvas">Canvas to draw on.</param>
         public Saucer(Point location, ScreenCanvas canvas) : base(location, canvas)
         {
-            _state = STATE.ALIVE;
             SetVelocity();
         }
 
@@ -51,11 +50,8 @@ namespace Asteroids.Standard.Components
         public override bool Move()
         {
             //Stop if the next move will put it over the allow number of passes
-            if (!IsAlive() || currLoc.X + velocityX >= CanvasWidth && ++_currentPass >= MaximumPasses)
-            {
-                _state = STATE.DONE;
+            if (!IsAlive || currLoc.X + velocityX >= CanvasWidth && ++_currentPass >= MaximumPasses)
                 return false;
-            }
 
             return base.Move();
         }
@@ -67,13 +63,23 @@ namespace Asteroids.Standard.Components
         /// <param name="ship"><see cref="Ship"/> to target.</param>
         public void Target(Ship ship)
         {
-            if (_missile == null)
-                _missile = new Missile(this, Canvas);
+            var isShip = ship?.IsAlive == true;
+            var isMissile = Missile?.IsAlive == true;
 
-            if (ship?.IsAlive() == true)
-                _missile.Move(ship);
+            if (!isShip)
+            {
+                //No ship so simply move the missile if it exists
+                if (isMissile)
+                    Missile.Move();
+            }
             else
-                _missile.Move();
+            {
+                //Make sure there is a missile and then target the ship
+                if (!isMissile)
+                    Missile = new Missile(this, Canvas);
+
+                Missile.Move(ship);
+            }
         }
 
         /// <summary>
@@ -89,52 +95,24 @@ namespace Asteroids.Standard.Components
         }
 
         /// <summary>
-        /// Determine if a point is in contact with the saucer.
+        /// Determine score if a point is in contact with the saucer.
         /// </summary>
-        /// <param name="ptCheck">Point to check.</param>
+        /// <param name="ptsCheck">Point collection to check.</param>
         /// <returns>Score of <see cref="KillScore"/> if inside; otherwise 0.</returns>
-        public int CheckPointCollision(Point ptCheck)
+        public int CheckPointScore(IList<Point> ptsCheck)
         {
-            var points = GetPoints()
-                .Select(pt => new Point(
-                    pt.X + currLoc.X
-                    , pt.Y + currLoc.Y
-                )).ToList();
-                
-            return ptCheck.IsInsidePolygon(points)
-                ? KillScore
-                : 0;
+            return GetPoints().ContainsAnyPoint(ptsCheck) ? KillScore : 0;
         }
 
         /// <summary>
         /// Blow up the saucer.
         /// </summary>
         /// <param name="explosions">Explosion collection to add to.</param>
-        public void Explode(Explosions explosions)
+        public override void Explode(Explosions explosions)
         {
-            _state = STATE.EXPLODING;
-            velocityX = 0;
-            velocityY = 0;
-
-            var ptCheck = new Point(0);
-
-            var points = GetPoints();
-            foreach (var ptExp in points)
-            {
-                ptCheck.X = ptExp.X + currLoc.X;
-                ptCheck.Y = ptExp.Y + currLoc.Y;
-                explosions.AddExplosion(ptCheck);
-            }
-
+            base.Explode(explosions);
+            Missile.Explode(explosions);
             PlaySound(this, ActionSound.Explode1);
-        }
-
-        /// <summary>
-        /// Indicates if the Saucer is <see cref="STATE.ALIVE"/>
-        /// </summary>
-        public bool IsAlive()
-        {
-            return _state == STATE.ALIVE;
         }
 
         /// <summary>
@@ -142,13 +120,11 @@ namespace Asteroids.Standard.Components
         /// </summary>
         public override void Draw()
         {
-            switch (_state)
-            {
-                case STATE.ALIVE:
-                    base.Draw();
-                    _missile?.Draw();
-                    break;
-            }
+            if (!IsAlive)
+                return;
+
+            base.Draw();
+            Missile?.Draw();
         }
 
         #region Statics

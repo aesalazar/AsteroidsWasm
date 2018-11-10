@@ -14,9 +14,6 @@ namespace Asteroids.Standard.Components
     class Ship : ScreenObject
     {
         const double ROTATE_SPEED = 12000 / FPS;
-
-        enum SHIP_STATE { WAITING, ALIVE, EXPLODING, DONE };
-        SHIP_STATE state;
         bool bThrustOn;
 
         /// <summary>
@@ -26,7 +23,6 @@ namespace Asteroids.Standard.Components
         public Ship(ScreenCanvas canvas) : base(new Point(CanvasWidth / 2, CanvasHeight / 2), canvas)
         {
             bThrustOn = false;
-            state = SHIP_STATE.ALIVE;
         }
 
         protected override void InitPoints()
@@ -43,28 +39,13 @@ namespace Asteroids.Standard.Components
             return bSafeHyperspace;
         }
 
-        public void Explode(Explosions explosions)
+        public override void Explode(Explosions explosions)
         {
-            var ptCheck = new Point(0);
-
-            var points = GetPoints();
-            foreach (var ptExp in points)
-            {
-                ptCheck.X = ptExp.X + currLoc.X;
-                ptCheck.Y = ptExp.Y + currLoc.Y;
-                explosions.AddExplosion(ptCheck, 2);
-            }
-
-            state = SHIP_STATE.EXPLODING;
-            velocityX = velocityY = 0;
+            base.Explode(explosions);
 
             PlaySound(this, ActionSound.Explode1);
             PlaySound(this, ActionSound.Explode2);
             PlaySound(this, ActionSound.Explode3);
-        }
-        public bool IsAlive()
-        {
-            return state == SHIP_STATE.ALIVE;
         }
 
         public void DecayThrust()
@@ -106,6 +87,7 @@ namespace Asteroids.Standard.Components
         {
             Rotate(-ROTATE_SPEED);
         }
+
         public void RotateRight()
         {
             Rotate(ROTATE_SPEED);
@@ -113,35 +95,34 @@ namespace Asteroids.Standard.Components
 
         public override void Draw()
         {
-            switch (state)
+            if (!IsAlive)
+                return;
+
+            base.Draw();
+
+            //Draw flame if thrust is on
+            if (bThrustOn)
             {
-                case SHIP_STATE.ALIVE:
-                    base.Draw();
+                // We have points transformed so we know where the bottom of the ship is
+                var alPoly = new List<Point>
+                {
+                    Capacity = 3
+                };
 
-                    if (bThrustOn)
-                    {
-                        // We have points transformed so we know where the bottom of the ship is
-                        var alPoly = new List<Point>
-                        {
-                            Capacity = 3
-                        };
+                var pts = GetPoints();
 
-                        var pts = GetPoints();
+                alPoly.Add(pts[PointThrust1]);
+                alPoly.Add(pts[PointThrust2]);
 
-                        alPoly.Add(pts[PointThrust1]);
-                        alPoly.Add(pts[PointThrust2]);
+                int iThrustSize = Random.Next(200) + 100; // random thrust effect
 
-                        int iThrustSize = Random.Next(200) + 100; // random thrust effect
+                alPoly.Add(new Point(
+                    (pts[PointThrust1].X + pts[PointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
+                    (pts[PointThrust1].Y + pts[PointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))
+                ));
 
-                        alPoly.Add(new Point(
-                            (pts[PointThrust1].X + pts[PointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
-                            (pts[PointThrust1].Y + pts[PointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))
-                        ));
-                        
-                        // Draw thrust directly to ScreenCanvas; it's not really part of the ship object
-                        DrawPolygons(alPoly, GetRandomFireColor());
-                    }
-                    break;
+                // Draw thrust directly to ScreenCanvas; it's not really part of the ship object
+                DrawPolygons(alPoly, GetRandomFireColor());
             }
         }
 

@@ -91,7 +91,7 @@ namespace Asteroids.Standard.Components
                 asteroid.Draw();
         }
 
-        public int CheckPointCollisions(Point ptCheck)
+        public int CheckPointCollisions(IList<Point> ptsCheck)
         {
             //get the asteroids
             var asteroids = new List<Asteroid>();
@@ -106,7 +106,7 @@ namespace Asteroids.Standard.Components
 
             for (int i = iCount - 1; i >= 0; i--)
             {
-                if (asteroids[i].CheckPointInside(ptCheck))
+                if (asteroids[i].ContainsAnyPoint(ptsCheck))
                 {
                     Asteroid.ASTEROID_SIZE sizeReduced = asteroids[i].ReduceSize();
                     switch (sizeReduced)

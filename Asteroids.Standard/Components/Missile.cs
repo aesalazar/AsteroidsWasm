@@ -20,16 +20,7 @@ namespace Asteroids.Standard.Components
         /// <param name="canvas"><see cref="ScreenCanvas"/> to draw on.</param>
         public Missile(Saucer saucer, ScreenCanvas canvas) : base(saucer.GetCurrLoc(), canvas)
         {
-        }
-
-        private void TakeAim(Ship ship)
-        {
-            //point at the ship
-            Align(ship.GetCurrLoc());
-
-            //adjust velocity
-            velocityX = -Math.Sin(radians) * Velocity;
-            velocityY = Math.Cos(radians) * Velocity;
+            ExplosionLength = 1;
         }
 
         protected override void InitPoints()
@@ -38,16 +29,32 @@ namespace Asteroids.Standard.Components
             AddPoints(PointsTemplate);
         }
 
+        /// <summary>
+        /// Moves in the direction of the target <see cref="Ship"/>.
+        /// </summary>
+        /// <param name="ship">Ship to target.</param>
+        /// <returns>Indication if the move was successful.</returns>
         public bool Move(Ship ship)
         {
-            TakeAim(ship);
+            //point at the ship
+            Align(ship.GetCurrLoc());
+
+            //adjust velocity
+            velocityX = -Math.Sin(radians) * Velocity;
+            velocityY = Math.Cos(radians) * Velocity;
+
             return Move();
         }
 
         public override void Draw()
         {
+            if (!IsAlive)
+                return;
+
+            //Draw the ship
             base.Draw();
 
+            //Add the thrust
             var alPoly = new List<Point>
             {
                 Capacity = 3

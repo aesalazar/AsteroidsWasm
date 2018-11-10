@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace Asteroids.Standard.Helpers
 {
@@ -37,16 +38,17 @@ namespace Asteroids.Standard.Helpers
         public static bool IsInsidePolygon(this Point point, IList<Point> polygonPoints)
         {
             // Get the angle between the point and the first and last vertices.
-            var max_point = polygonPoints.Count - 1;
+            var firstPoint = polygonPoints.First();
+            var lastPoint = polygonPoints.Last();
 
             var total_angle = GetAngle(
-                polygonPoints[max_point].X, polygonPoints[max_point].Y,
+                lastPoint.X, lastPoint.Y,
                 point.X, point.Y,
-                polygonPoints[0].X, polygonPoints[0].Y
+                firstPoint.X, firstPoint.Y
             );
 
             // Add the angles from the point  to each other pair of vertices.
-            for (var i = 0; i < max_point; i++)
+            for (var i = 0; i < polygonPoints.Count - 1; i++)
             {
                 total_angle += GetAngle(
                     polygonPoints[i].X, polygonPoints[i].Y,
@@ -59,6 +61,27 @@ namespace Asteroids.Standard.Helpers
             // the point is in the polygon and close to zero
             // if the point is outside the polygon.
             return Math.Abs(total_angle) > 0.000001;
+        }
+
+        /// <summary>
+        /// Determines if any point in a collection is contained in a polygon.
+        /// </summary>
+        /// <param name="ptsPolygon">Collection of points that make up the polygon.</param>
+        /// <param name="ptsCheck">Collection of points to check if any are contained.</param>
+        /// <returns>Indication if ANY point is contained in the polygon.</returns>
+        public static bool ContainsAnyPoint(this IList<Point> ptsPolygon, IList<Point> ptsCheck)
+        {
+            var inside = false;
+            foreach (var pt in ptsCheck)
+            {
+                if (!pt.IsInsidePolygon(ptsPolygon))
+                    continue;
+
+                inside = true;
+                break;
+            }
+
+            return inside;
         }
 
         #endregion
@@ -84,24 +107,7 @@ namespace Asteroids.Standard.Helpers
             // Calculate the angle.
             return Math.Atan2(cross_product, dot_product);
         }
-
-        /// <summary>
-        /// Get the angle of line AB from angle 0 assuming a right-angle triangle.
-        /// </summary>
-        /// <returns>Angle in radians.</returns>
-        /// <remarks>
-        /// Return a value between PI and -PI. Note that the value is the opposite of what you 
-        /// might expect because Y coordinates increase downward.
-        /// </remarks>
-        public static double GetAngle(double Ax, double Ay, double Bx, double By)
-        {
-            //dot product, cross product from the 0 angle
-            var cross_product = Ax - Bx;
-            var dot_product = By - Ay;
-
-            return Math.Atan2(cross_product, dot_product);
-        }
-
+        
         /// <summary>
         /// Get the angle of line AB from angle 0 assuming a right-angle triangle.
         /// </summary>

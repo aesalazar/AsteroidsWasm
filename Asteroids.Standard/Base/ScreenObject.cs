@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Asteroids.Standard.Components;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 
@@ -13,18 +14,6 @@ namespace Asteroids.Standard.Base
     /// </summary>
     abstract class ScreenObject : CommonOps
     {
-        // points is used for the internal cartesian system
-        private IList<Point> _points;
-        protected IList<Point> _pointsTransformed; // exposed to simplify explosions
-
-        private readonly object updatePointsLock;
-        protected readonly object _updatePointsTransformedLock;
-
-        protected Point currLoc;
-        protected double velocityX;
-        protected double velocityY;
-        protected double radians;
-
         /// <summary>
         /// Creates a new instance of <see cref="ScreenObject"/>.
         /// </summary>
@@ -32,39 +21,67 @@ namespace Asteroids.Standard.Base
         /// <param name="canvas">Canvas to draw on.</param>
         public ScreenObject(Point location, ScreenCanvas canvas) : base(canvas)
         {
-            updatePointsLock = new object();
+            IsAlive = true;
+
+            _updatePointsLock = new object();
             _updatePointsTransformedLock = new object();
 
             //templatrs are drawn nose "up"
             radians = 180 * RADIANS_PER_DEGREE;
 
             _points = new List<Point>();
-            _pointsTransformed = new List<Point>();
+            PointsTransformed = new List<Point>();
 
             currLoc = location;
 
             InitPoints();
         }
 
+        #region State
+        
         /// <summary>
-        /// Get the current absolute origin (top-left) of the object.
+        /// Relative time length at which the object explodes.
         /// </summary>
-        public Point GetCurrLoc() => currLoc;
+        protected int ExplosionLength = 2;
 
         /// <summary>
-        /// Get the current velocity along the X axis.
+        /// Indicates if the object is alive.
         /// </summary>
-        public double GetVelocityX() => velocityX;
+        public bool IsAlive { get; protected set; }
 
         /// <summary>
-        /// Get the current velocity along the Y axis.
+        /// Blow up the object.
         /// </summary>
-        public double GetVelocityY() => velocityY;
+        /// <param name="explosions">Explosion collection to add to.</param>
+        public virtual void Explode(Explosions explosions)
+        {
+            IsAlive = false;
+
+            velocityX = 0;
+            velocityY = 0;
+
+            var points = GetPoints();
+
+            foreach (var ptExp in points)
+                explosions.AddExplosion(ptExp, ExplosionLength);
+        }
+
+        #endregion
+
+        #region Points for Drawing Object
+
+        private readonly object _updatePointsLock;
+        private readonly object _updatePointsTransformedLock;
 
         /// <summary>
-        /// Get the current rotational radians.
+        /// Points is used for the internal cartesian system.
         /// </summary>
-        public double GetRadians() => radians;
+        private IList<Point> _points;
+
+        /// <summary>
+        /// Points is used for the internal cartesian system with rotaton angle appiled.
+        /// </summary>
+        protected IList<Point> PointsTransformed; // exposed to simplify explosions
 
         /// <summary>
         /// Generates intial <see cref="Point"/>s needed to render the
@@ -79,13 +96,13 @@ namespace Asteroids.Standard.Base
         /// <returns>Index the point was inserted at.</returns>
         public int AddPoint(Point point)
         {
-            lock (updatePointsLock)
+            lock (_updatePointsLock)
                 _points.Add(point);
 
             lock (_updatePointsTransformedLock)
-                _pointsTransformed.Add(point);
+                PointsTransformed.Add(point);
 
-            return _pointsTransformed.Count - 1;
+            return PointsTransformed.Count - 1;
         }
 
         /// <summary>
@@ -95,27 +112,33 @@ namespace Asteroids.Standard.Base
         /// <returns>Index of the last point inserted.</returns>
         public int AddPoints(IList<Point> points)
         {
-            lock (updatePointsLock)
+            lock (_updatePointsLock)
                 foreach (var point in points)
                     _points.Add(point);
 
             lock (_updatePointsTransformedLock)
                 foreach (var point in points)
-                    _pointsTransformed.Add(point);
+                    PointsTransformed.Add(point);
 
-            return _pointsTransformed.Count - 1;
+            return PointsTransformed.Count - 1;
         }
 
         /// <summary>
-        /// Returns transformed <see cref="Point"/>s to generate 
-        /// polygons in a thead-safe manner.
+        /// Returns transformed <see cref="Point"/>s to generate object 
+        /// polygon in a thead-safe manner relative to current location on the 
+        /// <see cref="ScreenCanvas"/>.
         /// </summary>
         /// <returns>Collection of <see cref="Point"/>s.</returns>
         public IList<Point> GetPoints()
         {
             var points = new List<Point>();
+
             lock (_updatePointsTransformedLock)
-                points.AddRange(_pointsTransformed);
+                foreach (var pt in PointsTransformed)
+                    points.Add(new Point(
+                        pt.X + currLoc.X
+                        , pt.Y + currLoc.Y
+                    ));
 
             return points;
         }
@@ -126,12 +149,26 @@ namespace Asteroids.Standard.Base
         /// </summary>
         public void ClearPoints()
         {
-            lock (updatePointsLock)
+            lock (_updatePointsLock)
                 _points.Clear();
 
             lock (_updatePointsTransformedLock)
-                _pointsTransformed.Clear();
+                PointsTransformed.Clear();
         }
+
+        #endregion
+
+        #region Rotation
+
+        /// <summary>
+        /// Get the current rotational radians.
+        /// </summary>
+        public double GetRadians() => radians;
+
+        /// <summary>
+        /// Current rotation.
+        /// </summary>
+        protected double radians;
 
         /// <summary>
         /// Rotates all internal <see cref="Point"/>s used to generate polygons on draw
@@ -172,7 +209,7 @@ namespace Asteroids.Standard.Base
             var newPointsTransformed = new List<Point>();
 
             var points = new List<Point>();
-            lock (updatePointsLock)
+            lock (_updatePointsLock)
                 points.AddRange(_points);
 
             //Retransform the points
@@ -188,28 +225,36 @@ namespace Asteroids.Standard.Base
             //Add the points
             lock (_updatePointsTransformedLock)
             {
-                _pointsTransformed.Clear();
+                PointsTransformed.Clear();
                 foreach (var pt in newPointsTransformed)
-                    _pointsTransformed.Add(pt);
+                    PointsTransformed.Add(pt);
             }
         }
+
+        #endregion
+
+        #region Movement
 
         /// <summary>
-        /// Draw a collection of polygons (unpersisted) to a <see cref="ScreenCanvas"/>.
+        /// Get the current absolute origin (top-left) of the object.
         /// </summary>
-        /// <param name="alPoly">Collection of points to draw on the canvas.</param>
-        /// <param name="penColor">Hex color to apply to the polygon.</param>
-        protected void DrawPolygons(IList<Point> alPoly, string penColor)
-        {
-            var ptsPoly = new Point[alPoly.Count];
-            for (int i = 0; i < alPoly.Count; i++)
-            {
-                ptsPoly[i].X = (int)((currLoc.X + alPoly[i].X) / (double)CanvasWidth * Canvas.Size.Width);
-                ptsPoly[i].Y = (int)((currLoc.Y + alPoly[i].Y) / (double)CanvasHeight * Canvas.Size.Height);
-            }
+        public Point GetCurrLoc() => currLoc;
 
-            Canvas.AddPolygon(ptsPoly, penColor);
-        }
+        protected Point currLoc;
+
+        /// <summary>
+        /// Get the current velocity along the X axis.
+        /// </summary>
+        public double GetVelocityX() => velocityX;
+
+        protected double velocityX;
+
+        /// <summary>
+        /// Get the current velocity along the Y axis.
+        /// </summary>
+        public double GetVelocityY() => velocityY;
+
+        protected double velocityY;
 
         /// <summary>
         /// Move the object a single increment based on <see cref="GetVelocityX"/>
@@ -233,6 +278,40 @@ namespace Asteroids.Standard.Base
 
             return true;
         }
+
+        #endregion
+
+        #region Drawing Object
+
+        /// <summary>
+        /// Draw a collection of polygons (unpersisted) to a <see cref="ScreenCanvas"/>.
+        /// </summary>
+        /// <param name="alPoly">Collection of points to draw on the canvas.</param>
+        /// <param name="penColor">Hex color to apply to the polygon.</param>
+        protected void DrawPolygons(IList<Point> alPoly, string penColor)
+        {
+            var ptsPoly = new Point[alPoly.Count];
+            for (int i = 0; i < alPoly.Count; i++)
+            {
+                ptsPoly[i].X = (int)((alPoly[i].X) / (double)CanvasWidth * Canvas.Size.Width);
+                ptsPoly[i].Y = (int)((alPoly[i].Y) / (double)CanvasHeight * Canvas.Size.Height);
+            }
+
+            Canvas.AddPolygon(ptsPoly, penColor);
+        }
+
+        /// <summary>
+        /// Draws the current internal collection of <see cref="Point"/>s to a <see cref="ScreenCanvas"/> 
+        /// in the default <see cref="ColorHexStrings.WhiteHex"/>.
+        /// </summary>
+        public virtual void Draw()
+        {
+            DrawPolygons(GetPoints(), ColorHexStrings.WhiteHex);
+        }
+
+        #endregion
+
+        #region Coloring
 
         /// <summary>
         /// Generates a ranom color for any fire or explosion.
@@ -260,22 +339,7 @@ namespace Asteroids.Standard.Base
             return penDraw;
         }
 
-        /// <summary>
-        /// Draws the current internal collection of <see cref="Point"/>s to a <see cref="ScreenCanvas"/> 
-        /// in the default <see cref="ColorHexStrings.WhiteHex"/>.
-        /// </summary>
-        public virtual void Draw()
-        {
-            Draw(ColorHexStrings.WhiteHex);
-        }
+        #endregion
 
-        /// <summary>
-        /// Draws the current internal collection of <see cref="Point"/>s to a <see cref="ScreenCanvas"/>.
-        /// </summary>
-        /// <param name="penColor">Hex color to apply to the polygon.</param>
-        public virtual void Draw(string penColor)
-        {
-            DrawPolygons(GetPoints(), penColor);
-        }
     }
 }
