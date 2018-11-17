@@ -13,16 +13,16 @@ namespace Asteroids.Standard.Components
     /// </summary>
     class AsteroidBelt : CommonOps
     {
-        private const int SAFE_DISTANCE = 2000;
+        //private const int SAFE_DISTANCE = 2000;
 
         private readonly object _updateAsteroidsLock;
         private IList<Asteroid> _asteroids;
 
-        public AsteroidBelt(int iNumAsteroids, ScreenCanvas canvas) : this(iNumAsteroids, canvas, Asteroid.ASTEROID_SIZE.LARGE)
+        public AsteroidBelt(int iNumAsteroids) : this(iNumAsteroids, Asteroid.ASTEROID_SIZE.LARGE)
         {
         }
 
-        public AsteroidBelt(int iNumAsteroids, ScreenCanvas canvas, Asteroid.ASTEROID_SIZE iMinSize) : base(canvas)
+        public AsteroidBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize) : base()
         {
             _updateAsteroidsLock = new object();
             StartBelt(iNumAsteroids, iMinSize);
@@ -35,108 +35,131 @@ namespace Asteroids.Standard.Components
             for (int i = 0; i < iNumAsteroids; i++)
             {
                 aAsteroidSize = Asteroid.ASTEROID_SIZE.LARGE - Random.Next(Asteroid.ASTEROID_SIZE.LARGE - iMinSize + 1);
-                asteroids.Add(new Asteroid(aAsteroidSize, Canvas));
+                asteroids.Add(new Asteroid(aAsteroidSize));
             }
 
             lock (_updateAsteroidsLock)
                 _asteroids = asteroids;
         }
 
+        /// <summary>
+        /// Gets current collection of <see cref="Asteroid"/>s in
+        /// a thread-safe manner.
+        /// </summary>
+        /// <returns>Collection of asteroids.</returns>
+        public IList<Asteroid> GetAsteroids()
+        {
+            lock (_updateAsteroidsLock)
+                return new List<Asteroid>(_asteroids);
+        }
+
+        /// <summary>
+        /// Overwrites the current collection of <see cref="Asteroid"/>s with a new set.
+        /// </summary>
+        /// <param name="newAsteroids">New collection to replace current.</param>
+        public void SetAsteroids(IList<Asteroid> newAsteroids)
+        {
+            lock (_updateAsteroidsLock)
+                _asteroids = new List<Asteroid>(newAsteroids);
+        }
+
+        /// <summary>
+        /// Current asteroid count (thread-safe).
+        /// </summary>
         public int Count()
         {
-            return _asteroids.Count;
-        }
-
-        public void Move()
-        {
-            var asteroids = new List<Asteroid>();
-
             lock (_updateAsteroidsLock)
-                asteroids.AddRange(_asteroids);
-
-            foreach (var asteroid in asteroids)
-                asteroid.Move();
+                return _asteroids.Count;
         }
 
-        public bool IsCenterSafe()
-        {
-            bool bCenterSafe = true;
-            Point ptAsteroid;
+        //public void Move()
+        //{
+        //    var asteroids = new List<Asteroid>();
 
-            var asteroids = new List<Asteroid>();
+        //    lock (_updateAsteroidsLock)
+        //        asteroids.AddRange(_asteroids);
 
-            lock (_updateAsteroidsLock)
-                asteroids.AddRange(_asteroids);
+        //    foreach (var asteroid in asteroids)
+        //        asteroid.Move();
+        //}
 
-            foreach (var asteroid in asteroids)
-            {
-                ptAsteroid = asteroid.GetCurrLoc();
-                if (ptAsteroid.DistanceTo(CanvasWidth / 2, CanvasHeight / 2) <= SAFE_DISTANCE)
-                {
-                    bCenterSafe = false;
-                    break;
-                }
-            }
-            return bCenterSafe;
-        }
+        //public bool IsCenterSafe()
+        //{
+        //    bool bCenterSafe = true;
+        //    Point ptAsteroid;
 
-        public void Draw()
-        {
-            var asteroids = new List<Asteroid>();
+        //    var asteroids = new List<Asteroid>();
 
-            lock (_updateAsteroidsLock)
-                asteroids.AddRange(_asteroids);
+        //    lock (_updateAsteroidsLock)
+        //        asteroids.AddRange(_asteroids);
 
-            foreach (var asteroid in asteroids)
-                asteroid.Draw();
-        }
+        //    foreach (var asteroid in asteroids)
+        //    {
+        //        ptAsteroid = asteroid.GetCurrLoc();
+        //        if (ptAsteroid.DistanceTo(ScreenCanvas.CANVAS_WIDTH / 2, ScreenCanvas.CANVAS_HEIGHT / 2) <= SAFE_DISTANCE)
+        //        {
+        //            bCenterSafe = false;
+        //            break;
+        //        }
+        //    }
+        //    return bCenterSafe;
+        //}
 
-        public int CheckPointCollisions(IList<Point> ptsCheck)
-        {
-            //get the asteroids
-            var asteroids = new List<Asteroid>();
+        //public void Draw()
+        //{
+        //    var asteroids = new List<Asteroid>();
 
-            lock (_updateAsteroidsLock)
-                asteroids.AddRange(_asteroids);
+        //    lock (_updateAsteroidsLock)
+        //        asteroids.AddRange(_asteroids);
 
-            //Go through each
-            var newAsteroids = new List<Asteroid>();
-            int pointValue = 0;
-            int iCount = asteroids.Count;
+        //    foreach (var asteroid in asteroids)
+        //        asteroid.Draw();
+        //}
 
-            for (int i = iCount - 1; i >= 0; i--)
-            {
-                if (asteroids[i].ContainsAnyPoint(ptsCheck))
-                {
-                    Asteroid.ASTEROID_SIZE sizeReduced = asteroids[i].ReduceSize();
-                    switch (sizeReduced)
-                    {
-                        case Asteroid.ASTEROID_SIZE.DNE:
-                            pointValue = 250; // destroyed small - MEDIUM 100 pts
-                            PlaySound(this, ActionSound.Explode3);
-                            asteroids.RemoveAt(i);
-                            break;
-                        case Asteroid.ASTEROID_SIZE.SMALL:
-                            pointValue = 100; // destroyed large - MEDIUM 100 pts
-                            PlaySound(this, ActionSound.Explode2);
-                            break;
-                        case Asteroid.ASTEROID_SIZE.MEDIUM:
-                            pointValue = 50; // destroyed large - 50 pts
-                            PlaySound(this, ActionSound.Explode1);
-                            break;
-                    }
-                    // Add a new asteroid if it wasn't small
-                    if (sizeReduced != Asteroid.ASTEROID_SIZE.DNE)
-                        asteroids.Add(new Asteroid(asteroids[i], Canvas));
+        //public int CheckPointCollisions(IList<Point> ptsCheck)
+        //{
+        //    //get the asteroids
+        //    var asteroids = new List<Asteroid>();
 
-                    break;
-                }
-            }
+        //    lock (_updateAsteroidsLock)
+        //        asteroids.AddRange(_asteroids);
 
-            //Update
-            _asteroids = asteroids;
+        //    //Go through each
+        //    int pointValue = 0;
 
-            return pointValue;
-        }
+        //    for (int i = asteroids.Count - 1; i >= 0; i--)
+        //    {
+        //        if (asteroids[i].ContainsAnyPoint(ptsCheck))
+        //        {
+        //            Asteroid.ASTEROID_SIZE sizeReduced = asteroids[i].ReduceSize();
+        //            switch (sizeReduced)
+        //            {
+        //                case Asteroid.ASTEROID_SIZE.DNE:
+        //                    pointValue = 250; // destroyed small - MEDIUM 100 pts
+        //                    PlaySound(this, ActionSound.Explode3);
+        //                    asteroids.RemoveAt(i);
+        //                    break;
+        //                case Asteroid.ASTEROID_SIZE.SMALL:
+        //                    pointValue = 100; // destroyed large - MEDIUM 100 pts
+        //                    PlaySound(this, ActionSound.Explode2);
+        //                    break;
+        //                case Asteroid.ASTEROID_SIZE.MEDIUM:
+        //                    pointValue = 50; // destroyed large - 50 pts
+        //                    PlaySound(this, ActionSound.Explode1);
+        //                    break;
+        //            }
+        //            // Add a new asteroid if it wasn't small
+        //            if (sizeReduced != Asteroid.ASTEROID_SIZE.DNE)
+        //                asteroids.Add(new Asteroid(asteroids[i]));
+
+        //            break;
+        //        }
+        //    }
+
+        //    //Update
+        //    _asteroids = asteroids;
+
+        //    return pointValue;
+        //}
     }
 }

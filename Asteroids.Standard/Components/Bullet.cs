@@ -12,9 +12,9 @@ namespace Asteroids.Standard.Components
     class Bullet : ScreenObject
     {
         int iLife;
-        const double speedPerSec = 1000 / FPS;
+        const double speedPerSec = 1000 / ScreenCanvas.FPS;
 
-        public Bullet(ScreenCanvas canvas) : base(new Point(0, 0), canvas)
+        public Bullet() : base(new Point(0, 0))
         {
             iLife = 0;
         }
@@ -25,28 +25,31 @@ namespace Asteroids.Standard.Components
             AddPoints(PointsTemplate);
         }
 
-        public bool Available()
-        {
-            return (iLife == 0);
-        }
+        public bool IsAvailable => iLife == 0;
 
         public void Disable()
         {
             iLife = 0;
         }
 
-        public bool AcquireLoc(ref Point ptLoc)
-        {
-            ptLoc = currLoc;
-            return (!Available());
-        }
+        ///// <summary>
+        ///// Determines if the bullet is <see cref="Available()"/>.
+        ///// </summary>
+        ///// <param name="location">Current <see cref="Point"/> location.</param>
+        ///// <returns>Indication if the bullet is consided available.</returns>
+        //public bool AcquireLoc(out Point location)
+        //{
+        //    location = currLoc;
+        //    return !Available();
+        //}
+
         /// <summary>
         /// Fire the bullet from a parent ship.
         /// </summary>
         /// <param name="parentShip">Parent <see cref="Ship"/> the bullet was fired from.</param>
         public void Shoot(Ship parentShip)
         {
-            iLife = (int)(FPS * 1); // bullets live 1 sec
+            iLife = (int)ScreenCanvas.FPS; // bullets live 1 sec
             currLoc = parentShip.GetCurrLoc();
             radians = parentShip.GetRadians();
 
@@ -57,21 +60,26 @@ namespace Asteroids.Standard.Components
             velocityY = (int)(100 * CosVal) + parentShip.GetVelocityY();
         }
 
-        public new void Move()
+
+        /// <summary>
+        /// Decrement the bullets life and move.
+        /// </summary>
+        /// <returns></returns>
+        public override bool Move()
         {
             // only draw things that are not available
-            if (!Available())
+            if (IsAvailable)
                 iLife -= 1;
 
-            base.Move();
+            return base.Move();
         }
 
-        public override void Draw()
-        {
-            // only draw things that are not available
-            if (!Available())
-                DrawPolygons(GetPoints(), GetRandomFireColor());
-        }
+        //public override void Draw()
+        //{
+        //    // only draw things that are not available
+        //    if (!Available())
+        //        DrawPolygons(GetPoints(), GetRandomFireColor());
+        //}
 
         #region Statics
 

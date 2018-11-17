@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
@@ -18,8 +19,7 @@ namespace Asteroids.Standard.Base
         /// Creates a new instance of <see cref="ScreenObject"/>.
         /// </summary>
         /// <param name="location">Absolute origin (bottom-left) of the object.</param>
-        /// <param name="canvas">Canvas to draw on.</param>
-        public ScreenObject(Point location, ScreenCanvas canvas) : base(canvas)
+        public ScreenObject(Point location) : base()
         {
             IsAlive = true;
 
@@ -27,7 +27,7 @@ namespace Asteroids.Standard.Base
             _updatePointsTransformedLock = new object();
 
             //templatrs are drawn nose "up"
-            radians = 180 * RADIANS_PER_DEGREE;
+            radians = 180 * ScreenCanvas.RADIANS_PER_DEGREE;
 
             _points = new List<Point>();
             PointsTransformed = new List<Point>();
@@ -42,7 +42,7 @@ namespace Asteroids.Standard.Base
         /// <summary>
         /// Relative time length at which the object explodes.
         /// </summary>
-        protected int ExplosionLength = 2;
+        protected int ExplosionLength = Explosion.DEFAULT_LENGTH;
 
         /// <summary>
         /// Indicates if the object is alive.
@@ -52,18 +52,17 @@ namespace Asteroids.Standard.Base
         /// <summary>
         /// Blow up the object.
         /// </summary>
-        /// <param name="explosions">Explosion collection to add to.</param>
-        public virtual void Explode(Explosions explosions)
+        /// <returns>Explosion collection.</param>
+        public virtual IList<Explosion> Explode()
         {
             IsAlive = false;
 
             velocityX = 0;
             velocityY = 0;
 
-            var points = GetPoints();
-
-            foreach (var ptExp in points)
-                explosions.AddExplosion(ptExp, ExplosionLength);
+            return GetPoints()
+                .Select(p => new Explosion(p, ExplosionLength))
+                .ToList();
         }
 
         #endregion
@@ -189,9 +188,9 @@ namespace Asteroids.Standard.Base
         protected void Rotate(double degrees)
         {
             //Get radians in 1/FPS'th increment
-            var radiansAdjust = degrees * RADIANS_PER_DEGREE;
-            radians += radiansAdjust / FPS;
-            radians = radians % RADIANS_PER_CIRCLE;
+            var radiansAdjust = degrees * ScreenCanvas.RADIANS_PER_DEGREE;
+            radians += radiansAdjust / ScreenCanvas.FPS;
+            radians = radians % ScreenCanvas.RADIANS_PER_CIRCLE;
 
             RotateInternal();
         }
@@ -258,7 +257,7 @@ namespace Asteroids.Standard.Base
 
         /// <summary>
         /// Move the object a single increment based on <see cref="GetVelocityX"/>
-        /// and <see cref="GetVelocityY"/>.
+        /// and <see cref="GetVelocityY"/> and set current location.
         /// </summary>
         /// <returns>Indication of the move being completed successfully.</returns>
         public virtual bool Move()
@@ -267,13 +266,13 @@ namespace Asteroids.Standard.Base
             currLoc.Y += (int)velocityY;
 
             if (currLoc.X < 0)
-                currLoc.X = CanvasWidth - 1;
-            if (currLoc.X >= CanvasWidth)
+                currLoc.X = ScreenCanvas.CANVAS_WIDTH - 1;
+            if (currLoc.X >= ScreenCanvas.CANVAS_WIDTH)
                 currLoc.X = 0;
 
             if (currLoc.Y < 0)
-                currLoc.Y = CanvasHeight - 1;
-            if (currLoc.Y >= CanvasHeight)
+                currLoc.Y = ScreenCanvas.CANVAS_HEIGHT - 1;
+            if (currLoc.Y >= ScreenCanvas.CANVAS_HEIGHT)
                 currLoc.Y = 0;
 
             return true;
@@ -281,65 +280,35 @@ namespace Asteroids.Standard.Base
 
         #endregion
 
-        #region Drawing Object
+        //#region Drawing
 
-        /// <summary>
-        /// Draw a collection of polygons (unpersisted) to a <see cref="ScreenCanvas"/>.
-        /// </summary>
-        /// <param name="alPoly">Collection of points to draw on the canvas.</param>
-        /// <param name="penColor">Hex color to apply to the polygon.</param>
-        protected void DrawPolygons(IList<Point> alPoly, string penColor)
-        {
-            var ptsPoly = new Point[alPoly.Count];
-            for (int i = 0; i < alPoly.Count; i++)
-            {
-                ptsPoly[i].X = (int)((alPoly[i].X) / (double)CanvasWidth * Canvas.Size.Width);
-                ptsPoly[i].Y = (int)((alPoly[i].Y) / (double)CanvasHeight * Canvas.Size.Height);
-            }
+        ///// <summary>
+        ///// Generates a ranom color for any fire or explosion.
+        ///// </summary>
+        ///// <returns>Color hex string.</returns>
+        //protected string GetRandomFireColor()
+        //{
+        //    string penDraw;
 
-            Canvas.AddPolygon(ptsPoly, penColor);
-        }
+        //    switch (Random.Next(3))
+        //    {
+        //        case 0:
+        //            penDraw = ColorHexStrings.RedHex;
+        //            break;
+        //        case 1:
+        //            penDraw = ColorHexStrings.YellowHex;
+        //            break;
+        //        case 2:
+        //            penDraw = ColorHexStrings.OrangeHex;
+        //            break;
+        //        default:
+        //            penDraw = ColorHexStrings.WhiteHex;
+        //            break;
+        //    }
+        //    return penDraw;
+        //}
 
-        /// <summary>
-        /// Draws the current internal collection of <see cref="Point"/>s to a <see cref="ScreenCanvas"/> 
-        /// in the default <see cref="ColorHexStrings.WhiteHex"/>.
-        /// </summary>
-        public virtual void Draw()
-        {
-            DrawPolygons(GetPoints(), ColorHexStrings.WhiteHex);
-        }
-
-        #endregion
-
-        #region Coloring
-
-        /// <summary>
-        /// Generates a ranom color for any fire or explosion.
-        /// </summary>
-        /// <returns>Color hex string.</returns>
-        protected string GetRandomFireColor()
-        {
-            string penDraw;
-
-            switch (Random.Next(3))
-            {
-                case 0:
-                    penDraw = ColorHexStrings.RedHex;
-                    break;
-                case 1:
-                    penDraw = ColorHexStrings.YellowHex;
-                    break;
-                case 2:
-                    penDraw = ColorHexStrings.OrangeHex;
-                    break;
-                default:
-                    penDraw = ColorHexStrings.WhiteHex;
-                    break;
-            }
-            return penDraw;
-        }
-
-        #endregion
+        //#endregion
 
     }
 }

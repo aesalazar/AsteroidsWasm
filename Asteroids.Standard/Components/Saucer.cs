@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Helpers;
@@ -15,7 +16,7 @@ namespace Asteroids.Standard.Components
     {
         public const int MaximumPasses = 3;
         public const int KillScore = 1000;
-        private const double Velocity = 3000 / FPS;
+        private const double Velocity = 3000 / ScreenCanvas.FPS;
 
         private int _currentPass = 0;
 
@@ -29,7 +30,7 @@ namespace Asteroids.Standard.Components
         /// </summary>
         /// <param name="location">Absolute origin (bottom-left) of the object.</param>
         /// <param name="canvas">Canvas to draw on.</param>
-        public Saucer(Point location, ScreenCanvas canvas) : base(location, canvas)
+        public Saucer(Point location) : base(location)
         {
             SetVelocity();
         }
@@ -50,36 +51,28 @@ namespace Asteroids.Standard.Components
         public override bool Move()
         {
             //Stop if the next move will put it over the allow number of passes
-            if (!IsAlive || currLoc.X + velocityX >= CanvasWidth && ++_currentPass >= MaximumPasses)
+            if (!IsAlive || currLoc.X + velocityX >= ScreenCanvas.CANVAS_WIDTH && ++_currentPass >= MaximumPasses)
                 return false;
 
             return base.Move();
         }
 
         /// <summary>
-        /// Adjusts velocity to match the targeted <see cref="Ship"/> if it is
-        /// <see cref="Ship.IsAlive()"/>, otherwise it continues straight.
+        /// Moves <see cref="Missile"/> towards the <see cref="target"/>.
         /// </summary>
-        /// <param name="ship"><see cref="Ship"/> to target.</param>
-        public void Target(Ship ship)
+        /// <param name="target">
+        /// <see cref="Point"/> to target; <see cref="null"/> moves <see cref="Missile"/> forward.</param>
+        public void Target(Point? target)
         {
-            var isShip = ship?.IsAlive == true;
-            var isMissile = Missile?.IsAlive == true;
+            //Make sure there is a missile
+            if (!Missile?.IsAlive == true)
+                Missile = new Missile(this);
 
-            if (!isShip)
-            {
-                //No ship so simply move the missile if it exists
-                if (isMissile)
-                    Missile.Move();
-            }
+            //Move to the point or simply forward
+            if (target.HasValue)
+                Missile.Move(target.Value);
             else
-            {
-                //Make sure there is a missile and then target the ship
-                if (!isMissile)
-                    Missile = new Missile(this, Canvas);
-
-                Missile.Move(ship);
-            }
+                Missile.Move();
         }
 
         /// <summary>
@@ -87,45 +80,46 @@ namespace Asteroids.Standard.Components
         /// </summary>
         protected void SetVelocity()
         {
-            var factor = currLoc.X < CanvasWidth / 2 ? 1 : -1;
+            var factor = currLoc.X < ScreenCanvas.CANVAS_WIDTH / 2 ? 1 : -1;
 
             velocityX = factor * Velocity;
             velocityY = 0;
             PlaySound(this, ActionSound.Saucer);
         }
 
-        /// <summary>
-        /// Determine score if a point is in contact with the saucer.
-        /// </summary>
-        /// <param name="ptsCheck">Point collection to check.</param>
-        /// <returns>Score of <see cref="KillScore"/> if inside; otherwise 0.</returns>
-        public int CheckPointScore(IList<Point> ptsCheck)
-        {
-            return GetPoints().ContainsAnyPoint(ptsCheck) ? KillScore : 0;
-        }
+        ///// <summary>
+        ///// Determine score if a point is in contact with the saucer.
+        ///// </summary>
+        ///// <param name="ptsCheck">Point collection to check.</param>
+        ///// <returns>Score of <see cref="KillScore"/> if inside; otherwise 0.</returns>
+        //public int CheckPointScore(IList<Point> ptsCheck)
+        //{
+        //    return GetPoints().ContainsAnyPoint(ptsCheck) ? KillScore : 0;
+        //}
 
         /// <summary>
         /// Blow up the saucer.
         /// </summary>
-        /// <param name="explosions">Explosion collection to add to.</param>
-        public override void Explode(Explosions explosions)
+        /// <returns>Explosion collection to add to.</returns>
+        public override IList<Explosion> Explode()
         {
-            base.Explode(explosions);
-            Missile.Explode(explosions);
             PlaySound(this, ActionSound.Explode1);
+            return base.Explode()
+                .Concat(Missile.Explode())
+                .ToList();
         }
 
-        /// <summary>
-        /// Draw the Flying Saucer.
-        /// </summary>
-        public override void Draw()
-        {
-            if (!IsAlive)
-                return;
+        ///// <summary>
+        ///// Draw the Flying Saucer.
+        ///// </summary>
+        //public override void Draw()
+        //{
+        //    if (!IsAlive)
+        //        return;
 
-            base.Draw();
-            Missile?.Draw();
-        }
+        //    base.Draw();
+        //    Missile?.Draw();
+        //}
 
         #region Statics
 

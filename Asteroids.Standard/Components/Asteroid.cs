@@ -8,22 +8,26 @@ using Asteroids.Standard.Screen;
 namespace Asteroids.Standard.Components
 {
     /// <summary>
-    /// Summary description for CAsteroid.
+    /// Summary description for Asteroid.
     /// </summary>
     class Asteroid : ScreenObject
     {
-        const int SIZE_INCR = 220;
+        public const int SIZE_INCREMENT = 220;
         public enum ASTEROID_SIZE { DNE = 0, SMALL, MEDIUM, LARGE }
         protected double rotateSpeed;
-        protected ASTEROID_SIZE aSize;
 
-        public Asteroid(ASTEROID_SIZE size, ScreenCanvas canvas) : base(new Point(0, 0), canvas)
+        /// <summary>
+        /// Current <see cref="ASTEROID_SIZE"/>.
+        /// </summary>
+        public ASTEROID_SIZE Size { get; private set; }
+
+        public Asteroid(ASTEROID_SIZE size) : base(new Point(0, 0))
         {
-            aSize = size;
+            Size = size;
 
             // Can't place the object randomly in constructor - stinky
-            currLoc.X = Random.Next(2) * (CanvasWidth - 1);
-            currLoc.Y = Random.Next(CanvasHeight - 1);
+            currLoc.X = Random.Next(2) * (ScreenCanvas.CANVAS_WIDTH - 1);
+            currLoc.Y = Random.Next(ScreenCanvas.CANVAS_HEIGHT - 1);
 
             RandomVelocity();
 
@@ -33,9 +37,9 @@ namespace Asteroids.Standard.Components
             InitPoints();
         }
 
-        public Asteroid(Asteroid astCopy, ScreenCanvas canvas) : base(astCopy.currLoc, canvas)
+        public Asteroid(Asteroid astCopy) : base(astCopy.currLoc)
         {
-            aSize = astCopy.aSize;
+            Size = astCopy.Size;
             RandomVelocity();
 
             // can't figure out how to have iSize set before
@@ -48,29 +52,29 @@ namespace Asteroids.Standard.Components
         protected void RandomVelocity()
         {
             // choose random rotate speed
-            rotateSpeed = (Random.Next(10000) - 5000) / FPS;
+            rotateSpeed = (Random.Next(10000) - 5000) / ScreenCanvas.FPS;
 
             // choose a velocity for the asteroid (smaller asteroids can go faster)
-            velocityX = ((Random.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
-            velocityY = ((Random.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - aSize + 1) * 1.05)) / FPS;
+            velocityX = ((Random.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - Size + 1) * 1.05)) / ScreenCanvas.FPS;
+            velocityY = ((Random.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - Size + 1) * 1.05)) / ScreenCanvas.FPS;
         }
 
         public ASTEROID_SIZE ReduceSize()
         {
-            if (aSize != ASTEROID_SIZE.DNE)
-                aSize -= 1;
+            if (Size != ASTEROID_SIZE.DNE)
+                Size -= 1;
 
             InitPoints();
             RandomVelocity();
 
-            return aSize;
+            return Size;
         }
 
         protected override void InitPoints()
         {
             ClearPoints();
 
-            switch (aSize)
+            switch (Size)
             {
                 case ASTEROID_SIZE.DNE:
                     AddPoints(PointsTemplateDne);
@@ -85,49 +89,49 @@ namespace Asteroids.Standard.Components
                     AddPoints(PointsTemplateLarge);
                     break;
                 default:
-                    throw new NotImplementedException($"Asteroid Size '{aSize}'");
+                    throw new NotImplementedException($"Asteroid Size '{Size}'");
             }
         }
 
         public override bool Move()
         {
             // only draw things that are not available
-            if (aSize != ASTEROID_SIZE.DNE)
+            if (Size != ASTEROID_SIZE.DNE)
                 Rotate(rotateSpeed);
 
             return base.Move();
         }
 
-        public override void Draw()
-        {
-            // only draw things that are not available
-            if (aSize != ASTEROID_SIZE.DNE)
-                base.Draw();
-        }
+        //public override void Draw()
+        //{
+        //    // only draw things that are not available
+        //    if (aSize != ASTEROID_SIZE.DNE)
+        //        base.Draw();
+        //}
 
-        /// <summary>
-        /// Determine if a point is in contact with the asteroid.
-        /// </summary>
-        /// <param name="ptsCheck">Point collection to check.</param>
-        /// <returns>Indication if the point is inside the polygon.</returns>
-        public bool ContainsAnyPoint(IList<Point> ptsCheck)
-        {
-            var inside = false;
+        ///// <summary>
+        ///// Determine if a point is in contact with the asteroid.
+        ///// </summary>
+        ///// <param name="ptsCheck">Point collection to check.</param>
+        ///// <returns>Indication if the point is inside the polygon.</returns>
+        //public bool ContainsAnyPoint(IList<Point> ptsCheck)
+        //{
+        //    var inside = false;
 
-            foreach (var ptCheck in ptsCheck)
-            {
-                var dist = ptCheck.DistanceTo(currLoc);
-                var size = (int)aSize * SIZE_INCR;
+        //    foreach (var ptCheck in ptsCheck)
+        //    {
+        //        var dist = ptCheck.DistanceTo(currLoc);
+        //        var size = (int)Size * SIZE_INCR;
 
-                if (dist > size)
-                    continue;
+        //        if (dist > size)
+        //            continue;
 
-                inside = true;
-                break;
-            }
+        //        inside = true;
+        //        break;
+        //    }
 
-            return inside;
-        }
+        //    return inside;
+        //}
 
         #region Statics
 
@@ -160,8 +164,8 @@ namespace Asteroids.Standard.Components
             var addPoint = new Action<IList<Point>, double, ASTEROID_SIZE>((l, radPt, aSize) =>
             {
                 l.Add(new Point(
-                    (int)(Math.Sin(radPt) * -((int)aSize * SIZE_INCR))
-                    , (int)(Math.Cos(radPt) * ((int)aSize * SIZE_INCR))
+                    (int)(Math.Sin(radPt) * -((int)aSize * SIZE_INCREMENT))
+                    , (int)(Math.Cos(radPt) * ((int)aSize * SIZE_INCREMENT))
                 ));
             });
 

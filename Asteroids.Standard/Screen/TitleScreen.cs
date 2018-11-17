@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
+using Asteroids.Standard.Helpers;
 
 namespace Asteroids.Standard.Screen
 {
@@ -14,30 +16,40 @@ namespace Asteroids.Standard.Screen
         private const int instructionOffset = instructionSize * 5;
 
         private const int titleSize = 200;
-        private const int titleOffset1 = CanvasHeight - titleSize * 4;
-        private const int titleOffset2 = CanvasHeight - titleSize * 2;
+        private const int titleOffset1 = ScreenCanvas.CANVAS_HEIGHT - titleSize * 4;
+        private const int titleOffset2 = ScreenCanvas.CANVAS_HEIGHT - titleSize * 2;
         private const string copyright1 = "CREATED BY HOWARD UMAN";
         private const string copyright2 = "PORTED BY ERNIE SALAZAR";
 
-        private String strTitle;
-        private int iLetterSize;
-        private int iIncrement;
-        private AsteroidBelt asteroids;
+        private string _title;
+        private int _letterSize;
+        private int _increment;
 
         private readonly TextDraw _textDraw;
+        private readonly ScreenCanvas _canvas;
+        private readonly ScreenObjectCache _cache;
 
-        public TitleScreen(TextDraw textDraw, ScreenCanvas canvas) : base(canvas)
+        public TitleScreen(TextDraw textDraw, ScreenCanvas canvas) : base()
         {
             _textDraw = textDraw;
+            _canvas = canvas;
+
             InitTitleScreen();
-            asteroids = new AsteroidBelt(15, canvas, Asteroid.ASTEROID_SIZE.SMALL);
+
+            _cache = new ScreenObjectCache(
+                new Score(new TextDraw(_canvas))
+                , null
+                , new AsteroidBelt(15, Asteroid.ASTEROID_SIZE.SMALL)
+                , new Explosions()
+                , new List<Bullet>()
+            );
         }
 
         public void InitTitleScreen()
         {
-            iLetterSize = 40;
-            iIncrement = (int)(1000 / FPS);
-            strTitle = "GAME OVER";
+            _letterSize = 40;
+            _increment = (int)(1000 / ScreenCanvas.FPS);
+            _title = "GAME OVER";
         }
 
         public void DrawScreen()
@@ -51,31 +63,36 @@ namespace Asteroids.Standard.Screen
             );
 
             // Flip back and forth between "Game Over" and "Asteroids"
-            if ((iLetterSize > 1000) || (iLetterSize < 40))
+            if ((_letterSize > 1000) || (_letterSize < 40))
             {
-                iIncrement = -iIncrement;
-                if (iLetterSize < 40)
+                _increment = -_increment;
+                if (_letterSize < 40)
                 {
-                    if (strTitle == "GAME OVER")
-                        strTitle = "ASTEROIDS";
+                    if (_title == "GAME OVER")
+                        _title = "ASTEROIDS";
                     else
-                        strTitle = "GAME OVER";
+                        _title = "GAME OVER";
                 }
             }
-            iLetterSize += iIncrement;
-            _textDraw.DrawText(strTitle, TextDraw.Justify.CENTER,
-                              CanvasHeight / 2 - iLetterSize, iLetterSize, iLetterSize * 2);
+            _letterSize += _increment;
+            _textDraw.DrawText(_title, TextDraw.Justify.CENTER,
+                              ScreenCanvas.CANVAS_HEIGHT / 2 - _letterSize, _letterSize, _letterSize * 2);
 
             // Draw copyright notice
-            _textDraw.DrawText( copyright1, TextDraw.Justify.CENTER,
+            _textDraw.DrawText(copyright1, TextDraw.Justify.CENTER,
                               titleOffset1, titleSize, titleSize);
 
             _textDraw.DrawText(copyright2, TextDraw.Justify.CENTER,
                               titleOffset2, titleSize, titleSize);
 
             // Draw the asteroid belt
-            asteroids.Move();
-            asteroids.Draw();
+            _cache.Repopulate();
+
+            foreach (var asteroid in _cache.Asteroids)
+            {
+                asteroid.ScreenObject.Move();
+                _canvas.LoadPolygon(asteroid.PolygonPoints, ColorHexStrings.WhiteHex);
+            }
         }
     }
 }
