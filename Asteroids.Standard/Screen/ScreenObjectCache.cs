@@ -22,6 +22,9 @@ namespace Asteroids.Standard.Screen
 
             _explosions = explosions;
             _bullets = bullets;
+            BulletsInFlight = new List<CachedObject<Bullet>>();
+            BulletsAvailable = new List<CachedObject<Bullet>>();
+
             Repopulate();
         }
 
@@ -30,9 +33,8 @@ namespace Asteroids.Standard.Screen
         #region Objects
 
         //Read-only
-        private Explosions _explosions { get; }
-        private IList<Bullet> _bullets;
-
+        private readonly Explosions _explosions;
+        private readonly IList<Bullet> _bullets;
         public Score Score { get; }
 
         //Live and die
@@ -42,11 +44,14 @@ namespace Asteroids.Standard.Screen
 
         //Optimize to avoid repeat traversal
         public IList<CachedObject<Asteroid>> Asteroids { get; private set; }
-        public IList<CachedObject<Bullet>> Bullets { get; private set; }
         public IList<Explosion> Explosions { get; private set; }
         public IList<Point> SaucerPoints { get; private set; }
         public IList<Point> MissilePoints { get; private set; }
         public IList<Point> ShipPoints { get; private set; }
+
+        public IList<CachedObject<Bullet>> BulletsInFlight { get; private set; }
+        public IList<CachedObject<Bullet>> BulletsAvailable { get; private set; }
+
 
         #endregion
 
@@ -63,10 +68,16 @@ namespace Asteroids.Standard.Screen
             UpdateSaucer(Saucer);
             UpdateBelt(Belt);
 
-            Bullets = _bullets
-                .Where(b => b.IsAvailable)
-                .Select(b => new CachedObject<Bullet>(b))
-                .ToList();
+            BulletsInFlight.Clear();
+            BulletsAvailable.Clear();
+
+            foreach (var bullet in _bullets)
+            {
+                if (bullet.IsInFlight)
+                    BulletsInFlight.Add(new CachedObject<Bullet>(bullet));
+                else
+                    BulletsAvailable.Add(new CachedObject<Bullet>(bullet));
+            }
 
             Explosions = new List<Explosion>(_explosions.GetExplosions());
         }

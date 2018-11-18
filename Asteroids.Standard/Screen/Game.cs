@@ -127,8 +127,8 @@ namespace Asteroids.Standard.Screen
 
             if (_cache.Ship.IsAlive)
             {
-                var bullets = _cache.Bullets.ToList();
-                foreach (var bullet in bullets)
+                //Fire bullets that are not already moving
+                foreach (var bullet in _cache.BulletsAvailable)
                 {
                     bullet.ScreenObject.Shoot(_cache.Ship);
                     PlaySound(this, ActionSound.Fire);
@@ -233,7 +233,7 @@ namespace Asteroids.Standard.Screen
                 // Move all objects starting with the ship
                 _cache.Ship.Move();
 
-                //Move the saucer and its missle
+                //Move the saucer and its missile
                 if (_cache.Saucer != null)
                 {
                     if (_cache.Saucer.Move())
@@ -255,16 +255,15 @@ namespace Asteroids.Standard.Screen
                 _collisionManager.MoveExplosions();
 
                 // Check bullets for collisions        
-                var ptCheck = new Point(0);
-
-                foreach (var bullet in _cache.Bullets)
+                foreach (var bullet in _cache.BulletsInFlight)
                 {
-                    var points = new List<Point> { ptCheck };
+                    var points = new List<Point> { bullet.Location };
+
                     if (_collisionManager.AsteroidBeltCollision(points) 
                         || _collisionManager.SaucerCollision(points) 
                         || _collisionManager.MissileCollision(bullet.ScreenObject.GetPoints()))
                     {
-                        _collisionManager.AddExplosion(ptCheck);
+                        _collisionManager.AddExplosion(bullet.Location);
                         bullet.ScreenObject.Disable();
                     }
                 }

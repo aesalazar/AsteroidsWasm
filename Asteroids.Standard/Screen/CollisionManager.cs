@@ -253,8 +253,8 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public void MoveBullets()
         {
-            //Move does use locks
-            foreach (var bullet in _cache.Bullets)
+            //Move does not use locks
+            foreach (var bullet in _cache.BulletsInFlight)
                 bullet.ScreenObject.Move();
         }
 
@@ -263,7 +263,7 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public void MoveAsteroids()
         {
-            //Move does use locks
+            //Move does not use locks
             foreach (var asteroid in _cache.Asteroids)
                 asteroid.ScreenObject.Move();
         }

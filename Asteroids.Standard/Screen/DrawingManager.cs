@@ -158,12 +158,11 @@ namespace Asteroids.Standard.Screen
         }
 
         /// <summary>
-        /// Draw all avilable Bullets.
+        /// Draw all available Bullets.
         /// </summary>
         private void DrawBullets()
         {
-            //Only avilable bullets are in the cache
-            foreach (var bullet in _cache.Bullets)
+            foreach (var bullet in _cache.BulletsInFlight)
                 DrawPolygon(bullet.PolygonPoints, GetRandomFireColor());
         }
 

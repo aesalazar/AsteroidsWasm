@@ -11,12 +11,12 @@ namespace Asteroids.Standard.Components
     /// </summary>
     class Bullet : ScreenObject
     {
-        int iLife;
-        const double speedPerSec = 1000 / ScreenCanvas.FPS;
+        private int _remainingFrames;
+        private const double speedPerSec = 1000 / ScreenCanvas.FPS;
 
         public Bullet() : base(new Point(0, 0))
         {
-            iLife = 0;
+            _remainingFrames = 0;
         }
 
         protected override void InitPoints()
@@ -25,11 +25,14 @@ namespace Asteroids.Standard.Components
             AddPoints(PointsTemplate);
         }
 
-        public bool IsAvailable => iLife == 0;
+        /// <summary>
+        /// Indicates if the bullet is current shooting.
+        /// </summary>
+        public bool IsInFlight => _remainingFrames > 0;
 
         public void Disable()
         {
-            iLife = 0;
+            _remainingFrames = 0;
         }
 
         ///// <summary>
@@ -49,7 +52,7 @@ namespace Asteroids.Standard.Components
         /// <param name="parentShip">Parent <see cref="Ship"/> the bullet was fired from.</param>
         public void Shoot(Ship parentShip)
         {
-            iLife = (int)ScreenCanvas.FPS; // bullets live 1 sec
+            _remainingFrames = (int)ScreenCanvas.FPS; // bullets live 1 sec
             currLoc = parentShip.GetCurrLoc();
             radians = parentShip.GetRadians();
 
@@ -67,11 +70,16 @@ namespace Asteroids.Standard.Components
         /// <returns></returns>
         public override bool Move()
         {
-            // only draw things that are not available
-            if (IsAvailable)
-                iLife -= 1;
-
-            return base.Move();
+            // only draw if in flight
+            if (IsInFlight)
+            {
+                _remainingFrames -= 1;
+                return base.Move();
+            }
+            else
+            {
+                return false;
+            }
         }
 
         //public override void Draw()
