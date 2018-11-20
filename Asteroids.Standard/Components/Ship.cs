@@ -27,6 +27,7 @@ namespace Asteroids.Standard.Components
         public Ship() : base(new Point(ScreenCanvas.CANVAS_WIDTH / 2, ScreenCanvas.CANVAS_HEIGHT / 2))
         {
             IsThrustOn = false;
+            ExplosionLength = 2;
         }
 
         protected override void InitPoints()

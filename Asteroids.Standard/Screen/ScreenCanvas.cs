@@ -151,6 +151,24 @@ namespace Asteroids.Standard.Screen
             AddPolygon(ptsPoly, penColor);
         }
 
+        /// <summary>
+        /// Translates to Canvas coordinates and adds a line vector.
+        /// </summary>
+        /// <param name="origin">Staring point for the line vector.</param>
+        /// <param name="canvasOffsetX">Offset X to be added AFTER translation of the origin.</param>
+        /// <param name="canvasOffsetY">Offset Y to be added AFTER translation of the origin.</param>
+        /// <param name="penColor">Hex color to apply to the line vector.</param>
+        public void LoadVector(Point origin, int canvasOffsetX, int canvasOffsetY, string penColor)
+        {
+            var ptDraw = new Point(
+                (int)(origin.X / (double)CANVAS_WIDTH * Size.Width),
+                (int)(origin.Y / (double)CANVAS_HEIGHT * Size.Height)
+            );
+
+            var ptDraw2 = new Point(ptDraw.X + canvasOffsetX, ptDraw.Y + canvasOffsetY);
+            AddLine(ptDraw, ptDraw2, penColor);
+        }
+
         #region Statics
 
         /// <summary>

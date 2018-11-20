@@ -9,23 +9,28 @@ namespace Asteroids.Standard.Components
     /// </summary>
     class Explosion  : CommonOps //: ScreenObject
     {
-        public const int DEFAULT_LENGTH = 2;
-        const int NUM_EXP_POINTS = 22; // more points is more dazzling
-        const int EXPLOSION_LIFE = (int)ScreenCanvas.FPS / 2; // default life of explosion is 1/2 sec
-        int lifeLeft;
-        Point[] ptPoints;
-        Point[] ptPointsVelocity;
+        public const int DEFAULT_LENGTH = 1;
+        private const int NUM_EXP_POINTS = 22; // more points is more dazzling
+        private const int EXPLOSION_LIFE = (int)ScreenCanvas.FPS / 2; // default life of explosion is 1/2 sec
+
+        public Point[] Points { get; }
+        public Point[] Velocities { get; }
+
+        private int _framesRemaining;
 
         public Explosion(Point ptExplosion, double timeFactor = DEFAULT_LENGTH) // : base(ptExplosion)
         {
-            lifeLeft = (int)(EXPLOSION_LIFE * timeFactor);
-            ptPoints = new Point[NUM_EXP_POINTS];
-            ptPointsVelocity = new Point[NUM_EXP_POINTS];
+            _framesRemaining = (int)(EXPLOSION_LIFE * timeFactor);
+            Points = new Point[NUM_EXP_POINTS];
+            Velocities = new Point[NUM_EXP_POINTS];
+
             for (int i = 0; i < NUM_EXP_POINTS; i++)
             {
-                ptPoints[i] = ptExplosion;
-                ptPointsVelocity[i] = new Point((int)((Random.Next(1200) - 600) / ScreenCanvas.FPS),
-                                                (int)((Random.Next(1200) - 600) / ScreenCanvas.FPS));
+                Points[i] = ptExplosion;
+                Velocities[i] = new Point(
+                    (int)((Random.Next(1200) - 600) / ScreenCanvas.FPS)
+                    , (int)((Random.Next(1200) - 600) / ScreenCanvas.FPS)
+                );
             }
         }
 
@@ -38,42 +43,42 @@ namespace Asteroids.Standard.Components
         //public override bool Move()
         public bool Move()
         {
-            if (lifeLeft > 0)
+            if (_framesRemaining > 0)
             {
                 for (int i = 0; i < NUM_EXP_POINTS; i++)
                 {
-                    ptPoints[i].X += ptPointsVelocity[i].X;
-                    ptPoints[i].Y += ptPointsVelocity[i].Y;
+                    Points[i].X += Velocities[i].X;
+                    Points[i].Y += Velocities[i].Y;
 
-                    if (ptPoints[i].X < 0)
-                        ptPoints[i].X = ScreenCanvas.CANVAS_WIDTH - 1;
-                    if (ptPoints[i].X >= ScreenCanvas.CANVAS_WIDTH)
-                        ptPoints[i].X = 0;
-                    if (ptPoints[i].Y < 0)
-                        ptPoints[i].Y = ScreenCanvas.CANVAS_HEIGHT - 1;
-                    if (ptPoints[i].Y >= ScreenCanvas.CANVAS_HEIGHT)
-                        ptPoints[i].Y = 0;
+                    if (Points[i].X < 0)
+                        Points[i].X = ScreenCanvas.CANVAS_WIDTH - 1;
+                    if (Points[i].X >= ScreenCanvas.CANVAS_WIDTH)
+                        Points[i].X = 0;
+                    if (Points[i].Y < 0)
+                        Points[i].Y = ScreenCanvas.CANVAS_HEIGHT - 1;
+                    if (Points[i].Y >= ScreenCanvas.CANVAS_HEIGHT)
+                        Points[i].Y = 0;
                 }
-                lifeLeft -= 1;
+                _framesRemaining -= 1;
                 return true;
             }
             else
                 return false;
         }
 
-        public void Draw(ScreenCanvas canvas, string colorHex)
-        {
-            for (int i = 0; i < NUM_EXP_POINTS; i++)
-            {
-                Point ptDraw = new Point(
-                    (int)(ptPoints[i].X / (double)ScreenCanvas.CANVAS_WIDTH * canvas.Size.Width),
-                    (int)(ptPoints[i].Y / (double)ScreenCanvas.CANVAS_HEIGHT * canvas.Size.Height)
-                    );
+        //public void Draw(ScreenCanvas canvas)
+        //{
+        //    for (int i = 0; i < NUM_EXP_POINTS; i++)
+        //    {
+        //        Point ptDraw = new Point(
+        //            (int)(Points[i].X / (double)ScreenCanvas.CANVAS_WIDTH * canvas.Size.Width),
+        //            (int)(Points[i].Y / (double)ScreenCanvas.CANVAS_HEIGHT * canvas.Size.Height)
+        //        );
 
-                Point ptDraw2 = new Point(ptDraw.X + 1, ptDraw.Y + 1);
+        //        Point ptDraw2 = new Point(ptDraw.X + 1, ptDraw.Y + 1);
 
-                canvas.AddLine(ptDraw, ptDraw2, colorHex);
-            }
-        }
+        //        canvas.AddLine(ptDraw, ptDraw2, GetRandomFireColor());
+        //    }
+        //}
     }
 }

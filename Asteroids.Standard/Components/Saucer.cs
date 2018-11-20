@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
-using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
@@ -21,19 +21,20 @@ namespace Asteroids.Standard.Components
         private int _currentPass = 0;
 
         /// <summary>
-        /// Guided <see cref="Missile"/> for targeting a <see cref="Ship"/>.
-        /// </summary>
-        public Missile Missile { get; private set; }
-
-        /// <summary>
         /// Creates a new instance of <see cref="Saucer"/>.
         /// </summary>
         /// <param name="location">Absolute origin (bottom-left) of the object.</param>
         /// <param name="canvas">Canvas to draw on.</param>
         public Saucer(Point location) : base(location)
         {
+            ExplosionLength = 2;
             SetVelocity();
         }
+
+        /// <summary>
+        /// Guided <see cref="Missile"/> for targeting a <see cref="Ship"/>.
+        /// </summary>
+        public Missile Missile { get; private set; }
 
         /// <summary>
         /// Populates the base template collection of points to draw.
@@ -50,8 +51,14 @@ namespace Asteroids.Standard.Components
         /// <returns>Indication if the move was completed.</returns>
         public override bool Move()
         {
+            if (!IsAlive)
+                return false;
+
             //Stop if the next move will put it over the allow number of passes
-            if (!IsAlive || currLoc.X + velocityX >= ScreenCanvas.CANVAS_WIDTH && ++_currentPass >= MaximumPasses)
+            var x = currLoc.X + velocityX;
+
+            if ((x <= 0 || x >= ScreenCanvas.CANVAS_WIDTH)
+                && (Interlocked.Increment(ref _currentPass) >= MaximumPasses))
                 return false;
 
             return base.Move();
@@ -64,15 +71,22 @@ namespace Asteroids.Standard.Components
         /// <see cref="Point"/> to target; <see cref="null"/> moves <see cref="Missile"/> forward.</param>
         public void Target(Point? target)
         {
-            //Make sure there is a missile
-            if (!Missile?.IsAlive == true)
-                Missile = new Missile(this);
+            var isMissile = Missile?.IsAlive == true;
 
-            //Move to the point or simply forward
             if (target.HasValue)
+            {
+                //Make sure there is a missile
+                if (!isMissile)
+                    Missile = new Missile(this);
+
+                //move towards the target
                 Missile.Move(target.Value);
-            else
+            }
+            else if (isMissile)
+            {
+                //No target but the missile is alive so move forward
                 Missile.Move();
+            }
         }
 
         /// <summary>

@@ -14,10 +14,7 @@ namespace Asteroids.Standard.Screen
         #region Fields and constructor
 
         private const int SAFE_DISTANCE = 2000;
-
         private readonly ScreenObjectCache _cache;
-        private int _currentScore;
-        
 
         /// <summary>
         /// Manages object collection and scoring for a <see cref="Game"/>.
@@ -35,19 +32,10 @@ namespace Asteroids.Standard.Screen
         #region Prep and Completion
 
         /// <summary>
-        /// Clears all current caches for a new set of collision checks.
-        /// </summary>
-        public void Reset()
-        {
-            _currentScore = 0;
-        }
-
-        /// <summary>
-        /// Finalize updates to the <see cref="Score"/> and <see cref="AsteroidBelt"/>.
+        /// Finalize updates to the <see cref="AsteroidBelt"/>.
         /// </summary>
         public void Complete()
         {
-            _cache.Score.AddScore(_currentScore);
             _cache.Belt.SetAsteroids(_cache.Asteroids.Select(ca => ca.ScreenObject).ToList());
         }
 
@@ -113,7 +101,7 @@ namespace Asteroids.Standard.Screen
                 break;
             }
 
-            _currentScore += score;
+            _cache.Score.AddScore(score);
             return score > 0;
         }
 
@@ -180,10 +168,10 @@ namespace Asteroids.Standard.Screen
 
             if (saucerHit)
             {
-                _currentScore += Saucer.KillScore;
+                _cache.Score.AddScore(Saucer.KillScore);
 
                 foreach (var explosion in _cache.Saucer.Explode())
-                    _cache.Explosions.Add(explosion);
+                    _cache.AddExplosion(explosion);
             }
 
             return saucerHit;
@@ -202,46 +190,13 @@ namespace Asteroids.Standard.Screen
             if (_cache.MissilePoints == null)
                 return false;
 
-            var missilePts = _cache.Saucer.Missile.GetPoints();
-            var missileHit = polygonPoints.ContainsAnyPoint(missilePts);
+            var missileHit = polygonPoints.ContainsAnyPoint(_cache.MissilePoints);
 
             if (missileHit)
                 foreach (var explosion in _cache.Saucer.Missile.Explode())
-                    _cache.Explosions.Add(explosion);
+                    _cache.AddExplosion(explosion);
 
             return missileHit;
-        }
-
-        #endregion
-
-        #region Explosions
-
-        /// <summary>
-        /// Adds a new explosion to the current queue.
-        /// </summary>
-        /// <param name="explosion"><see cref="Explosion"/> to load.</param>
-        public void AddExplosion(Explosion explosion)
-        {
-            _cache.Explosions.Add(explosion);
-        }
-
-        /// <summary>
-        /// Adds a new explosion to the current queue.
-        /// </summary>
-        /// <param name="point"><see cref="Point"/> to create new <see cref="Explosion"/> to load.</param>
-        public void AddExplosion(Point point)
-        {
-            AddExplosion(new Explosion(point));
-        }
-
-        /// <summary>
-        /// Adds a new explosions to the current queue.
-        /// </summary>
-        /// <param name="explosions"><see cref="Explosion"/>s to load.</param>
-        public void AddExplosions(IList<Explosion> explosions)
-        {
-            foreach (var explosion in explosions)
-                AddExplosion(explosion);
         }
 
         #endregion
@@ -273,12 +228,16 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public void MoveExplosions()
         {
-            var explosions = _cache.Explosions;
+            var explosions = _cache.GetExplosions();
 
             //Move does not use locks but have to account for removals
             for (int i = explosions.Count - 1; i >= 0; i--)
-                if (!explosions[i].Move())
-                    explosions.RemoveAt(i);
+            {
+                var explosion = explosions[i];
+
+                if (!explosion.Move())
+                    _cache.RemoveExplosion(explosion);
+            }
         }
 
         #endregion

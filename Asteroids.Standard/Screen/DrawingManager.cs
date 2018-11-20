@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -25,32 +26,6 @@ namespace Asteroids.Standard.Screen
 
         #region Drawing Primatives
 
-        /// <summary>
-        /// Generates a ranom color for any fire or explosion.
-        /// </summary>
-        /// <returns>Color hex string.</returns>
-        private string GetRandomFireColor()
-        {
-            string penDraw;
-
-            switch (Random.Next(3))
-            {
-                case 0:
-                    penDraw = ColorHexStrings.RedHex;
-                    break;
-                case 1:
-                    penDraw = ColorHexStrings.YellowHex;
-                    break;
-                case 2:
-                    penDraw = ColorHexStrings.OrangeHex;
-                    break;
-                default:
-                    penDraw = ColorHexStrings.WhiteHex;
-                    break;
-            }
-            return penDraw;
-        }
-
         private void DrawPolygon(IList<Point> points)
         {
             DrawPolygon(points, ColorHexStrings.WhiteHex);
@@ -59,6 +34,11 @@ namespace Asteroids.Standard.Screen
         private void DrawPolygon(IList<Point> points, string colorHex)
         {
             _canvas.LoadPolygon(points, colorHex);
+        }
+
+        private void DrawVector(Point origin, int offsetX, int offsetY, string colorHex)
+        {
+            _canvas.LoadVector(origin, offsetX, offsetY, colorHex);
         }
 
         #endregion
@@ -122,13 +102,16 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         private void DrawSaucer()
         {
-            if (_cache.Saucer == null || !_cache.Saucer.IsAlive == false)
+            if (_cache.Saucer?.IsAlive != true)
                 return;
 
             //Draw the saucer
             DrawPolygon(_cache.SaucerPoints);
 
             //Draw its missile
+            if (_cache.MissilePoints?.Any() != true)
+                return;
+
             DrawPolygon(_cache.MissilePoints);
 
             //Draw flame for the missile
@@ -184,9 +167,19 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         private void DrawExplosions()
         {
-            foreach (var explosion in _cache.Explosions)
-                explosion.Draw(_canvas, GetRandomFireColor());
-           
+            var explosions = _cache.GetExplosions();
+
+            foreach (var explosion in explosions)
+                DrawExplosion(explosion);
+        }
+
+        /// <summary>
+        /// Draws an explosion to the canvas.
+        /// </summary>
+        private void DrawExplosion(Explosion explosion)
+        {
+            foreach (var point in explosion.Points)
+                DrawVector(new Point(point.X, point.Y), 1, 1, GetRandomFireColor());
         }
 
         #endregion

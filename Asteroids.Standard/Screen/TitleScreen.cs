@@ -40,7 +40,6 @@ namespace Asteroids.Standard.Screen
                 new Score(new TextDraw(_canvas))
                 , null
                 , new AsteroidBelt(15, Asteroid.ASTEROID_SIZE.SMALL)
-                , new Explosions()
                 , new List<Bullet>()
             );
         }

@@ -4,7 +4,6 @@ using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Enums;
-using Asteroids.Standard.Helpers;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Screen
@@ -41,7 +40,7 @@ namespace Asteroids.Standard.Screen
             _canvas = canvas;
 
             //Start with 4 asteroids
-            _currentLevel = 4; 
+            _currentLevel = 4;
             _inProcess = true;
 
             //Setup caches with a new ship
@@ -49,8 +48,7 @@ namespace Asteroids.Standard.Screen
                 _score
                 , new Ship()
                 , new AsteroidBelt(_currentLevel)
-                , new Explosions()
-                , Enumerable.Range(0,4).Select(i => new Bullet()).ToList()
+                , Enumerable.Range(0, 4).Select(i => new Bullet()).ToList()
             );
 
             _collisionManager = new CollisionManager(_cache);
@@ -117,7 +115,7 @@ namespace Asteroids.Standard.Screen
                 return;
 
             if (!_cache.Ship.Hyperspace())
-                _collisionManager.AddExplosions(_cache.Ship.Explode());
+                _cache.AddExplosions(_cache.Ship.Explode());
         }
 
         public void Shoot()
@@ -135,7 +133,7 @@ namespace Asteroids.Standard.Screen
                     return;
                 }
             }
-            else if (_cache.Explosions.Count() == 0 && _score.HasReserveShips())
+            else if (_cache.ExplosionCount() == 0 && _score.HasReserveShips())
             {
                 _score.DecrementReserveShips();
                 _cache.UpdatedShip(new Ship());
@@ -207,12 +205,13 @@ namespace Asteroids.Standard.Screen
             }
             else // Do all game processing if game is not paused
             {
-                _collisionManager.Reset();
                 var origScore = _score.CurrentScore;
 
                 // If no ship displaying, after explosions are done
                 // get a new one - or end the game
-                if (!_cache.Ship.IsAlive && _cache.Explosions.Count() == 0)
+                var noExplosions = _cache.ExplosionCount() == 0;
+
+                if (!_cache.Ship.IsAlive && noExplosions)
                 {
                     if (!_score.HasReserveShips())
                     {
@@ -227,7 +226,7 @@ namespace Asteroids.Standard.Screen
                 }
 
                 // Create a new asteroid belt if no explosions and no asteroids
-                if ((_cache.Explosions.Count() == 0) && _cache.Belt.Count() == 0)
+                if (noExplosions && _cache.Belt.Count() == 0)
                     _cache.UpdateBelt(new AsteroidBelt(++_currentLevel));
 
                 // Move all objects starting with the ship
@@ -238,8 +237,12 @@ namespace Asteroids.Standard.Screen
                 {
                     if (_cache.Saucer.Move())
                     {
-                        //Aim for the ship
-                        _cache.Saucer.Target(_cache.Ship.GetCurrLoc());
+                        //Aim for the ship oe nothing
+                        var target = _cache.Ship.IsAlive
+                            ? _cache.Ship.GetCurrLoc()
+                            : default(Point?);
+
+                        _cache.Saucer.Target(target);
                     }
                     else
                     {
@@ -259,11 +262,11 @@ namespace Asteroids.Standard.Screen
                 {
                     var points = new List<Point> { bullet.Location };
 
-                    if (_collisionManager.AsteroidBeltCollision(points) 
-                        || _collisionManager.SaucerCollision(points) 
+                    if (_collisionManager.AsteroidBeltCollision(points)
+                        || _collisionManager.SaucerCollision(points)
                         || _collisionManager.MissileCollision(bullet.ScreenObject.GetPoints()))
                     {
-                        _collisionManager.AddExplosion(bullet.Location);
+                        _cache.AddExplosion(bullet.Location);
                         bullet.ScreenObject.Disable();
                     }
                 }
@@ -278,7 +281,7 @@ namespace Asteroids.Standard.Screen
                         || _collisionManager.AsteroidBeltCollision(shipPoints)
                         )
                         foreach (var explosion in _cache.Ship.Explode())
-                            _collisionManager.AddExplosion(explosion);
+                            _cache.AddExplosion(explosion);
                 }
 
                 //See if a bullet or the ship hit the saucer
