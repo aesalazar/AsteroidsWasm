@@ -236,7 +236,7 @@ namespace Asteroids.Standard.Screen
                 {
                     var shipPoints = _cache.ShipPoints;
 
-                    if (_collisionManager.AsteroidBeltCollision(shipPoints)
+                    if (_collisionManager.SaucerCollision(shipPoints)
                         || _collisionManager.MissileCollision(shipPoints)
                         || _collisionManager.AsteroidBeltCollision(shipPoints)
                         )

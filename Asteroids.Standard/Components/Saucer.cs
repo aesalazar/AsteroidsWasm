@@ -113,23 +113,11 @@ namespace Asteroids.Standard.Components
                 .ToList();
         }
 
-        ///// <summary>
-        ///// Draw the Flying Saucer.
-        ///// </summary>
-        //public override void Draw()
-        //{
-        //    if (!IsAlive)
-        //        return;
-
-        //    base.Draw();
-        //    Missile?.Draw();
-        //}
-
         #region Statics
 
         private const int SizeLong = 300;
-        private const int SizeMedium = SizeLong * 2 / 3;
-        private const int SizeShort = SizeLong / 3;
+        private const int SizeMedium = SizeLong * 2 / 4;
+        private const int SizeShort = SizeLong / 4;
 
         /// <summary>
         /// Non-transformed point template for creating a new flying saucer.
