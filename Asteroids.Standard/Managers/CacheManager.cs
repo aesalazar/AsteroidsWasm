@@ -3,17 +3,22 @@ using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
+using Asteroids.Standard.Screen;
 
-namespace Asteroids.Standard.Screen
+namespace Asteroids.Standard.Managers
 {
-    class ScreenObjectCache
+    /// <summary>
+    /// Manages object collection and scoring for a <see cref="Game"/> in an effort
+    /// to optimize locking and point manipulation.
+    /// </summary>
+    class CacheManager
     {
         #region Constructor
 
         /// <summary>
-        /// Manages object collection and scoring for a <see cref="Game"/>.
+        /// Create a new instance of <see cref="CacheManager"/>.
         /// </summary>
-        public ScreenObjectCache(Score score, Ship ship, AsteroidBelt belt, IList<Bullet> bullets)
+        public CacheManager(ScoreManager score, Ship ship, AsteroidBelt belt, IList<Bullet> bullets)
         {
             Score = score;
             Ship = ship;
@@ -38,7 +43,8 @@ namespace Asteroids.Standard.Screen
 
         private readonly IList<Explosion> _explosions;
         private readonly IList<Bullet> _bullets;
-        public Score Score { get; }
+
+        public ScoreManager Score { get; }
 
         //Live and die
         public Ship Ship { get; private set; }
@@ -204,7 +210,7 @@ namespace Asteroids.Standard.Screen
         #region Classes
 
         /// <summary>
-        /// <see cref="ScreenObject"/> currently in <see cref="ScreenObjectCache"/>.
+        /// <see cref="ScreenObject"/> currently in <see cref="CacheManager"/>.
         /// </summary>
         /// <typeparam name="T">Object Type</typeparam>
         public class CachedObject<T> where T : ScreenObject

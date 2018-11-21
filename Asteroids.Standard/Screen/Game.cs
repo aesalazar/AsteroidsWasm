@@ -4,6 +4,7 @@ using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Enums;
+using Asteroids.Standard.Managers;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Screen
@@ -18,11 +19,11 @@ namespace Asteroids.Standard.Screen
         private const int SAUCER_SCORE = 1000;
         private const int PAUSE_INTERVAL = (int)ScreenCanvas.FPS;
 
-        private readonly Score _score;
+        private readonly ScoreManager _score;
         private readonly TextDraw _textDraw;
         private readonly ScreenCanvas _canvas;
 
-        private readonly ScreenObjectCache _cache;
+        private readonly CacheManager _cache;
         private readonly CollisionManager _collisionManager;
         private readonly DrawingManager _drawingManager;
 
@@ -33,7 +34,7 @@ namespace Asteroids.Standard.Screen
 
         private int _neededSaucerPoints = SAUCER_SCORE;
 
-        public Game(Score score, TextDraw textDraw, ScreenCanvas canvas) : base()
+        public Game(ScoreManager score, TextDraw textDraw, ScreenCanvas canvas) : base()
         {
             _score = score;
             _textDraw = textDraw;
@@ -44,7 +45,7 @@ namespace Asteroids.Standard.Screen
             _inProcess = true;
 
             //Setup caches with a new ship
-            _cache = new ScreenObjectCache(
+            _cache = new CacheManager(
                 _score
                 , new Ship()
                 , new AsteroidBelt(_currentLevel)

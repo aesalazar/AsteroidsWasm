@@ -1,28 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Helpers;
+using Asteroids.Standard.Screen;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
-namespace Asteroids.Standard.Screen
+namespace Asteroids.Standard.Managers
 {
+    /// <summary>
+    /// Manages object collection and scoring for a <see cref="Game"/>.
+    /// </summary>
     class CollisionManager
     {
         #region Fields and constructor
 
         private const int SAFE_DISTANCE = 2000;
-        private readonly ScreenObjectCache _cache;
+        private readonly CacheManager _cache;
 
         /// <summary>
-        /// Manages object collection and scoring for a <see cref="Game"/>.
+        /// Creates a new instance of <see cref="CollisionManager"/>.
         /// </summary>
         /// <param name="score">Score to update when a collection occurs.</param>
         /// <param name="belt">Asteroid belt to update when asteroids are hit.</param>
         /// <param name="bullets">Bullets to check for impacts and scoring.</param>
-        public CollisionManager(ScreenObjectCache cache)
+        public CollisionManager(CacheManager cache)
         {
             _cache = cache;
         }
@@ -94,7 +97,7 @@ namespace Asteroids.Standard.Screen
                 if (newSize != Asteroid.ASTEROID_SIZE.DNE)
                 {
                     var add = new Asteroid(asteroid);
-                    _cache.Asteroids.Add(new ScreenObjectCache.CachedObject<Asteroid>(add));
+                    _cache.Asteroids.Add(new CacheManager.CachedObject<Asteroid>(add));
                 }
 
                 //Break out of loop

@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Helpers;
+using Asteroids.Standard.Screen;
 
-namespace Asteroids.Standard.Screen
+namespace Asteroids.Standard.Managers
 {
+    /// <summary>
+    /// Manages and optimizes the drawing of the state of <see cref="ScreenObject"/>s 
+    /// stored in a <see cref="CacheManager"/> to a <see cref="ScreenCanvas"/>.
+    /// </summary>
     class DrawingManager : CommonOps
     {
-        private readonly ScreenObjectCache _cache;
+        private readonly CacheManager _cache;
         private readonly ScreenCanvas _canvas;
 
         /// <summary>
-        /// Manages drawing to a canvas.
+        /// Creates a new instance of <see cref="DrawingManager"/>
         /// </summary>
-        public DrawingManager(ScreenObjectCache cache, ScreenCanvas canvas)
+        /// <param name="cache">Screen object cache to draw.</param>
+        /// <param name="canvas">Canvas to draw cache to.</param>
+        public DrawingManager(CacheManager cache, ScreenCanvas canvas)
         {
             _cache = cache;
             _canvas = canvas;

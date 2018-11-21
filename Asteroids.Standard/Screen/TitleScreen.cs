@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Helpers;
+using Asteroids.Standard.Managers;
 
 namespace Asteroids.Standard.Screen
 {
@@ -27,7 +27,7 @@ namespace Asteroids.Standard.Screen
 
         private readonly TextDraw _textDraw;
         private readonly ScreenCanvas _canvas;
-        private readonly ScreenObjectCache _cache;
+        private readonly CacheManager _cache;
 
         public TitleScreen(TextDraw textDraw, ScreenCanvas canvas) : base()
         {
@@ -36,8 +36,8 @@ namespace Asteroids.Standard.Screen
 
             InitTitleScreen();
 
-            _cache = new ScreenObjectCache(
-                new Score(new TextDraw(_canvas))
+            _cache = new CacheManager(
+                new ScoreManager(new TextDraw(_canvas))
                 , null
                 , new AsteroidBelt(15, Asteroid.ASTEROID_SIZE.SMALL)
                 , new List<Bullet>()
