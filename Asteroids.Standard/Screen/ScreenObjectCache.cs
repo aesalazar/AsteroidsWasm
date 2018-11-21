@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Base;
@@ -205,7 +204,7 @@ namespace Asteroids.Standard.Screen
         #region Classes
 
         /// <summary>
-        /// <see cref="Asteroid"/> currently in <see cref="ScreenObjectCache"/>.
+        /// <see cref="ScreenObject"/> currently in <see cref="ScreenObjectCache"/>.
         /// </summary>
         /// <typeparam name="T">Object Type</typeparam>
         public class CachedObject<T> where T : ScreenObject

@@ -16,11 +16,6 @@ namespace Asteroids.Standard.Components
         const double ROTATE_SPEED = 12000 / ScreenCanvas.FPS;
 
         /// <summary>
-        /// Indicates if the ship is currently acceleration via thrust.
-        /// </summary>
-        public bool IsThrustOn { get; private set; }
-
-        /// <summary>
         /// Creates and immediately draws an instance of <see cref="Ship"/>.
         /// </summary>
         /// <param name="canvas">Canvas to draw on.</param>
@@ -36,14 +31,26 @@ namespace Asteroids.Standard.Components
             AddPoints(PointsTemplate);
         }
 
+        /// <summary>
+        /// Indicates if the ship is currently accelerating via thrust.
+        /// </summary>
+        public bool IsThrustOn { get; private set; }
+
+        /// <summary>
+        /// Jump to another part of the canvas with a 10% of failure.
+        /// </summary>
+        /// <returns>Indication if the jump was considered a failure.</returns>
         public bool Hyperspace()
         {
-            bool bSafeHyperspace = Random.Next(10) != 1;
             currLoc.X = Random.Next((int)(ScreenCanvas.CANVAS_WIDTH * .8)) + (int)(ScreenCanvas.CANVAS_WIDTH * .1);
             currLoc.Y = Random.Next((int)(ScreenCanvas.CANVAS_HEIGHT * .8)) + (int)(ScreenCanvas.CANVAS_HEIGHT * .1);
-            return bSafeHyperspace;
+            return Random.Next(10) != 1;
         }
 
+        /// <summary>
+        /// Blows up the ship.
+        /// </summary>
+        /// <returns>Collection of the ships last location polygon.</returns>
         public override IList<Explosion> Explode()
         {
             PlaySound(this, ActionSound.Explode1);
@@ -53,6 +60,9 @@ namespace Asteroids.Standard.Components
             return base.Explode();
         }
 
+        /// <summary>
+        /// Reduces speed by 1 frame's worth.
+        /// </summary>
         public void DecayThrust()
         {
             IsThrustOn = false;
@@ -61,6 +71,9 @@ namespace Asteroids.Standard.Components
             velocityY = velocityY * (1 - 1 / ScreenCanvas.FPS);
         }
 
+        /// <summary>
+        /// Increase speed by 1 frame's worth.
+        /// </summary>
         public void Thrust()
         {
             IsThrustOn = true;
@@ -88,48 +101,21 @@ namespace Asteroids.Standard.Components
             PlaySound(this, ActionSound.Thrust);
         }
 
+        /// <summary>
+        /// Rotate the ship left by one frame's worth.
+        /// </summary>
         public void RotateLeft()
         {
             Rotate(-ROTATE_SPEED);
         }
 
+        /// <summary>
+        /// Rotate the ship right by one frame's worth.
+        /// </summary>
         public void RotateRight()
         {
             Rotate(ROTATE_SPEED);
         }
-
-        //public override void Draw()
-        //{
-        //    if (!IsAlive)
-        //        return;
-
-        //    base.Draw();
-
-        //    //Draw flame if thrust is on
-        //    if (bThrustOn)
-        //    {
-        //        // We have points transformed so we know where the bottom of the ship is
-        //        var alPoly = new List<Point>
-        //        {
-        //            Capacity = 3
-        //        };
-
-        //        var pts = GetPoints();
-
-        //        alPoly.Add(pts[PointThrust1]);
-        //        alPoly.Add(pts[PointThrust2]);
-
-        //        int iThrustSize = Random.Next(200) + 100; // random thrust effect
-
-        //        alPoly.Add(new Point(
-        //            (pts[PointThrust1].X + pts[PointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
-        //            (pts[PointThrust1].Y + pts[PointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))
-        //        ));
-
-        //        // Draw thrust directly to ScreenCanvas; it's not really part of the ship object
-        //        DrawPolygons(alPoly, GetRandomFireColor());
-        //    }
-        //}
 
         #region Statics
 

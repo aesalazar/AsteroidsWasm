@@ -38,11 +38,11 @@ namespace Asteroids.Standard.Base
         }
 
         #region State
-        
+
         /// <summary>
         /// Relative time length at which the object explodes.
         /// </summary>
-        protected int ExplosionLength = Explosion.DEFAULT_LENGTH;
+        protected int ExplosionLength = ScreenCanvas.DEFAULT_EXPLOSION_LENGTH;
 
         /// <summary>
         /// Indicates if the object is alive.
@@ -279,36 +279,6 @@ namespace Asteroids.Standard.Base
         }
 
         #endregion
-
-        //#region Drawing
-
-        ///// <summary>
-        ///// Generates a ranom color for any fire or explosion.
-        ///// </summary>
-        ///// <returns>Color hex string.</returns>
-        //protected string GetRandomFireColor()
-        //{
-        //    string penDraw;
-
-        //    switch (Random.Next(3))
-        //    {
-        //        case 0:
-        //            penDraw = ColorHexStrings.RedHex;
-        //            break;
-        //        case 1:
-        //            penDraw = ColorHexStrings.YellowHex;
-        //            break;
-        //        case 2:
-        //            penDraw = ColorHexStrings.OrangeHex;
-        //            break;
-        //        default:
-        //            penDraw = ColorHexStrings.WhiteHex;
-        //            break;
-        //    }
-        //    return penDraw;
-        //}
-
-        //#endregion
-
+        
     }
 }

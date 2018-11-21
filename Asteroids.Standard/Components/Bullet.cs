@@ -30,21 +30,13 @@ namespace Asteroids.Standard.Components
         /// </summary>
         public bool IsInFlight => _remainingFrames > 0;
 
+        /// <summary>
+        /// Prevents the bullet from being redrawn.
+        /// </summary>
         public void Disable()
         {
             _remainingFrames = 0;
         }
-
-        ///// <summary>
-        ///// Determines if the bullet is <see cref="Available()"/>.
-        ///// </summary>
-        ///// <param name="location">Current <see cref="Point"/> location.</param>
-        ///// <returns>Indication if the bullet is consided available.</returns>
-        //public bool AcquireLoc(out Point location)
-        //{
-        //    location = currLoc;
-        //    return !Available();
-        //}
 
         /// <summary>
         /// Fire the bullet from a parent ship.
@@ -62,7 +54,6 @@ namespace Asteroids.Standard.Components
             velocityX = (int)(-100 * SinVal) + parentShip.GetVelocityX();
             velocityY = (int)(100 * CosVal) + parentShip.GetVelocityY();
         }
-
 
         /// <summary>
         /// Decrement the bullets life and move.

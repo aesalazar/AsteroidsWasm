@@ -204,6 +204,11 @@ namespace Asteroids.Standard.Screen
         /// </remarks>
         public const int CANVAS_HEIGHT = 7500;
 
+        /// <summary>
+        /// Default explotion Timefactor.
+        /// </summary>
+        public const int DEFAULT_EXPLOSION_LENGTH = 1;
+
         #endregion
     }
 }

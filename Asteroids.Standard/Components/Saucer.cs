@@ -101,16 +101,6 @@ namespace Asteroids.Standard.Components
             PlaySound(this, ActionSound.Saucer);
         }
 
-        ///// <summary>
-        ///// Determine score if a point is in contact with the saucer.
-        ///// </summary>
-        ///// <param name="ptsCheck">Point collection to check.</param>
-        ///// <returns>Score of <see cref="KillScore"/> if inside; otherwise 0.</returns>
-        //public int CheckPointScore(IList<Point> ptsCheck)
-        //{
-        //    return GetPoints().ContainsAnyPoint(ptsCheck) ? KillScore : 0;
-        //}
-
         /// <summary>
         /// Blow up the saucer.
         /// </summary>

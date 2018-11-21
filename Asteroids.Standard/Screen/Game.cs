@@ -142,47 +142,6 @@ namespace Asteroids.Standard.Screen
 
         #endregion
 
-        //private bool CheckAsteroidHit(IList<Point> pointsToCheck)
-        //{
-        //    int pointValue = _belt.CheckPointCollisions(pointsToCheck);
-        //    if (pointValue > 0)
-        //    {
-        //        _score.AddScore(pointValue);
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
-        //private bool CheckSaucerHit(IList<Point> pointsToCheck)
-        //{
-        //    if (_saucer == null || !_saucer.IsAlive)
-        //        return false;
-
-        //    var pointValue = _saucer.CheckPointScore(pointsToCheck);
-        //    if (pointValue > 0)
-        //    {
-        //        _score.AddScore(pointValue);
-        //        _saucer.Explode(_explosions);
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
-
-        //private bool CheckMissileHit(IList<Point> polygonPoints)
-        //{
-        //    if (_saucer == null || _saucer.Missile == null || !_saucer.Missile.IsAlive)
-        //        return false;
-
-        //    var missilePts = _saucer.Missile.GetPoints();
-        //    var missileHit = polygonPoints.ContainsAnyPoint(missilePts);
-
-        //    if (missileHit)
-        //        _saucer.Missile.Explode(_explosions);
-
-        //    return missileHit;
-        //}
-
         #region Paint the Screen
 
         public void DrawScreen()
