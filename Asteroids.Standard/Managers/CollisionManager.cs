@@ -31,19 +31,7 @@ namespace Asteroids.Standard.Managers
         }
 
         #endregion
-
-        #region Prep and Completion
-
-        /// <summary>
-        /// Finalize updates to the <see cref="AsteroidBelt"/>.
-        /// </summary>
-        public void Complete()
-        {
-            _cache.Belt.SetAsteroids(_cache.Asteroids.Select(ca => ca.ScreenObject).ToList());
-        }
-
-        #endregion
-
+        
         #region Asteroids
 
         /// <summary>
@@ -63,7 +51,6 @@ namespace Asteroids.Standard.Managers
             {
                 var asteroid = asteroids[i].ScreenObject;
                 var location = asteroids[i].Location;
-                var points = asteroids[i].PolygonPoints;
 
                 //Got to next point if not a hit
                 if (!AsteroidCollision(location, asteroid.Size, pointsToCheck))
@@ -79,7 +66,7 @@ namespace Asteroids.Standard.Managers
                         PlaySound(this, ActionSound.Explode3);
 
                         //Destroyed so remove
-                        _cache.Asteroids.RemoveAt(i);
+                        _cache.RemoveAsteroid(i);
                         break;
 
                     case Asteroid.ASTEROID_SIZE.SMALL:
@@ -95,10 +82,7 @@ namespace Asteroids.Standard.Managers
 
                 // Add a new asteroid if it wasn't small
                 if (newSize != Asteroid.ASTEROID_SIZE.DNE)
-                {
-                    var add = new Asteroid(asteroid);
-                    _cache.Asteroids.Add(new CacheManager.CachedObject<Asteroid>(add));
-                }
+                    _cache.AddAsteroid(new Asteroid(asteroid));
 
                 //Break out of loop
                 break;

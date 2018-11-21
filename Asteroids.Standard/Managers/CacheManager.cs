@@ -60,7 +60,6 @@ namespace Asteroids.Standard.Managers
         public IList<CachedObject<Bullet>> BulletsInFlight { get; private set; }
         public IList<CachedObject<Bullet>> BulletsAvailable { get; private set; }
 
-
         #endregion
 
         #region Prep
@@ -146,6 +145,26 @@ namespace Asteroids.Standard.Managers
                 .GetAsteroids()
                 .Select(a => new CachedObject<Asteroid>(a))
                 .ToList();
+        }
+
+        /// <summary>
+        /// Adds a new <see cref="Asteroid"/> to <see cref="Asteroids"/> and
+        /// updates <see cref="Belt"/>.
+        /// </summary>
+        public void AddAsteroid(Asteroid asteroid)
+        {
+            Asteroids.Add(new CachedObject<Asteroid>(asteroid));
+            Belt.SetAsteroids(Asteroids.Select(c => c.ScreenObject).ToList());
+        }
+
+        /// <summary>
+        /// Removes an <see cref="Asteroid"/> from <see cref="Asteroids"/> and
+        /// updates <see cref="Belt"/>.
+        /// </summary>
+        public void RemoveAsteroid(int idx)
+        {
+            Asteroids.RemoveAt(idx);
+            Belt.SetAsteroids(Asteroids.Select(c => c.ScreenObject).ToList());
         }
 
         #endregion

@@ -269,7 +269,6 @@ namespace Asteroids.Standard.Screen
             }
 
             //Commit the changes
-            _collisionManager.Complete();
             _cache.Repopulate();
 
             // Draw all objects
