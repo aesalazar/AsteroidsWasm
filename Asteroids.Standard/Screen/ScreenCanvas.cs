@@ -9,6 +9,13 @@ using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.Standard.Screen
 {
+
+    /// <summary>
+    /// Drawing canvas to which all heights and widths will be scaled.
+    /// </summary>
+    /// <remarks>
+    /// Angle 0 is pointing "down", 90 is "left" on the canvas
+    /// </remarks>
     public class ScreenCanvas
     {
         private readonly object _updatePointsLock;
@@ -19,6 +26,10 @@ namespace Asteroids.Standard.Screen
         private Point _lastPoint;
         private string _lastPen;
 
+        /// <summary>
+        /// Creates a new instance of <see cref="ScreenCanvas"/>.
+        /// </summary>
+        /// <param name="size">Initial actual size.</param>
         public ScreenCanvas(Rectangle size)
         {
             Size = size;
@@ -33,8 +44,14 @@ namespace Asteroids.Standard.Screen
             _lastPen = ColorHexStrings.TransparentHex;
         }
 
+        /// <summary>
+        /// Current ACTUAL size of the canvas.
+        /// </summary>
         public Rectangle Size { get; set; }
 
+        /// <summary>
+        /// Clears all stored points and polygons.
+        /// </summary>
         public void Clear()
         {
             lock (_updatePointsLock)
@@ -44,6 +61,9 @@ namespace Asteroids.Standard.Screen
                 _polys.Clear();
         }
 
+        /// <summary>
+        /// Draws all stored lines and points to the <see cref="IGraphicContainer"/>.
+        /// </summary>
         public async Task Draw(IGraphicContainer container)
         {
             var pts = new List<Tuple<Point[], string>>();
@@ -72,6 +92,9 @@ namespace Asteroids.Standard.Screen
             await container.Draw(glines, gpolys);
         }
 
+        /// <summary>
+        /// Adds a line between two points with a pen color without translation.
+        /// </summary>
         public void AddLine(Point ptStart, Point ptEnd, string penColor)
         {
             _lastPoint = ptEnd;
@@ -82,20 +105,110 @@ namespace Asteroids.Standard.Screen
                 _points.Add(new Tuple<Point[], string>(pts, penColor));
         }
 
+        /// <summary>
+        /// Adds a line between two points with a white pen without translation.
+        /// </summary>
         public void AddLine(Point ptStart, Point ptEnd)
         {
             AddLine(ptStart, ptEnd, ColorHexStrings.WhiteHex);
         }
 
+        /// <summary>
+        /// Adds a line from the last <see cref="Point"/> added from the last Line without
+        /// translation.
+        /// </summary>
         public void AddLineTo(Point ptEnd)
         {
             AddLine(_lastPoint, ptEnd, _lastPen);
         }
 
-        public void AddPolygon(Point[] ptArray, string penColor)
+        /// <summary>
+        /// Add a collection of <see cref="Point"/>s that make up a polygon to the interal collection
+        /// without translation.
+        /// </summary>
+        /// <param name="polygonPoints">Collection of points to draw on the canvas.</param>
+        /// <param name="penColor">Hex color to apply to the polygon.</param>
+        public void AddPolygon(Point[] polygonPoints, string penColor)
         {
             lock (_updatePolysLock)
-                _polys.Add(new Tuple<Point[], string>(ptArray, penColor));
+                _polys.Add(new Tuple<Point[], string>(polygonPoints, penColor));
         }
+
+        /// <summary>
+        /// Translates to Canvas coordinates and adds a collection of points a polygon.
+        /// </summary>
+        /// <param name="polygonPoints">Collection of points to draw on the canvas.</param>
+        /// <param name="penColor">Hex color to apply to the polygon.</param>
+        public void LoadPolygon(IList<Point> polygonPoints, string penColor)
+        {
+            var ptsPoly = new Point[polygonPoints.Count];
+            for (int i = 0; i < polygonPoints.Count; i++)
+            {
+                ptsPoly[i].X = (int)(polygonPoints[i].X / (double)CANVAS_WIDTH * Size.Width);
+                ptsPoly[i].Y = (int)(polygonPoints[i].Y / (double)CANVAS_HEIGHT * Size.Height);
+            }
+
+            AddPolygon(ptsPoly, penColor);
+        }
+
+        /// <summary>
+        /// Translates to Canvas coordinates and adds a line vector.
+        /// </summary>
+        /// <param name="origin">Staring point for the line vector.</param>
+        /// <param name="canvasOffsetX">Offset X to be added AFTER translation of the origin.</param>
+        /// <param name="canvasOffsetY">Offset Y to be added AFTER translation of the origin.</param>
+        /// <param name="penColor">Hex color to apply to the line vector.</param>
+        public void LoadVector(Point origin, int canvasOffsetX, int canvasOffsetY, string penColor)
+        {
+            var ptDraw = new Point(
+                (int)(origin.X / (double)CANVAS_WIDTH * Size.Width),
+                (int)(origin.Y / (double)CANVAS_HEIGHT * Size.Height)
+            );
+
+            var ptDraw2 = new Point(ptDraw.X + canvasOffsetX, ptDraw.Y + canvasOffsetY);
+            AddLine(ptDraw, ptDraw2, penColor);
+        }
+
+        #region Statics
+
+        /// <summary>
+        /// Refresh rate.
+        /// </summary>
+        public const double FPS = 60;
+
+        /// <summary>
+        /// Conversion from degrees to radians.
+        /// </summary>
+        public const double RADIANS_PER_DEGREE = Math.PI / 180;
+
+        /// <summary>
+        /// Amount of radians in a full circle (i.e. 360 degrees)
+        /// </summary>
+        public const double RADIANS_PER_CIRCLE = Math.PI * 2;
+
+        /// <summary>
+        /// Horizontal width (effective) of the drawing plane.
+        /// </summary>
+        /// <remarks>
+        /// All points and polygons will be drawn using this value and then 
+        /// translated to the actual value set by <see cref="Size"/>.
+        /// </remarks>
+        public const int CANVAS_WIDTH = 10000;
+
+        /// <summary>
+        /// Vertical heigth (effective) of the drawing plane.
+        /// </summary>
+        /// <remarks>
+        /// All points and polygons will be drawn using this value and then 
+        /// translated to the actual value set by <see cref="Size"/>.
+        /// </remarks>
+        public const int CANVAS_HEIGHT = 7500;
+
+        /// <summary>
+        /// Default explotion Timefactor.
+        /// </summary>
+        public const int DEFAULT_EXPLOSION_LENGTH = 1;
+
+        #endregion
     }
 }

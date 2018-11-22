@@ -11,12 +11,12 @@ namespace Asteroids.Standard.Components
     /// </summary>
     class Bullet : ScreenObject
     {
-        int iLife;
-        const double speedPerSec = 1000 / FPS;
+        private int _remainingFrames;
+        private const double speedPerSec = 1000 / ScreenCanvas.FPS;
 
-        public Bullet(ScreenCanvas canvas) : base(new Point(0, 0), canvas)
+        public Bullet() : base(new Point(0, 0))
         {
-            iLife = 0;
+            _remainingFrames = 0;
         }
 
         protected override void InitPoints()
@@ -25,28 +25,26 @@ namespace Asteroids.Standard.Components
             AddPoints(PointsTemplate);
         }
 
-        public bool Available()
-        {
-            return (iLife == 0);
-        }
+        /// <summary>
+        /// Indicates if the bullet is current shooting.
+        /// </summary>
+        public bool IsInFlight => _remainingFrames > 0;
 
+        /// <summary>
+        /// Prevents the bullet from being redrawn.
+        /// </summary>
         public void Disable()
         {
-            iLife = 0;
+            _remainingFrames = 0;
         }
 
-        public bool AcquireLoc(ref Point ptLoc)
-        {
-            ptLoc = currLoc;
-            return (!Available());
-        }
         /// <summary>
         /// Fire the bullet from a parent ship.
         /// </summary>
         /// <param name="parentShip">Parent <see cref="Ship"/> the bullet was fired from.</param>
         public void Shoot(Ship parentShip)
         {
-            iLife = (int)(FPS * 1); // bullets live 1 sec
+            _remainingFrames = (int)ScreenCanvas.FPS; // bullets live 1 sec
             currLoc = parentShip.GetCurrLoc();
             radians = parentShip.GetRadians();
 
@@ -57,21 +55,30 @@ namespace Asteroids.Standard.Components
             velocityY = (int)(100 * CosVal) + parentShip.GetVelocityY();
         }
 
-        public new void Move()
+        /// <summary>
+        /// Decrement the bullets life and move.
+        /// </summary>
+        /// <returns></returns>
+        public override bool Move()
         {
-            // only draw things that are not available
-            if (!Available())
-                iLife -= 1;
-
-            base.Move();
+            // only draw if in flight
+            if (IsInFlight)
+            {
+                _remainingFrames -= 1;
+                return base.Move();
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        public override void Draw()
-        {
-            // only draw things that are not available
-            if (!Available())
-                DrawPolygons(GetPoints(), GetRandomFireColor());
-        }
+        //public override void Draw()
+        //{
+        //    // only draw things that are not available
+        //    if (!Available())
+        //        DrawPolygons(GetPoints(), GetRandomFireColor());
+        //}
 
         #region Statics
 

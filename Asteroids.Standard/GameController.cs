@@ -2,9 +2,9 @@
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Timers;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
+using Asteroids.Standard.Managers;
 using Asteroids.Standard.Screen;
 using Asteroids.Standard.Sounds;
 
@@ -33,7 +33,7 @@ namespace Asteroids.Standard
             await _container.Initialize();
 
             _textDraw = new TextDraw(_screenCanvas);
-            _score = new Score(_textDraw, _screenCanvas);
+            _score = new ScoreManager(_textDraw);
             _currentTitle = new TitleScreen(_textDraw, _screenCanvas);
             _currentTitle.InitTitleScreen();
 
@@ -44,7 +44,7 @@ namespace Asteroids.Standard
 
         #region Fields
 
-        private const double TimerInterval = 1000 / CommonOps.FPS;
+        private const double TimerInterval = 1000 / ScreenCanvas.FPS;
 
         private IGraphicContainer _container;
         private Rectangle _frameRectangle;
@@ -54,7 +54,7 @@ namespace Asteroids.Standard
         private TextDraw _textDraw;
         private TitleScreen _currentTitle;
         private Game _game;
-        private Score _score;
+        private ScoreManager _score;
         private ScreenCanvas _screenCanvas;
 
         private bool _leftPressed;
@@ -235,7 +235,7 @@ namespace Asteroids.Standard
             _game.DrawScreen();
 
             // If the game is over, display the title screen
-            if (_game.Done())
+            if (_game.IsDone())
                 GameStatus = GameMode.Title;
 
             return GameStatus == GameMode.Game;

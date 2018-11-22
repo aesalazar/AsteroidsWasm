@@ -1,25 +1,30 @@
 using System;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
+using Asteroids.Standard.Screen;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
-namespace Asteroids.Standard.Screen
+namespace Asteroids.Standard.Managers
 {
     /// <summary>
     /// Maintains the score information for the game
     /// </summary>
-    public class Score : CommonOps
+    public class ScoreManager : CommonOps
     {
         public int CurrentScore { get; private set; }
 
         protected int iShips;
         protected int iHiScore;
         protected int iFreeShip;
-        const int iFreeShipIncrement = 10000;
+        private const int iFreeShipIncrement = 10000;
 
         private readonly TextDraw _textDraw;
 
-        public Score(TextDraw textDraw, ScreenCanvas canvas) : base(canvas)
+        /// <summary>
+        /// Creates a new instance of <see cref="ScoreManager"/>.
+        /// </summary>
+        /// <param name="textDraw"Text draw to write score on.</param>
+        public ScoreManager(TextDraw textDraw) : base()
         {
             _textDraw = textDraw;
             iShips = 0;
@@ -28,7 +33,7 @@ namespace Asteroids.Standard.Screen
             iFreeShip = iFreeShipIncrement;
         }
 
-        public void GetNewShip()
+        public void DecrementReserveShips()
         {
             iShips -= 1;
         }
@@ -53,6 +58,9 @@ namespace Asteroids.Standard.Screen
 
         public void AddScore(int iAddScore)
         {
+            if (iAddScore == 0)
+                return;
+
             CurrentScore += iAddScore;
             if (CurrentScore >= iFreeShip)
             {

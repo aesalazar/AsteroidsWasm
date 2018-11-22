@@ -4,172 +4,109 @@ using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Enums;
-using Asteroids.Standard.Helpers;
+using Asteroids.Standard.Managers;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Screen
 {
     /// <summary>
-    /// Summary description for CGame.
+    /// Core game engine that manages object interation and screen painting.
     /// </summary>
     public class Game : CommonOps
     {
-        private Ship ship;
-        private Bullet[] shipBullets;
-        private AsteroidBelt asteroids;
-        private Explosions explosions;
-        private Saucer _saucer;
-
-        private bool inProcess;
-        private int iLevel;
-        private bool paused;
-        private const int PAUSE_INTERVAL = (int)FPS;
-        private int iPauseTimer;
+        #region Fields and Constructor
 
         private const int SAUCER_SCORE = 1000;
+        private const int PAUSE_INTERVAL = (int)ScreenCanvas.FPS;
+
+        private readonly ScoreManager _score;
+        private readonly TextDraw _textDraw;
+        private readonly ScreenCanvas _canvas;
+
+        private readonly CacheManager _cache;
+        private readonly CollisionManager _collisionManager;
+        private readonly DrawingManager _drawingManager;
+
+        private bool _inProcess;
+        private int _currentLevel;
+        private bool _paused;
+        private int _pauseTimer;
+
         private int _neededSaucerPoints = SAUCER_SCORE;
 
-        private readonly Score _score;
-        private readonly TextDraw _textDraw;
-
-        public Game(Score score, TextDraw textDraw, ScreenCanvas canvas) : base(canvas)
+        /// <summary>
+        /// Creates new instance of <see cref="Game"/>.
+        /// </summary>
+        /// <param name="score"><see cref="ScoreManager"/> to keep track of points.</param>
+        /// <param name="textDraw"><see cref="TextDraw"/> to write text objects to the <see cref="ScreenCanvas"/>.</param>
+        /// <param name="canvas"><see cref="ScreenCanvas"/> to draw objects on.</param>
+        public Game(ScoreManager score, TextDraw textDraw, ScreenCanvas canvas) : base()
         {
             _score = score;
             _textDraw = textDraw;
+            _canvas = canvas;
 
-            iLevel = 4; // start with 4 asteroids
-            inProcess = true;
-            ship = new Ship(canvas); // new game - we know ship is alive
-            shipBullets = new Bullet[4];
-            for (int i = 0; i < 4; i++)
-                shipBullets[i] = new Bullet(canvas);
-            asteroids = new AsteroidBelt(iLevel, canvas);
-            explosions = new Explosions(canvas);
-            paused = false;
-            iPauseTimer = PAUSE_INTERVAL;
+            //Start with 4 asteroids
+            _currentLevel = 4;
+            _inProcess = true;
+
+            //Setup caches with a new ship
+            _cache = new CacheManager(
+                _score
+                , new Ship()
+                , new AsteroidBelt(_currentLevel)
+                , Enumerable.Range(0, 4).Select(i => new Bullet()).ToList()
+            );
+
+            _collisionManager = new CollisionManager(_cache);
+            _drawingManager = new DrawingManager(_cache, _canvas);
+
+            //Unpaused
+            _paused = false;
+            _pauseTimer = PAUSE_INTERVAL;
         }
 
-        public bool Done()
+        #endregion
+
+        #region Game State
+
+        /// <summary>
+        /// Indicates if the game is not processing.
+        /// </summary>
+        public bool IsDone()
         {
-            return !inProcess;
+            return !_inProcess;
         }
 
-        public void Thrust(bool bThrustOn)
-        {
-            if (!paused && ship.IsAlive)
-            {
-                ship.DecayThrust();
-
-                if (bThrustOn)
-                    ship.Thrust();
-            }
-        }
-
-        public void Left()
-        {
-            if (!paused && ship.IsAlive)
-                ship.RotateLeft();
-        }
-
-        public void Right()
-        {
-            if (!paused && ship.IsAlive)
-                ship.RotateRight();
-        }
-
-        public void Hyperspace()
-        {
-            if (!paused && ship.IsAlive)
-                if (!ship.Hyperspace())
-                    ship.Explode(explosions);
-        }
-
-        public void Shoot()
-        {
-            if (paused)
-                return;
-
-            if (ship.IsAlive)
-            {
-                var bullets = shipBullets.ToList();
-                foreach (Bullet bullet in bullets)
-                {
-                    if (bullet.Available())
-                    {
-                        bullet.Shoot(ship);
-                        PlaySound(this, ActionSound.Fire);
-                        return;
-                    }
-                }
-            }
-            else if (explosions.Count() == 0 && _score.HasReserveShips())
-            {
-                _score.GetNewShip();
-                ship = new Ship(Canvas);
-            }
-        }
-
+        /// <summary>
+        /// Sets paused indicators.
+        /// </summary>
         public void Pause()
         {
-            iPauseTimer = PAUSE_INTERVAL;
-            paused = !paused;
+            _pauseTimer = PAUSE_INTERVAL;
+            _paused = !_paused;
         }
 
-        private bool CheckAsteroidHit(IList<Point> pointsToCheck)
-        {
-            int pointValue = asteroids.CheckPointCollisions(pointsToCheck);
-            if (pointValue > 0)
-            {
-                _score.AddScore(pointValue);
-                return true;
-            }
-            return false;
-        }
-
-        private bool CheckSaucerHit(IList<Point> pointsToCheck)
-        {
-            if (_saucer == null || !_saucer.IsAlive)
-                return false;
-
-            var pointValue = _saucer.CheckPointScore(pointsToCheck);
-            if (pointValue > 0)
-            {
-                _score.AddScore(pointValue);
-                _saucer.Explode(explosions);
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool CheckMissileHit(IList<Point> polygonPoints)
-        {
-            if (_saucer == null || _saucer.Missile == null || !_saucer.Missile.IsAlive)
-                return false;
-
-            var missilePts = _saucer.Missile.GetPoints();
-            var missileHit = polygonPoints.ContainsAnyPoint(missilePts);
-
-            if (missileHit)
-                _saucer.Missile.Explode(explosions);
-
-            return missileHit;
-        }
-
+        /// <summary>
+        /// Main game-play routine to determine object state and screen refresh.
+        /// </summary>
         public void DrawScreen()
         {
-            var bullets = shipBullets.ToList();
-
-            if (paused)
+            if (_paused)
             {
                 // Pause flashes on and off
-                if (iPauseTimer > PAUSE_INTERVAL / 2)
+                if (_pauseTimer > PAUSE_INTERVAL / 2)
                 {
-                    _textDraw.DrawText("PAUSE", TextDraw.Justify.CENTER,
-                       CanvasHeight / 3, 200, 400);
+                    _textDraw.DrawText(
+                        "PAUSE"
+                        , TextDraw.Justify.CENTER
+                        , ScreenCanvas.CANVAS_HEIGHT / 3
+                        , 200, 400
+                    );
                 }
-                if (--iPauseTimer < 0)
-                    iPauseTimer = PAUSE_INTERVAL;
+
+                if (--_pauseTimer < 0)
+                    _pauseTimer = PAUSE_INTERVAL;
             }
             else // Do all game processing if game is not paused
             {
@@ -177,112 +114,173 @@ namespace Asteroids.Standard.Screen
 
                 // If no ship displaying, after explosions are done
                 // get a new one - or end the game
-                if (!ship.IsAlive && explosions.Count() == 0)
+                var noExplosions = _cache.ExplosionCount() == 0;
+
+                if (!_cache.Ship.IsAlive && noExplosions)
                 {
                     if (!_score.HasReserveShips())
                     {
                         // Game over
-                        inProcess = false;
+                        _inProcess = false;
                     }
-                    else if (asteroids.IsCenterSafe())
+                    else if (_collisionManager.IsCenterSafe())
                     {
-                        _score.GetNewShip();
-                        ship = new Ship(Canvas);
+                        _score.DecrementReserveShips();
+                        _cache.UpdatedShip(new Ship());
                     }
                 }
 
-                // Create a new asteroid belt if 
-                // no explosions and no asteroids
-                if ((explosions.Count() == 0) && asteroids.Count() == 0)
-                    asteroids = new AsteroidBelt(++iLevel, Canvas);
+                // Create a new asteroid belt if no explosions and no asteroids
+                if (noExplosions && _cache.Belt.Count() == 0)
+                    _cache.UpdateBelt(new AsteroidBelt(++_currentLevel));
 
                 // Move all objects starting with the ship
-                ship.Move();
+                _cache.Ship.Move();
 
-                //Move the saucer and its missle
-                if (_saucer != null)
+                //Move the saucer and its missile
+                if (_cache.Saucer != null)
                 {
-                    if (_saucer.Move())
+                    if (_cache.Saucer.Move())
                     {
-                        //Aim for the ship
-                        _saucer.Target(ship);
+                        //Aim for the ship oe nothing
+                        var target = _cache.Ship.IsAlive
+                            ? _cache.Ship.GetCurrLoc()
+                            : default(Point?);
+
+                        _cache.Saucer.Target(target);
                     }
                     else
                     {
                         //Saucer has completed its passes
-                        _saucer = null;
+                        _cache.UpdateSaucer(null);
                         _neededSaucerPoints = SAUCER_SCORE;
                     }
                 }
 
                 //Move the bullets, asteroids, and explosions
-                foreach (var bullet in bullets)
-                    bullet.Move();
-
-                asteroids.Move();
-                explosions.Move();
+                _collisionManager.MoveBullets();
+                _collisionManager.MoveAsteroids();
+                _collisionManager.MoveExplosions();
 
                 // Check bullets for collisions        
-                var ptCheck = new Point(0);
-
-                foreach (var bullet in bullets)
+                foreach (var bullet in _cache.BulletsInFlight)
                 {
-                    if (!bullet.AcquireLoc(ref ptCheck))
-                        continue;
+                    var points = new List<Point> { bullet.Location };
 
-                    var points = new List<Point> { ptCheck };
-                    if (CheckAsteroidHit(points) || CheckSaucerHit(points) || CheckMissileHit(bullet.GetPoints()))
+                    if (_collisionManager.AsteroidBeltCollision(points)
+                        || _collisionManager.SaucerCollision(points)
+                        || _collisionManager.MissileCollision(bullet.ScreenObject.GetPoints()))
                     {
-                        explosions.AddExplosion(ptCheck);
-                        bullet.Disable();
+                        _cache.AddExplosion(bullet.Location);
+                        bullet.ScreenObject.Disable();
                     }
                 }
 
                 // Check ship for collisions
-                if (ship.IsAlive)
+                if (_cache.Ship.IsAlive)
                 {
-                    var shipPoints = ship.GetPoints();
+                    var shipPoints = _cache.ShipPoints;
 
-                    if (CheckSaucerHit(shipPoints) || CheckMissileHit(shipPoints) || CheckAsteroidHit(shipPoints))
-                        ship.Explode(explosions);
+                    if (_collisionManager.SaucerCollision(shipPoints)
+                        || _collisionManager.MissileCollision(shipPoints)
+                        || _collisionManager.AsteroidBeltCollision(shipPoints)
+                        )
+                        foreach (var explosion in _cache.Ship.Explode())
+                            _cache.AddExplosion(explosion);
                 }
 
                 //See if a bullet or the ship hit the saucer
-                if (_saucer != null && !_saucer.IsAlive)
+                if (_cache.Saucer != null && !_cache.Saucer.IsAlive)
                 {
-                    _saucer = null;
+                    _cache.UpdateSaucer(null);
                     _neededSaucerPoints = SAUCER_SCORE;
                 }
 
                 //See if the score is enough to show a suacer
-                else if (_saucer == null)
+                else if (_cache.Saucer == null)
                 {
                     _neededSaucerPoints -= _score.CurrentScore - origScore;
 
                     if (_neededSaucerPoints <= 0)
                     {
                         var pt = new Point(
-                            Random.Next(2) == 0 ? 0 : CanvasWidth
-                            , (Random.Next(10, 100) * CanvasHeight) / 100
+                            Random.Next(2) == 0 ? 0 : ScreenCanvas.CANVAS_WIDTH
+                            , (Random.Next(10, 90) * ScreenCanvas.CANVAS_HEIGHT) / 100
                         );
 
-                        _saucer = new Saucer(pt, Canvas);
+                        _cache.UpdateSaucer(new Saucer(pt));
                     }
                 }
             }
 
+            //Commit the changes
+            _cache.Repopulate();
+
             // Draw all objects
-            ship.Draw();
-            _saucer?.Draw();
-
-            foreach (var bullet in bullets)
-                bullet.Draw();
-
-            asteroids.Draw();
-            explosions.Draw();
-
-            // Draw the score
+            _drawingManager.DrawObjects();
             _score.Draw();
         }
+
+        #endregion
+
+        #region Ship Controls
+
+        private bool _isShipActive => !_paused && _cache.Ship.IsAlive;
+
+        public void Thrust(bool bThrustOn)
+        {
+            if (!_isShipActive)
+                return;
+
+            _cache.Ship.DecayThrust();
+
+            if (bThrustOn)
+                _cache.Ship.Thrust();
+        }
+
+        public void Left()
+        {
+            if (_isShipActive)
+                _cache.Ship.RotateLeft();
+        }
+
+        public void Right()
+        {
+            if (_isShipActive)
+                _cache.Ship.RotateRight();
+        }
+
+        public void Hyperspace()
+        {
+            if (!_isShipActive)
+                return;
+
+            if (!_cache.Ship.Hyperspace())
+                _cache.AddExplosions(_cache.Ship.Explode());
+        }
+
+        public void Shoot()
+        {
+            if (_paused)
+                return;
+
+            if (_cache.Ship.IsAlive)
+            {
+                //Fire bullets that are not already moving
+                foreach (var bullet in _cache.BulletsAvailable)
+                {
+                    bullet.ScreenObject.Shoot(_cache.Ship);
+                    PlaySound(this, ActionSound.Fire);
+                    return;
+                }
+            }
+            else if (_cache.ExplosionCount() == 0 && _score.HasReserveShips())
+            {
+                _score.DecrementReserveShips();
+                _cache.UpdatedShip(new Ship());
+            }
+        }
+
+        #endregion
     }
 }

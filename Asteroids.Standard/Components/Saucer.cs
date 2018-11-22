@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
+using System.Threading;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
-using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
@@ -15,24 +16,25 @@ namespace Asteroids.Standard.Components
     {
         public const int MaximumPasses = 3;
         public const int KillScore = 1000;
-        private const double Velocity = 3000 / FPS;
+        private const double Velocity = 3000 / ScreenCanvas.FPS;
 
         private int _currentPass = 0;
-
-        /// <summary>
-        /// Guided <see cref="Missile"/> for targeting a <see cref="Ship"/>.
-        /// </summary>
-        public Missile Missile { get; private set; }
 
         /// <summary>
         /// Creates a new instance of <see cref="Saucer"/>.
         /// </summary>
         /// <param name="location">Absolute origin (bottom-left) of the object.</param>
         /// <param name="canvas">Canvas to draw on.</param>
-        public Saucer(Point location, ScreenCanvas canvas) : base(location, canvas)
+        public Saucer(Point location) : base(location)
         {
+            ExplosionLength = 2;
             SetVelocity();
         }
+
+        /// <summary>
+        /// Guided <see cref="Missile"/> for targeting a <see cref="Ship"/>.
+        /// </summary>
+        public Missile Missile { get; private set; }
 
         /// <summary>
         /// Populates the base template collection of points to draw.
@@ -49,36 +51,41 @@ namespace Asteroids.Standard.Components
         /// <returns>Indication if the move was completed.</returns>
         public override bool Move()
         {
+            if (!IsAlive)
+                return false;
+
             //Stop if the next move will put it over the allow number of passes
-            if (!IsAlive || currLoc.X + velocityX >= CanvasWidth && ++_currentPass >= MaximumPasses)
+            var x = currLoc.X + velocityX;
+
+            if ((x <= 0 || x >= ScreenCanvas.CANVAS_WIDTH)
+                && (Interlocked.Increment(ref _currentPass) >= MaximumPasses))
                 return false;
 
             return base.Move();
         }
 
         /// <summary>
-        /// Adjusts velocity to match the targeted <see cref="Ship"/> if it is
-        /// <see cref="Ship.IsAlive()"/>, otherwise it continues straight.
+        /// Moves <see cref="Missile"/> towards the <see cref="target"/>.
         /// </summary>
-        /// <param name="ship"><see cref="Ship"/> to target.</param>
-        public void Target(Ship ship)
+        /// <param name="target">
+        /// <see cref="Point"/> to target; <see cref="null"/> moves <see cref="Missile"/> forward.</param>
+        public void Target(Point? target)
         {
-            var isShip = ship?.IsAlive == true;
             var isMissile = Missile?.IsAlive == true;
 
-            if (!isShip)
+            if (target.HasValue)
             {
-                //No ship so simply move the missile if it exists
-                if (isMissile)
-                    Missile.Move();
-            }
-            else
-            {
-                //Make sure there is a missile and then target the ship
+                //Make sure there is a missile
                 if (!isMissile)
-                    Missile = new Missile(this, Canvas);
+                    Missile = new Missile(this);
 
-                Missile.Move(ship);
+                //move towards the target
+                Missile.Move(target.Value);
+            }
+            else if (isMissile)
+            {
+                //No target but the missile is alive so move forward
+                Missile.Move();
             }
         }
 
@@ -87,7 +94,7 @@ namespace Asteroids.Standard.Components
         /// </summary>
         protected void SetVelocity()
         {
-            var factor = currLoc.X < CanvasWidth / 2 ? 1 : -1;
+            var factor = currLoc.X < ScreenCanvas.CANVAS_WIDTH / 2 ? 1 : -1;
 
             velocityX = factor * Velocity;
             velocityY = 0;
@@ -95,43 +102,22 @@ namespace Asteroids.Standard.Components
         }
 
         /// <summary>
-        /// Determine score if a point is in contact with the saucer.
-        /// </summary>
-        /// <param name="ptsCheck">Point collection to check.</param>
-        /// <returns>Score of <see cref="KillScore"/> if inside; otherwise 0.</returns>
-        public int CheckPointScore(IList<Point> ptsCheck)
-        {
-            return GetPoints().ContainsAnyPoint(ptsCheck) ? KillScore : 0;
-        }
-
-        /// <summary>
         /// Blow up the saucer.
         /// </summary>
-        /// <param name="explosions">Explosion collection to add to.</param>
-        public override void Explode(Explosions explosions)
+        /// <returns>Explosion collection to add to.</returns>
+        public override IList<Explosion> Explode()
         {
-            base.Explode(explosions);
-            Missile.Explode(explosions);
             PlaySound(this, ActionSound.Explode1);
-        }
-
-        /// <summary>
-        /// Draw the Flying Saucer.
-        /// </summary>
-        public override void Draw()
-        {
-            if (!IsAlive)
-                return;
-
-            base.Draw();
-            Missile?.Draw();
+            return base.Explode()
+                .Concat(Missile.Explode())
+                .ToList();
         }
 
         #region Statics
 
         private const int SizeLong = 300;
-        private const int SizeMedium = SizeLong * 2 / 3;
-        private const int SizeShort = SizeLong / 3;
+        private const int SizeMedium = SizeLong * 2 / 4;
+        private const int SizeShort = SizeLong / 4;
 
         /// <summary>
         /// Non-transformed point template for creating a new flying saucer.

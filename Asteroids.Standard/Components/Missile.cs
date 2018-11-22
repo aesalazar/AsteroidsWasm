@@ -11,14 +11,13 @@ namespace Asteroids.Standard.Components
     /// </summary>
     class Missile : ScreenObject
     {
-        private const double Velocity = 2000 / FPS;
+        private const double Velocity = 2000 / ScreenCanvas.FPS;
 
         /// <summary>
         /// Creates a new instace of <see cref="Missile"/>.
         /// </summary>
         /// <param name="saucer">Parent <see cref="Saucer"/>.</param>
-        /// <param name="canvas"><see cref="ScreenCanvas"/> to draw on.</param>
-        public Missile(Saucer saucer, ScreenCanvas canvas) : base(saucer.GetCurrLoc(), canvas)
+        public Missile(Saucer saucer) : base(saucer.GetCurrLoc())
         {
             ExplosionLength = 1;
         }
@@ -30,50 +29,20 @@ namespace Asteroids.Standard.Components
         }
 
         /// <summary>
-        /// Moves in the direction of the target <see cref="Ship"/>.
+        /// Moves in the direction of the target <see cref="Point"/>.
         /// </summary>
-        /// <param name="ship">Ship to target.</param>
+        /// <param name="target">Point to target.</param>
         /// <returns>Indication if the move was successful.</returns>
-        public bool Move(Ship ship)
+        public bool Move(Point target)
         {
             //point at the ship
-            Align(ship.GetCurrLoc());
+            Align(target);
 
             //adjust velocity
             velocityX = -Math.Sin(radians) * Velocity;
             velocityY = Math.Cos(radians) * Velocity;
 
             return Move();
-        }
-
-        public override void Draw()
-        {
-            if (!IsAlive)
-                return;
-
-            //Draw the ship
-            base.Draw();
-
-            //Add the thrust
-            var alPoly = new List<Point>
-            {
-                Capacity = 3
-            };
-
-            var pts = GetPoints();
-
-            alPoly.Add(pts[PointThrust1]);
-            alPoly.Add(pts[PointThrust2]);
-
-            int iThrustSize = Random.Next(30) + 20; // random thrust effect
-
-            alPoly.Add(new Point(
-                (pts[PointThrust1].X + pts[PointThrust2].X) / 2 + (int)(iThrustSize * Math.Sin(radians)),
-                (pts[PointThrust1].Y + pts[PointThrust2].Y) / 2 + (int)(-iThrustSize * Math.Cos(radians))
-            ));
-
-            // Draw thrust directly to ScreenCanvas
-            DrawPolygons(alPoly, GetRandomFireColor());
         }
 
         #region Statics
@@ -86,12 +55,12 @@ namespace Asteroids.Standard.Components
         /// <summary>
         /// Index location in <see cref="PointsTemplate"/> for thrust point 1.
         /// </summary>
-        private static int PointThrust1;
+        public static int PointThrust1 { get; }
 
         /// <summary>
         /// Index location in <see cref="PointsTemplate"/> for thrust point 2.
         /// </summary>
-        private static int PointThrust2;
+        public static int PointThrust2 { get; }
 
         /// <summary>
         /// Setup the <see cref="PointsTemplate"/>.
