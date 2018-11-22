@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Components;
@@ -127,9 +128,14 @@ namespace Asteroids.Standard.Managers
 
             foreach (var asteroid in _cache.Asteroids)
             {
-                safe = asteroid
+                var separation = asteroid
                     .Location
-                    .DistanceTo(ScreenCanvas.CANVAS_WIDTH / 2, ScreenCanvas.CANVAS_HEIGHT / 2) <= SAFE_DISTANCE;
+                    .DistanceTo(
+                        ScreenCanvas.CANVAS_WIDTH / 2
+                        , ScreenCanvas.CANVAS_HEIGHT / 2
+                    );
+
+                safe = separation >= SAFE_DISTANCE;
 
                 if (!safe)
                     break;
