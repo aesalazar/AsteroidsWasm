@@ -133,7 +133,7 @@ namespace Asteroids.Standard.Managers
             thrustPoints.Add(pt2);
 
             // random thrust effect
-            int size = Random.Next(200) + 100;
+            int size = Random.Next(50) + 50;
             var radians = _cache.Saucer.Missile.GetRadians();
 
             thrustPoints.Add(new Point(
