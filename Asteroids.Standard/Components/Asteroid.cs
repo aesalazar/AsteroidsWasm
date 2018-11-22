@@ -12,15 +12,12 @@ namespace Asteroids.Standard.Components
     /// </summary>
     class Asteroid : ScreenObject
     {
-        public const int SIZE_INCREMENT = 220;
-        public enum ASTEROID_SIZE { DNE = 0, SMALL, MEDIUM, LARGE }
         protected double rotateSpeed;
 
         /// <summary>
-        /// Current <see cref="ASTEROID_SIZE"/>.
+        /// Creates a new instance of <see cref="Asteroid"/>.
         /// </summary>
-        public ASTEROID_SIZE Size { get; private set; }
-
+        /// <param name="size">Initial <see cref="ASTEROID_SIZE"/>.</param>
         public Asteroid(ASTEROID_SIZE size) : base(new Point(0, 0))
         {
             Size = size;
@@ -31,24 +28,30 @@ namespace Asteroids.Standard.Components
 
             RandomVelocity();
 
-            // can't figure out how to have iSize set before
+            // can't figure out how to have Size set before
             // base constructor, which calls into InitPoints,
             // so clear and do it again
             InitPoints();
         }
 
-        public Asteroid(Asteroid astCopy) : base(astCopy.currLoc)
+        /// <summary>
+        /// Creates a new instance of <see cref="Asteroid"/>.
+        /// </summary>
+        /// <param name="asteroid"><see cref="Asteroid"/> to clone.</param>
+        public Asteroid(Asteroid asteroid) : base(asteroid.currLoc)
         {
-            Size = astCopy.Size;
+            Size = asteroid.Size;
             RandomVelocity();
 
-            // can't figure out how to have iSize set before
+            // can't figure out how to have Size set before
             // base constructor, which calls into InitPoints,
             // so clear and do it again                  
             InitPoints();
         }
 
-
+        /// <summary>
+        /// Sets the rotational spine of the asteroid randomly based on its current <see cref="ASTEROID_SIZE"/>.
+        /// </summary>
         protected void RandomVelocity()
         {
             // choose random rotate speed
@@ -59,6 +62,15 @@ namespace Asteroids.Standard.Components
             velocityY = ((Random.NextDouble() * 2000 - 1000) * ((ASTEROID_SIZE.LARGE - Size + 1) * 1.05)) / ScreenCanvas.FPS;
         }
 
+        /// <summary>
+        /// Current <see cref="ASTEROID_SIZE"/>.
+        /// </summary>
+        public ASTEROID_SIZE Size { get; private set; }
+
+        /// <summary>
+        /// Reduce the size by one level.
+        /// </summary>
+        /// <returns>The new reduce size.</returns>
         public ASTEROID_SIZE ReduceSize()
         {
             if (Size != ASTEROID_SIZE.DNE)
@@ -70,6 +82,9 @@ namespace Asteroids.Standard.Components
             return Size;
         }
 
+        /// <summary>
+        /// Sets the point template based on asteroid size.
+        /// </summary>
         protected override void InitPoints()
         {
             ClearPoints();
@@ -93,6 +108,10 @@ namespace Asteroids.Standard.Components
             }
         }
 
+        /// <summary>
+        /// Rotates and moves the asteroid.
+        /// </summary>
+        /// <returns>Indication if the move was successful.</returns>
         public override bool Move()
         {
             // only draw things that are not available
@@ -103,6 +122,16 @@ namespace Asteroids.Standard.Components
         }
 
         #region Statics
+
+        /// <summary>
+        /// Size of a screen asteroid.
+        /// </summary>
+        public enum ASTEROID_SIZE { DNE = 0, SMALL, MEDIUM, LARGE }
+
+        /// <summary>
+        /// Increment between asteroids sizes.
+        /// </summary>
+        public const int SIZE_INCREMENT = 220;
 
         /// <summary>
         /// Non-transformed point template for creating a non-sized asteroid.

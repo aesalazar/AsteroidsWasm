@@ -34,6 +34,12 @@ namespace Asteroids.Standard.Screen
 
         private int _neededSaucerPoints = SAUCER_SCORE;
 
+        /// <summary>
+        /// Creates new instance of <see cref="Game"/>.
+        /// </summary>
+        /// <param name="score"><see cref="ScoreManager"/> to keep track of points.</param>
+        /// <param name="textDraw"><see cref="TextDraw"/> to write text objects to the <see cref="ScreenCanvas"/>.</param>
+        /// <param name="canvas"><see cref="ScreenCanvas"/> to draw objects on.</param>
         public Game(ScoreManager score, TextDraw textDraw, ScreenCanvas canvas) : base()
         {
             _score = score;
@@ -81,70 +87,9 @@ namespace Asteroids.Standard.Screen
             _paused = !_paused;
         }
 
-        #endregion
-
-        #region Ship Controls
-
-        private bool _isShipActive => !_paused && _cache.Ship.IsAlive;
-
-        public void Thrust(bool bThrustOn)
-        {
-            if (!_isShipActive)
-                return;
-
-            _cache.Ship.DecayThrust();
-
-            if (bThrustOn)
-                _cache.Ship.Thrust();
-        }
-
-        public void Left()
-        {
-            if (_isShipActive)
-                _cache.Ship.RotateLeft();
-        }
-
-        public void Right()
-        {
-            if (_isShipActive)
-                _cache.Ship.RotateRight();
-        }
-
-        public void Hyperspace()
-        {
-            if (!_isShipActive)
-                return;
-
-            if (!_cache.Ship.Hyperspace())
-                _cache.AddExplosions(_cache.Ship.Explode());
-        }
-
-        public void Shoot()
-        {
-            if (_paused)
-                return;
-
-            if (_cache.Ship.IsAlive)
-            {
-                //Fire bullets that are not already moving
-                foreach (var bullet in _cache.BulletsAvailable)
-                {
-                    bullet.ScreenObject.Shoot(_cache.Ship);
-                    PlaySound(this, ActionSound.Fire);
-                    return;
-                }
-            }
-            else if (_cache.ExplosionCount() == 0 && _score.HasReserveShips())
-            {
-                _score.DecrementReserveShips();
-                _cache.UpdatedShip(new Ship());
-            }
-        }
-
-        #endregion
-
-        #region Paint the Screen
-
+        /// <summary>
+        /// Main game-play routine to determine object state and screen refresh.
+        /// </summary>
         public void DrawScreen()
         {
             if (_paused)
@@ -260,7 +205,7 @@ namespace Asteroids.Standard.Screen
                     {
                         var pt = new Point(
                             Random.Next(2) == 0 ? 0 : ScreenCanvas.CANVAS_WIDTH
-                            , (Random.Next(10, 100) * ScreenCanvas.CANVAS_HEIGHT) / 100
+                            , (Random.Next(10, 90) * ScreenCanvas.CANVAS_HEIGHT) / 100
                         );
 
                         _cache.UpdateSaucer(new Saucer(pt));
@@ -278,5 +223,64 @@ namespace Asteroids.Standard.Screen
 
         #endregion
 
+        #region Ship Controls
+
+        private bool _isShipActive => !_paused && _cache.Ship.IsAlive;
+
+        public void Thrust(bool bThrustOn)
+        {
+            if (!_isShipActive)
+                return;
+
+            _cache.Ship.DecayThrust();
+
+            if (bThrustOn)
+                _cache.Ship.Thrust();
+        }
+
+        public void Left()
+        {
+            if (_isShipActive)
+                _cache.Ship.RotateLeft();
+        }
+
+        public void Right()
+        {
+            if (_isShipActive)
+                _cache.Ship.RotateRight();
+        }
+
+        public void Hyperspace()
+        {
+            if (!_isShipActive)
+                return;
+
+            if (!_cache.Ship.Hyperspace())
+                _cache.AddExplosions(_cache.Ship.Explode());
+        }
+
+        public void Shoot()
+        {
+            if (_paused)
+                return;
+
+            if (_cache.Ship.IsAlive)
+            {
+                //Fire bullets that are not already moving
+                foreach (var bullet in _cache.BulletsAvailable)
+                {
+                    bullet.ScreenObject.Shoot(_cache.Ship);
+                    PlaySound(this, ActionSound.Fire);
+                    return;
+                }
+            }
+            else if (_cache.ExplosionCount() == 0 && _score.HasReserveShips())
+            {
+                _score.DecrementReserveShips();
+                _cache.UpdatedShip(new Ship());
+            }
+        }
+
+        #endregion
     }
 }

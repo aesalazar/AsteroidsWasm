@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Components;
@@ -32,7 +31,7 @@ namespace Asteroids.Standard.Managers
         }
 
         #endregion
-        
+
         #region Asteroids
 
         /// <summary>
