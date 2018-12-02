@@ -27,8 +27,8 @@ namespace Asteroids.Standard.Managers
             _explosions = new List<Explosion>();
 
             _bullets = bullets;
-            BulletsInFlight = new List<CachedObject<Bullet>>();
-            BulletsAvailable = new List<CachedObject<Bullet>>();
+            _bulletsInFlight = new List<CachedObject<Bullet>>();
+            _bulletsAvailable = new List<CachedObject<Bullet>>();
 
             Repopulate();
         }
@@ -43,6 +43,8 @@ namespace Asteroids.Standard.Managers
 
         private readonly IList<Explosion> _explosions;
         private readonly IList<Bullet> _bullets;
+        private readonly IList<CachedObject<Bullet>> _bulletsInFlight;
+        private readonly IList<CachedObject<Bullet>> _bulletsAvailable;
 
         public ScoreManager Score { get; }
 
@@ -56,9 +58,6 @@ namespace Asteroids.Standard.Managers
         public IList<Point> SaucerPoints { get; private set; }
         public IList<Point> MissilePoints { get; private set; }
         public IList<Point> ShipPoints { get; private set; }
-
-        public IList<CachedObject<Bullet>> BulletsInFlight { get; private set; }
-        public IList<CachedObject<Bullet>> BulletsAvailable { get; private set; }
 
         #endregion
 
@@ -77,15 +76,15 @@ namespace Asteroids.Standard.Managers
 
             lock (_bulletLock)
             {
-                BulletsInFlight.Clear();
-                BulletsAvailable.Clear();
+                _bulletsInFlight.Clear();
+                _bulletsAvailable.Clear();
 
                 foreach (var bullet in _bullets)
                 {
                     if (bullet.IsInFlight)
-                        BulletsInFlight.Add(new CachedObject<Bullet>(bullet));
+                        _bulletsInFlight.Add(new CachedObject<Bullet>(bullet));
                     else
-                        BulletsAvailable.Add(new CachedObject<Bullet>(bullet));
+                        _bulletsAvailable.Add(new CachedObject<Bullet>(bullet));
                 }
             }
         }
@@ -225,6 +224,31 @@ namespace Asteroids.Standard.Managers
         }
 
         #endregion
+
+        #region Bullets
+
+        /// <summary>
+        /// Gets the current collection of Bullets in flight in a thread-safe maner.
+        /// </summary>
+        /// <returns>Collection of bullets in flight.</returns>
+        public IList<CachedObject<Bullet>> GetBulletsInFlight()
+        {
+            lock (_bulletLock)
+                return _bulletsInFlight.ToList();
+        }
+
+        /// <summary>
+        /// Gets the current collection of Bullets not in flight in a thread-safe maner.
+        /// </summary>
+        /// <returns>Collection of bullets not in flight.</returns>
+        public IList<CachedObject<Bullet>> GetBulletsAvailable()
+        {
+            lock (_bulletLock)
+                return _bulletsAvailable.ToList();
+        }
+
+        #endregion
+
 
         #region Classes
 

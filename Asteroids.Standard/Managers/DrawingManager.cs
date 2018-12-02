@@ -150,7 +150,7 @@ namespace Asteroids.Standard.Managers
         /// </summary>
         private void DrawBullets()
         {
-            foreach (var bullet in _cache.BulletsInFlight)
+            foreach (var bullet in _cache.GetBulletsInFlight())
                 DrawPolygon(bullet.PolygonPoints, GetRandomFireColor());
         }
 

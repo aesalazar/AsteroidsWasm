@@ -163,7 +163,7 @@ namespace Asteroids.Standard.Screen
                 _collisionManager.MoveExplosions();
 
                 // Check bullets for collisions        
-                foreach (var bullet in _cache.BulletsInFlight)
+                foreach (var bullet in _cache.GetBulletsInFlight())
                 {
                     var points = new List<Point> { bullet.Location };
 
@@ -267,7 +267,7 @@ namespace Asteroids.Standard.Screen
             if (_cache.Ship.IsAlive)
             {
                 //Fire bullets that are not already moving
-                foreach (var bullet in _cache.BulletsAvailable)
+                foreach (var bullet in _cache.GetBulletsAvailable())
                 {
                     bullet.ScreenObject.Shoot(_cache.Ship);
                     PlaySound(this, ActionSound.Fire);

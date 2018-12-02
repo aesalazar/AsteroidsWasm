@@ -201,7 +201,7 @@ namespace Asteroids.Standard.Managers
         public void MoveBullets()
         {
             //Move does not use locks
-            foreach (var bullet in _cache.BulletsInFlight)
+            foreach (var bullet in _cache.GetBulletsInFlight())
                 bullet.ScreenObject.Move();
         }
 
