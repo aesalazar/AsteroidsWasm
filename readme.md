@@ -38,7 +38,7 @@ Currently, the project is made of the following:
 
 All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance`.   The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
 
-All applications are fully functional at this point in terms sound and keyboard support.  Performance varies among the technologies with the UWP app being the clear winner for desktop.
+All applications are fully functional at this point in terms sound and keyboard support.  Performance varies among the technologies with the UWP app being the clear winner for desktop and Firefox for Blazor/Web.
 
 ## Xamarin Notes
 
@@ -49,8 +49,7 @@ The UWP application is set to require the Windows 10 Fall Creators Update at a m
 ## Blazor Notes
 
 Microsoft has labeled Blazor as "experimental" (as of the time of this writing) and, as such, has allow themselves the luxury to break anything at any time :).  So, version control will be important when trying to build and run this app.
-
-To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their [GitHub](https://github.com/aspnet/blazor) page. If Visual Studio hangs occasionally when trying to build, do Ctrl+Shift+S to get around a bug in it that they plan to fix in an upcoming release.  Doing it from CLI in the Asteroids.Blazor project folder is also an option:
+To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their [GitHub](https://github.com/aspnet/blazor) page. If Visual Studio 2017 hangs occasionally when trying to build, do Ctrl+Shift+S to get around a bug that existed in some version or get the latest update.  Doing it from CLI in the Asteroids.Blazor project folder is also an option:
 
 `dotnet build`
 
@@ -58,7 +57,7 @@ To run the application, simply hit F5 or ctrl+F5 in Visual Studio or from the CL
 
 `dotnet run`
 
-If you get an HTTP 502.5 error, chances are the is a mismatch in the installed SDK vs what is listed in the global.json file in Asteroids.Blazor:
+If you get an HTTP 502.5 error, chances are there is a mismatch in the installed SDK vs what is listed in the global.json file in Asteroids.Blazor:
 
 ```json
 "sdk": {
@@ -70,4 +69,4 @@ To find your version run:
 
 `dotnet --version`
 
-and update the json to match.
+and update the json to match.  Or install the above version since you can have more then one simultaneously.
