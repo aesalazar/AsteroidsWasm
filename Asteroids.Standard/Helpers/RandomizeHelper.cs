@@ -1,33 +1,22 @@
-using System;
-using Asteroids.Standard.Helpers;
-using Asteroids.Standard.Screen;
+﻿using System;
 
-namespace Asteroids.Standard.Base
+namespace Asteroids.Standard.Helpers
 {
     /// <summary>
-    /// Base class for a <see cref="ScreenCanvas"/>-based concept.  Meaning that the concept
-    /// can have a phsical manifestation on the canvas or interact with the canvas to
-    /// draw objects.
+    /// Helper functions to generate random data.
     /// </summary>
-    public abstract class CommonOps
+    public static class RandomizeHelper
     {
-        /// <summary>
-        /// Creates instance of <see cref="CommonOps"/>.
-        /// </summary>
-        public CommonOps()
-        {
-        }
-
         /// <summary>
         /// Static random number generator.
         /// </summary>
-        protected static Random Random = new Random();
+        public static Random Random = new Random();
 
         /// <summary>
         /// Generates a ranom color for any fire or explosion.
         /// </summary>
         /// <returns>Color hex string.</returns>
-        protected static string GetRandomFireColor()
+        public static string GetRandomFireColor()
         {
             string penDraw;
 
@@ -46,6 +35,7 @@ namespace Asteroids.Standard.Base
                     penDraw = ColorHexStrings.WhiteHex;
                     break;
             }
+
             return penDraw;
         }
     }

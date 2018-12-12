@@ -1,5 +1,5 @@
 using System.Drawing;
-using Asteroids.Standard.Base;
+using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 
 namespace Asteroids.Standard.Components
@@ -7,7 +7,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Screen explosion with sized incremented by current frame.
     /// </summary>
-    class Explosion : CommonOps
+    class Explosion
     {
         private const int NUM_EXP_POINTS = 22; // more points is more dazzling
         private const int EXPLOSION_LIFE = (int)ScreenCanvas.FPS / 2; // default life of explosion is 1/2 sec
@@ -27,8 +27,8 @@ namespace Asteroids.Standard.Components
             {
                 Points[i] = ptExplosion;
                 Velocities[i] = new Point(
-                    (int)((Random.Next(1200) - 600) / ScreenCanvas.FPS)
-                    , (int)((Random.Next(1200) - 600) / ScreenCanvas.FPS)
+                    (int)((RandomizeHelper.Random.Next(1200) - 600) / ScreenCanvas.FPS)
+                    , (int)((RandomizeHelper.Random.Next(1200) - 600) / ScreenCanvas.FPS)
                 );
             }
         }

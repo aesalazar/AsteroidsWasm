@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Managers;
@@ -7,9 +6,9 @@ using Asteroids.Standard.Managers;
 namespace Asteroids.Standard.Screen
 {
     /// <summary>
-    /// Summary description for CTitleScreen.
+    /// Splashscreen drawn when not playing the game.
     /// </summary>
-    public class TitleScreen : CommonOps
+    public class TitleScreen
     {
         private const string instructions = "PRESS SPACE TO PLAY";
         private const int instructionSize = 200;
@@ -25,25 +24,33 @@ namespace Asteroids.Standard.Screen
         private int _letterSize;
         private int _increment;
 
-        private readonly TextDraw _textDraw;
+        private readonly TextManager _textManager;
         private readonly ScreenCanvas _canvas;
         private readonly CacheManager _cache;
 
-        public TitleScreen(TextDraw textDraw, ScreenCanvas canvas) : base()
+        /// <summary>
+        /// Creates a new instance of <see cref="TitleScreen"/>.
+        /// </summary>
+        /// <param name="textManager"><see cref="TextManager"/> to write text too.</param>
+        /// <param name="canvas"><see cref="ScreenCanvas"/> to draw on.</param>
+        public TitleScreen(TextManager textManager, ScreenCanvas canvas)
         {
-            _textDraw = textDraw;
+            _textManager = textManager;
             _canvas = canvas;
 
             InitTitleScreen();
 
             _cache = new CacheManager(
-                new ScoreManager(new TextDraw(_canvas))
+                new ScoreManager(new TextManager(_canvas))
                 , null
                 , new AsteroidBelt(15, Asteroid.ASTEROID_SIZE.SMALL)
                 , new List<Bullet>()
             );
         }
 
+        /// <summary>
+        /// Resets screen with default values.
+        /// </summary>
         public void InitTitleScreen()
         {
             _letterSize = 40;
@@ -51,12 +58,15 @@ namespace Asteroids.Standard.Screen
             _title = "GAME OVER";
         }
 
+        /// <summary>
+        /// Draws the next screen frame.
+        /// </summary>
         public void DrawScreen()
         {
             //Draw instructions
-            _textDraw.DrawText(
+            _textManager.DrawText(
                 instructions
-                , TextDraw.Justify.CENTER
+                , TextManager.Justify.CENTER
                 , instructionOffset
                 , instructionSize, instructionSize
             );
@@ -74,14 +84,14 @@ namespace Asteroids.Standard.Screen
                 }
             }
             _letterSize += _increment;
-            _textDraw.DrawText(_title, TextDraw.Justify.CENTER,
+            _textManager.DrawText(_title, TextManager.Justify.CENTER,
                               ScreenCanvas.CANVAS_HEIGHT / 2 - _letterSize, _letterSize, _letterSize * 2);
 
             // Draw copyright notice
-            _textDraw.DrawText(copyright1, TextDraw.Justify.CENTER,
+            _textManager.DrawText(copyright1, TextManager.Justify.CENTER,
                               titleOffset1, titleSize, titleSize);
 
-            _textDraw.DrawText(copyright2, TextDraw.Justify.CENTER,
+            _textManager.DrawText(copyright2, TextManager.Justify.CENTER,
                               titleOffset2, titleSize, titleSize);
 
             // Draw the asteroid belt

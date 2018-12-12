@@ -13,13 +13,13 @@ namespace Asteroids.Standard.Base
     /// This object is based on a cartesian coordinate system 
     /// centered at 0, 0
     /// </summary>
-    abstract class ScreenObject : CommonOps
+    abstract class ScreenObject
     {
         /// <summary>
         /// Creates a new instance of <see cref="ScreenObject"/>.
         /// </summary>
         /// <param name="location">Absolute origin (bottom-left) of the object.</param>
-        public ScreenObject(Point location) : base()
+        public ScreenObject(Point location)
         {
             IsAlive = true;
 

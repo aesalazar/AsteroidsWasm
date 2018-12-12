@@ -1,105 +1,139 @@
-using System;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
-using Asteroids.Standard.Screen;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Managers
 {
     /// <summary>
-    /// Maintains the score information for the game
+    /// Maintains the score information for the game.
     /// </summary>
-    public class ScoreManager : CommonOps
+    public class ScoreManager
     {
-        public int CurrentScore { get; private set; }
+        private const int FreeShipIncrement = 10000;
 
-        protected int iShips;
-        protected int iHiScore;
-        protected int iFreeShip;
-        private const int iFreeShipIncrement = 10000;
+        private const int ScoreTop = 100;
+        private const int ScoreLetterWidth = 200;
+        private const int ScoreLetterHeight = ScoreLetterWidth * 2;
 
-        private readonly TextDraw _textDraw;
+        private int _shipsRemaining;
+        private int _highestScore;
+        private int _remainderToFreeShip;
+
+        private readonly TextManager _textDraw;
 
         /// <summary>
         /// Creates a new instance of <see cref="ScoreManager"/>.
         /// </summary>
         /// <param name="textDraw"Text draw to write score on.</param>
-        public ScoreManager(TextDraw textDraw) : base()
+        public ScoreManager(TextManager textDraw)
         {
             _textDraw = textDraw;
-            iShips = 0;
-            CurrentScore = 0;
-            iHiScore = 0;
-            iFreeShip = iFreeShipIncrement;
+            _remainderToFreeShip = FreeShipIncrement;
         }
 
+        /// <summary>
+        /// Score for the current game.
+        /// </summary>
+        public int CurrentScore { get; private set; }
+
+        /// <summary>
+        /// Decrease the number of ships available by 1.
+        /// </summary>
         public void DecrementReserveShips()
         {
-            iShips -= 1;
+            _shipsRemaining -= 1;
         }
 
+        /// <summary>
+        /// Indicates if there are ships remaining AFTER the current one.
+        /// </summary>
+        /// <returns></returns>
         public bool HasReserveShips()
         {
-            // current ship doesn't count
-            return (iShips > 1);
+            return _shipsRemaining > 1;
         }
 
+        /// <summary>
+        /// Sets ships and score back to defaults.
+        /// </summary>
         public void ResetGame()
         {
-            iShips = 3;
+            _shipsRemaining = 3;
             CurrentScore = 0;
-            iFreeShip = iFreeShipIncrement;
+            _remainderToFreeShip = FreeShipIncrement;
         }
 
+        /// <summary>
+        /// Ends the game immediately.
+        /// </summary>
         public void CancelGame()
         {
-            iShips = 0;
+            _shipsRemaining = 0;
         }
 
-        public void AddScore(int iAddScore)
+        /// <summary>
+        /// Increments the current score.
+        /// </summary>
+        /// <param name="addScore">Amount to increase.</param>
+        public void AddScore(int addScore)
         {
-            if (iAddScore == 0)
+            if (addScore == 0)
                 return;
 
-            CurrentScore += iAddScore;
-            if (CurrentScore >= iFreeShip)
+            CurrentScore += addScore;
+
+            if (CurrentScore >= _remainderToFreeShip)
             {
-                iShips += 1;
-                iFreeShip += iFreeShipIncrement;
+                _shipsRemaining += 1;
+                _remainderToFreeShip += FreeShipIncrement;
                 PlaySound(this, ActionSound.Life);
 
             }
+
             if (CurrentScore >= 1000000)
                 CurrentScore = CurrentScore % 1000000;
-            if (CurrentScore > iHiScore)
-                iHiScore = CurrentScore;
+
+            if (CurrentScore > _highestScore)
+                _highestScore = CurrentScore;
         }
 
+        /// <summary>
+        /// Draw the current score to the <see cref="TextManager"/>.
+        /// </summary>
         public void Draw()
         {
-            const int iWriteTop = 100;
-            const int iLetterWidth = 200;
-            const int iLetterHeight = iLetterWidth * 2;
-            String strScore;
+
+            string strScore;
 
             // Draw Score + Ships left justified
             strScore = CurrentScore.ToString("000000") + " ";
-            if (iShips > 10)
+            if (_shipsRemaining > 10)
             {
-                strScore += "^x" + (iShips - 1);
+                strScore += "^x" + (_shipsRemaining - 1);
             }
             else
             {
-                for (int i = 0; i < iShips - 1; i++)
+                for (int i = 0; i < _shipsRemaining - 1; i++)
                     strScore += "^";
             }
-            _textDraw.DrawText(strScore, TextDraw.Justify.LEFT,
-               iWriteTop, iLetterWidth, iLetterHeight);
+
+            _textDraw.DrawText(
+                strScore
+                , TextManager.Justify.LEFT
+                , ScoreTop
+                , ScoreLetterWidth
+                , ScoreLetterHeight
+            );
 
             // Draw HiScore Centered
-            strScore = iHiScore.ToString("000000");
-            _textDraw.DrawText(strScore, TextDraw.Justify.CENTER,
-               iWriteTop, iLetterWidth, iLetterHeight);
+            strScore = _highestScore.ToString("000000");
+
+            _textDraw.DrawText(
+                strScore
+                , TextManager.Justify.CENTER
+                , ScoreTop
+                , ScoreLetterWidth
+                , ScoreLetterHeight
+            );
         }
     }
 }

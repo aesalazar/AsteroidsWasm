@@ -32,9 +32,9 @@ namespace Asteroids.Standard
 
             await _container.Initialize();
 
-            _textDraw = new TextDraw(_screenCanvas);
-            _score = new ScoreManager(_textDraw);
-            _currentTitle = new TitleScreen(_textDraw, _screenCanvas);
+            _textManager = new TextManager(_screenCanvas);
+            _scoreManager = new ScoreManager(_textManager);
+            _currentTitle = new TitleScreen(_textManager, _screenCanvas);
             _currentTitle.InitTitleScreen();
 
             SetFlipTimer();
@@ -51,10 +51,10 @@ namespace Asteroids.Standard
 
         private bool _lastDrawn;
 
-        private TextDraw _textDraw;
+        private TextManager _textManager;
         private TitleScreen _currentTitle;
         private Game _game;
-        private ScoreManager _score;
+        private ScoreManager _scoreManager;
         private ScreenCanvas _screenCanvas;
 
         private bool _leftPressed;
@@ -123,8 +123,8 @@ namespace Asteroids.Standard
                 // Escape in game goes back to Title Screen
                 else if (GameStatus == GameMode.Game)
                 {
-                    _score.CancelGame();
-                    _currentTitle = new TitleScreen(_textDraw, _screenCanvas);
+                    _scoreManager.CancelGame();
+                    _currentTitle = new TitleScreen(_textManager, _screenCanvas);
                     GameStatus = GameMode.Title;
                 }
             }
@@ -133,8 +133,8 @@ namespace Asteroids.Standard
                 // If we are in tht Title Screen, Start a game
                 if (GameStatus == GameMode.Title)
                 {
-                    _score.ResetGame();
-                    _game = new Game(_score, _textDraw, _screenCanvas);
+                    _scoreManager.ResetGame();
+                    _game = new Game(_scoreManager, _textManager, _screenCanvas);
                     GameStatus = GameMode.Game;
                     _leftPressed = false;
                     _rightPressed = false;
@@ -219,7 +219,7 @@ namespace Asteroids.Standard
 
         private void TitleScreen()
         {
-            _score.Draw();
+            _scoreManager.Draw();
             _currentTitle.DrawScreen();
         }
 
@@ -254,7 +254,7 @@ namespace Asteroids.Standard
                 case GameMode.Game:
                     if (!PlayGame())
                     {
-                        _currentTitle = new TitleScreen(_textDraw, _screenCanvas);
+                        _currentTitle = new TitleScreen(_textManager, _screenCanvas);
                         _currentTitle.InitTitleScreen();
                     }
                     break;

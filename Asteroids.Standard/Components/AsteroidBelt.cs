@@ -1,12 +1,12 @@
 using System.Collections.Generic;
-using Asteroids.Standard.Base;
+using Asteroids.Standard.Helpers;
 
 namespace Asteroids.Standard.Components
 {
     /// <summary>
     /// Summary description for AsteroidBelt.
     /// </summary>
-    class AsteroidBelt : CommonOps
+    class AsteroidBelt
     {
         private readonly object _updateAsteroidsLock;
         private IList<Asteroid> _asteroids;
@@ -15,7 +15,7 @@ namespace Asteroids.Standard.Components
         {
         }
 
-        public AsteroidBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize) : base()
+        public AsteroidBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize)
         {
             _updateAsteroidsLock = new object();
             StartBelt(iNumAsteroids, iMinSize);
@@ -23,12 +23,13 @@ namespace Asteroids.Standard.Components
 
         public void StartBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize)
         {
+            var minSize = Asteroid.ASTEROID_SIZE.LARGE - iMinSize + 1;
             var asteroids = new List<Asteroid>();
-            Asteroid.ASTEROID_SIZE aAsteroidSize;
+
             for (int i = 0; i < iNumAsteroids; i++)
             {
-                aAsteroidSize = Asteroid.ASTEROID_SIZE.LARGE - Random.Next(Asteroid.ASTEROID_SIZE.LARGE - iMinSize + 1);
-                asteroids.Add(new Asteroid(aAsteroidSize));
+                var size = Asteroid.ASTEROID_SIZE.LARGE - RandomizeHelper.Random.Next(minSize);
+                asteroids.Add(new Asteroid(size));
             }
 
             lock (_updateAsteroidsLock)

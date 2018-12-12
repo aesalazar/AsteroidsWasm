@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Enums;
+using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Managers;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
@@ -12,7 +12,7 @@ namespace Asteroids.Standard.Screen
     /// <summary>
     /// Core game engine that manages object interation and screen painting.
     /// </summary>
-    public class Game : CommonOps
+    public class Game
     {
         #region Fields and Constructor
 
@@ -20,7 +20,7 @@ namespace Asteroids.Standard.Screen
         private const int PAUSE_INTERVAL = (int)ScreenCanvas.FPS;
 
         private readonly ScoreManager _score;
-        private readonly TextDraw _textDraw;
+        private readonly TextManager _textDraw;
         private readonly ScreenCanvas _canvas;
 
         private readonly CacheManager _cache;
@@ -38,9 +38,9 @@ namespace Asteroids.Standard.Screen
         /// Creates new instance of <see cref="Game"/>.
         /// </summary>
         /// <param name="score"><see cref="ScoreManager"/> to keep track of points.</param>
-        /// <param name="textDraw"><see cref="TextDraw"/> to write text objects to the <see cref="ScreenCanvas"/>.</param>
+        /// <param name="textDraw"><see cref="TextManager"/> to write text objects to the <see cref="ScreenCanvas"/>.</param>
         /// <param name="canvas"><see cref="ScreenCanvas"/> to draw objects on.</param>
-        public Game(ScoreManager score, TextDraw textDraw, ScreenCanvas canvas) : base()
+        public Game(ScoreManager score, TextManager textDraw, ScreenCanvas canvas)
         {
             _score = score;
             _textDraw = textDraw;
@@ -99,7 +99,7 @@ namespace Asteroids.Standard.Screen
                 {
                     _textDraw.DrawText(
                         "PAUSE"
-                        , TextDraw.Justify.CENTER
+                        , TextManager.Justify.CENTER
                         , ScreenCanvas.CANVAS_HEIGHT / 3
                         , 200, 400
                     );
@@ -126,7 +126,7 @@ namespace Asteroids.Standard.Screen
                     else if (_collisionManager.IsCenterSafe())
                     {
                         _score.DecrementReserveShips();
-                        _cache.UpdatedShip(new Ship());
+                        _cache.UpdateShip(new Ship());
                     }
                 }
 
@@ -204,8 +204,8 @@ namespace Asteroids.Standard.Screen
                     if (_neededSaucerPoints <= 0)
                     {
                         var pt = new Point(
-                            Random.Next(2) == 0 ? 0 : ScreenCanvas.CANVAS_WIDTH
-                            , (Random.Next(10, 90) * ScreenCanvas.CANVAS_HEIGHT) / 100
+                            RandomizeHelper.Random.Next(2) == 0 ? 0 : ScreenCanvas.CANVAS_WIDTH
+                            , RandomizeHelper.Random.Next(10, 90) * ScreenCanvas.CANVAS_HEIGHT / 100
                         );
 
                         _cache.UpdateSaucer(new Saucer(pt));
@@ -277,7 +277,7 @@ namespace Asteroids.Standard.Screen
             else if (_cache.ExplosionCount() == 0 && _score.HasReserveShips())
             {
                 _score.DecrementReserveShips();
-                _cache.UpdatedShip(new Ship());
+                _cache.UpdateShip(new Ship());
             }
         }
 

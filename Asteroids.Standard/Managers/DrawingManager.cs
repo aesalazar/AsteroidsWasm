@@ -13,7 +13,7 @@ namespace Asteroids.Standard.Managers
     /// Manages and optimizes the drawing of the state of <see cref="ScreenObject"/>s 
     /// stored in a <see cref="CacheManager"/> to a <see cref="ScreenCanvas"/>.
     /// </summary>
-    class DrawingManager : CommonOps
+    class DrawingManager
     {
         private readonly CacheManager _cache;
         private readonly ScreenCanvas _canvas;
@@ -81,15 +81,14 @@ namespace Asteroids.Standard.Managers
                     Capacity = 3
                 };
 
-                var pts = _cache.ShipPoints;
-                var pt1 = pts[Ship.PointThrust1];
-                var pt2 = pts[Ship.PointThrust2];
+                var pt1 = _cache.ShipPoints[Ship.PointThrust1];
+                var pt2 = _cache.ShipPoints[Ship.PointThrust2];
 
                 thrustPoints.Add(pt1);
                 thrustPoints.Add(pt2);
 
                 // random thrust effect
-                int size = Random.Next(200) + 100;
+                int size = RandomizeHelper.Random.Next(200) + 100;
                 var radians = _cache.Ship.GetRadians();
 
                 thrustPoints.Add(new Point(
@@ -98,7 +97,7 @@ namespace Asteroids.Standard.Managers
                 ));
 
                 // Draw thrust directly to ScreenCanvas; it's not part of the object
-                DrawPolygon(thrustPoints, GetRandomFireColor());
+                DrawPolygon(thrustPoints, RandomizeHelper.GetRandomFireColor());
             }
         }
 
@@ -125,15 +124,14 @@ namespace Asteroids.Standard.Managers
                 Capacity = 3
             };
 
-            var pts = _cache.MissilePoints;
-            var pt1 = pts[Missile.PointThrust1];
-            var pt2 = pts[Missile.PointThrust2];
+            var pt1 = _cache.MissilePoints[Missile.PointThrust1];
+            var pt2 = _cache.MissilePoints[Missile.PointThrust2];
 
             thrustPoints.Add(pt1);
             thrustPoints.Add(pt2);
 
             // random thrust effect
-            int size = Random.Next(50) + 50;
+            int size = RandomizeHelper.Random.Next(50) + 50;
             var radians = _cache.Saucer.Missile.GetRadians();
 
             thrustPoints.Add(new Point(
@@ -142,7 +140,7 @@ namespace Asteroids.Standard.Managers
             ));
 
             // Draw thrust directly to ScreenCanvas; it's not part of the object
-            DrawPolygon(thrustPoints, GetRandomFireColor());
+            DrawPolygon(thrustPoints, RandomizeHelper.GetRandomFireColor());
         }
 
         /// <summary>
@@ -151,7 +149,7 @@ namespace Asteroids.Standard.Managers
         private void DrawBullets()
         {
             foreach (var bullet in _cache.GetBulletsInFlight())
-                DrawPolygon(bullet.PolygonPoints, GetRandomFireColor());
+                DrawPolygon(bullet.PolygonPoints, RandomizeHelper.GetRandomFireColor());
         }
 
         /// <summary>
@@ -184,7 +182,7 @@ namespace Asteroids.Standard.Managers
         private void DrawExplosion(Explosion explosion)
         {
             foreach (var point in explosion.Points)
-                DrawVector(new Point(point.X, point.Y), 1, 1, GetRandomFireColor());
+                DrawVector(new Point(point.X, point.Y), 1, 1, RandomizeHelper.GetRandomFireColor());
         }
 
         #endregion

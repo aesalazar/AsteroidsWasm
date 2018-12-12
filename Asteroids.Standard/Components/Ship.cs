@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
+using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
@@ -25,6 +26,9 @@ namespace Asteroids.Standard.Components
             ExplosionLength = 2;
         }
 
+        /// <summary>
+        /// Initialize the internal point collections base on the template.
+        /// </summary>
         protected override void InitPoints()
         {
             ClearPoints();
@@ -42,9 +46,13 @@ namespace Asteroids.Standard.Components
         /// <returns>Indication if the jump was considered a failure.</returns>
         public bool Hyperspace()
         {
-            currLoc.X = Random.Next((int)(ScreenCanvas.CANVAS_WIDTH * .8)) + (int)(ScreenCanvas.CANVAS_WIDTH * .1);
-            currLoc.Y = Random.Next((int)(ScreenCanvas.CANVAS_HEIGHT * .8)) + (int)(ScreenCanvas.CANVAS_HEIGHT * .1);
-            return Random.Next(10) != 1;
+            const int w = ScreenCanvas.CANVAS_WIDTH;
+            const int h = ScreenCanvas.CANVAS_HEIGHT;
+
+            currLoc.X = RandomizeHelper.Random.Next((int)(0.1 * w), (int)(0.9 * w));
+            currLoc.Y = RandomizeHelper.Random.Next((int)(0.1 * h), (int)(0.9 * h));
+
+            return RandomizeHelper.Random.Next(10) != 1;
         }
 
         /// <summary>

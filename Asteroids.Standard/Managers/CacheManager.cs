@@ -66,11 +66,9 @@ namespace Asteroids.Standard.Managers
         /// <summary>
         /// Resets all cache based on the current state of <see cref="ScreenObject"/>s.
         /// </summary>
-        /// <param name="ship">Current ship.</param>
-        /// <param name="belt">Current asteroid belt.</param>
         public void Repopulate()
         {
-            UpdatedShip(Ship);
+            UpdateShip(Ship);
             UpdateSaucer(Saucer);
             UpdateBelt(Belt);
 
@@ -96,7 +94,7 @@ namespace Asteroids.Standard.Managers
         /// <summary>
         /// Updates the Ship cache.
         /// </summary>
-        public void UpdatedShip(Ship ship)
+        public void UpdateShip(Ship ship)
         {
             Ship = ship;
 
@@ -160,9 +158,9 @@ namespace Asteroids.Standard.Managers
         /// Removes an <see cref="Asteroid"/> from <see cref="Asteroids"/> and
         /// updates <see cref="Belt"/>.
         /// </summary>
-        public void RemoveAsteroid(int idx)
+        public void RemoveAsteroid(int index)
         {
-            Asteroids.RemoveAt(idx);
+            Asteroids.RemoveAt(index);
             Belt.SetAsteroids(Asteroids.Select(c => c.ScreenObject).ToList());
         }
 
@@ -208,6 +206,10 @@ namespace Asteroids.Standard.Managers
                 return _explosions.Remove(explosion);
         }
 
+        /// <summary>
+        /// Gets collection of <see cref="Explosion"/>s in a thread-safe manner.
+        /// </summary>
+        /// <returns>Collection of explosions.</returns>
         public IList<Explosion> GetExplosions()
         {
             lock (_explosionLock)
@@ -249,7 +251,6 @@ namespace Asteroids.Standard.Managers
 
         #endregion
 
-
         #region Classes
 
         /// <summary>
@@ -270,12 +271,12 @@ namespace Asteroids.Standard.Managers
             }
 
             /// <summary>
-            /// Reference to instance of <see cref="Asteroid"/>.
+            /// Reference to instance of <see cref="T"/>.
             /// </summary>
             public T ScreenObject { get; }
 
             /// <summary>
-            /// Current location of translated center;
+            /// Current location of translated center.
             /// </summary>
             public Point Location { get; }
 

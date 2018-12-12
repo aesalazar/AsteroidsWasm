@@ -5,6 +5,7 @@ using Asteroids.Standard.Components;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
+using static Asteroids.Standard.Managers.CacheManager;
 using static Asteroids.Standard.Sounds.ActionSounds;
 
 namespace Asteroids.Standard.Managers
@@ -22,9 +23,7 @@ namespace Asteroids.Standard.Managers
         /// <summary>
         /// Creates a new instance of <see cref="CollisionManager"/>.
         /// </summary>
-        /// <param name="score">Score to update when a collection occurs.</param>
-        /// <param name="belt">Asteroid belt to update when asteroids are hit.</param>
-        /// <param name="bullets">Bullets to check for impacts and scoring.</param>
+        /// <param name="cache"><<see cref="CacheManager"/> to object object stte from./param>
         public CollisionManager(CacheManager cache)
         {
             _cache = cache;
@@ -35,11 +34,11 @@ namespace Asteroids.Standard.Managers
         #region Asteroids
 
         /// <summary>
-        /// Determines if any point in a collection is in contact with an asteroid in the belt, 
-        /// adjusts asteroid sizes, and keeps track of any scored points.
+        /// Determines if any point in a collection is in contact with one and only one asteroid 
+        /// in the belt, adjusts asteroid sizes, and keeps track of any scored points.
         /// </summary>
         /// <param name="pointsToCheck">Point collection to check.</param>
-        /// <returns>Indication if a collection was made.</returns>
+        /// <returns>Indication if a collection.</returns>
         public bool AsteroidBeltCollision(IList<Point> pointsToCheck)
         {
             //Get a copy for collection adds/removes
@@ -49,11 +48,11 @@ namespace Asteroids.Standard.Managers
             //Go through each but break on first hit
             for (var i = asteroids.Count - 1; i >= 0; i--)
             {
-                var asteroid = asteroids[i].ScreenObject;
-                var location = asteroids[i].Location;
+                var cache = asteroids[i];
+                var asteroid = cache.ScreenObject;
 
                 //Got to next point if not a hit
-                if (!AsteroidCollision(location, asteroid.Size, pointsToCheck))
+                if (!AsteroidCollision(cache, pointsToCheck))
                     continue;
 
                 //Hit so reduce the asteroid size by one level
@@ -93,20 +92,19 @@ namespace Asteroids.Standard.Managers
         }
 
         /// <summary>
-        /// Determine if a point is in contact with the asteroid.
+        /// Determine if any point in a collection is in contact with the asteroid.
         /// </summary>
-        /// <param name="location">Current location of the</param>
-        /// <param name="size">Point collection to check.</param>
-        /// <param name="pointsToCheck">Point collection to check.</param>
+        /// <param name="asteroid">Asteroid cached object.</param>>
+        /// <param name="pointsToCheck">Object points to check for collision.</param>>
         /// <returns>Indication if the point is inside the polygon.</returns>
-        private bool AsteroidCollision(Point location, Asteroid.ASTEROID_SIZE size, IList<Point> pointsToCheck)
+        private bool AsteroidCollision(CachedObject<Asteroid> asteroid, IList<Point> pointsToCheck)
         {
             var inside = false;
 
             foreach (var ptCheck in pointsToCheck)
             {
-                var dist = ptCheck.DistanceTo(location);
-                var pixel = (int)size * Asteroid.SIZE_INCREMENT;
+                var dist = ptCheck.DistanceTo(asteroid.Location);
+                var pixel = (int)asteroid.ScreenObject.Size * Asteroid.SIZE_INCREMENT;
 
                 if (dist > pixel)
                     continue;
@@ -121,6 +119,7 @@ namespace Asteroids.Standard.Managers
         /// <summary>
         /// Determines if the center of the <see cref="AsteroidBelt"/> is clear to draw a <see cref="Ship"/>.
         /// </summary>
+        /// <returns>Indication of the center of the canvase being safe.</returns>
         public bool IsCenterSafe()
         {
             bool safe = true;
@@ -148,9 +147,11 @@ namespace Asteroids.Standard.Managers
         #region Saucer
 
         /// <summary>
-        /// Determine score if a point is in contact with the saucer.
+        /// Registers a score and explosions if any point in a collection is within
+        /// the boundaries of the <see cref="CacheManager.Saucer"/>.
         /// </summary>
         /// <param name="pointsToCheck">Point collection to check.</param>
+        /// <returns>Indication if any point is within the Saucer.</returns>
         public bool SaucerCollision(IList<Point> pointsToCheck)
         {
             if (_cache.SaucerPoints == null)
@@ -174,9 +175,11 @@ namespace Asteroids.Standard.Managers
         #region Missile
 
         /// <summary>
-        /// Determine if a polygon point collection is in contact with the <see cref="Missile"/>.
+        /// Registers explosions if any point in a collection is within
+        /// the boundaries of the <see cref="Saucer.Missile"/>.
         /// </summary>
-        /// <param name="polygonPoints">Polygon point collection to check.</param>
+        /// <param name="pointsToCheck">Point collection to check.</param>
+        /// <returns>Indication if the point is within the missile.</returns>
         public bool MissileCollision(IList<Point> polygonPoints)
         {
             if (_cache.MissilePoints == null)
@@ -216,7 +219,8 @@ namespace Asteroids.Standard.Managers
         }
 
         /// <summary>
-        /// Moves each <see cref="Explosions"/> in the cache.
+        /// Moves each <see cref="Explosions"/> in the cache and removes
+        /// any that are complete.
         /// </summary>
         public void MoveExplosions()
         {

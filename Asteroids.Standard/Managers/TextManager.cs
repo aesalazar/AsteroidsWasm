@@ -1,38 +1,53 @@
 using System.Drawing;
-using Asteroids.Standard.Base;
+using Asteroids.Standard.Screen;
 
-namespace Asteroids.Standard.Screen
+namespace Asteroids.Standard.Managers
 {
     /// <summary>
-    /// Summary description for TextDraw.
+    /// Converts and draws text to a <see cref="ScreenCanvas"/>.
     /// </summary>
-    public class TextDraw : CommonOps
+    public class TextManager
     {
         private readonly ScreenCanvas _screenCanvas;
 
-        public TextDraw(ScreenCanvas canvas) : base()
+        /// <summary>
+        /// Creates a new instance of <see cref="TextManager"/>.
+        /// </summary>
+        /// <param name="canvas"><see cref="ScreenCanvas"/> to draw text on.</param>
+        public TextManager(ScreenCanvas canvas)
         {
             _screenCanvas = canvas;
         }
 
+        /// <summary>
+        /// Text horizontal justification.
+        /// </summary>
         public enum Justify { LEFT, CENTER, RIGHT };
 
-        public void DrawText(string strText, Justify justification, int iTopLoc, int iLetterWidth, int iLetterHeight)
+        /// <summary>
+        /// Coverts text to vector and draws on the <see cref="ScreenCanvas"/>.
+        /// </summary>
+        /// <param name="text">String to draw.</param>
+        /// <param name="justification">Horizontal <see cref="Justify"/>.</param>
+        /// <param name="locationTop">Top position to draw from.</param>
+        /// <param name="letterWidth">Width of each letter.</param>
+        /// <param name="letterHeight">Height of each letter.</param>
+        public void DrawText(string text, Justify justification, int locationTop, int letterWidth, int letterHeight)
         {
-            int iPrintStart;
-            var width = ScreenCanvas.CANVAS_WIDTH;
-            var height = ScreenCanvas.CANVAS_HEIGHT;
+            int printStart;
+            const int width = ScreenCanvas.CANVAS_WIDTH;
+            const int height = ScreenCanvas.CANVAS_HEIGHT;
 
             switch (justification)
             {
                 case Justify.LEFT:
-                    iPrintStart = 100;
+                    printStart = 100;
                     break;
                 case Justify.CENTER:
-                    iPrintStart = (int)((width - strText.Length * iLetterWidth) / 2.0);
+                    printStart = (int)((width - text.Length * letterWidth) / 2.0);
                     break;
                 case Justify.RIGHT:
-                    iPrintStart = height - 100 - strText.Length * iLetterWidth;
+                    printStart = height - 100 - text.Length * letterWidth;
                     break;
                 default:
                     return;
@@ -41,15 +56,25 @@ namespace Asteroids.Standard.Screen
             var x = _screenCanvas.Size.Width;
             var y = _screenCanvas.Size.Height;
 
-            for (int i = 0; i < strText.Length; i++)
-                DrawLetter(strText[i],
-                   (int)((iPrintStart + i * iLetterWidth) / (double)width * x),
-                   (int)(iTopLoc / (double)height * y),
-                   (int)(iLetterWidth / (double)width * x),
-                   (int)(iLetterHeight / (double)height * y));
+            for (int i = 0; i < text.Length; i++)
+                DrawLetter(
+                    text[i]
+                    , (int)((printStart + i * letterWidth) / (double)width * x)
+                    , (int)(locationTop / (double)height * y)
+                    , (int)(letterWidth / (double)width * x)
+                    , (int)(letterHeight / (double)height * y)
+                );
         }
 
-        private void DrawLetter(char chDraw, int letterLeft, int letterTop, int letterWidth, int letterHeight)
+        /// <summary>
+        /// Converts and draws a single character to the <see cref="ScreenCanvas"/>.
+        /// </summary>
+        /// <param name="character">Single <see langword="char"/> to draw.</param>
+        /// <param name="letterLeft">Left position.</param>
+        /// <param name="letterTop">Top position.</param>
+        /// <param name="letterWidth">Letter width.</param>
+        /// <param name="letterHeight">Letter height.</param>
+        private void DrawLetter(char character, int letterLeft, int letterTop, int letterWidth, int letterHeight)
         {
             int newLeft = (int)(letterLeft + letterWidth * .2);
             int newTop = (int)(letterTop + letterHeight * .1);
@@ -58,7 +83,7 @@ namespace Asteroids.Standard.Screen
             int rightSide = letterLeft + letterWidth;
             int bottomSide = letterTop + letterHeight;
 
-            switch (chDraw)
+            switch (character)
             {
                 case '^':/* Ship */
                     int pointInUp = (int)(bottomSide - letterHeight * .2);
