@@ -77,17 +77,21 @@ namespace Asteroids.Wpf.Classes
 
                     foreach (var gpoly in polygons)
                     {
-                        var points = gpoly
-                            .Points
-                            .SelectMany(p => new[] { p.X, p.Y })
-                            .ToList();
+                        var points = new int[gpoly.Points.Count * 2 + 2];
+
+                        for (int i = 0, c = 0; i < points.Length - 2; i += 2, c++)
+                        {
+                            var p = gpoly.Points[c];
+                            points[i] = p.X;
+                            points[i + 1] = p.Y;
+                        }
 
                         var first = gpoly.Points.First();
-                        points.Add(first.X);
-                        points.Add(first.Y);
+                        points[points.Length - 2] = first.X;
+                        points[points.Length - 1] = first.Y;
 
                         _bitmap.DrawPolyline(
-                            points.ToArray()
+                            points
                             , HexToColor(gpoly.ColorHex)
                         );
                     }
