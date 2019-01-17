@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazor.Extensions.Storage" Version="0.1.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.6.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.6.0" />
+    <PackageReference Include="Blazor.Extensions.Storage" Version="0.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Browser" Version="0.7.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Blazor.Build" Version="0.7.0" />
   </ItemGroup>
 
   <ItemGroup>
