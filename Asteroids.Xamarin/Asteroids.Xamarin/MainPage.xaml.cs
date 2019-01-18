@@ -38,9 +38,7 @@ namespace Asteroids.Xamarin
 
         private System.Drawing.Rectangle GetRectangle()
         {
-            var metrics = DeviceDisplay.ScreenMetrics;
-            var density = metrics.Density;
-
+            var density = DeviceDisplay.MainDisplayInfo.Density;
             var rec = new System.Drawing.Rectangle(
                 0
                 , 0
