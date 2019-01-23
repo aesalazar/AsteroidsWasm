@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="WriteableBitmapEx" Version="1.5.1" />
+    <PackageReference Include="WriteableBitmapEx" Version="1.6.2" />
   </ItemGroup>
 
 </Project>
