@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Components;
@@ -160,6 +161,16 @@ namespace Asteroids.Standard.Base
         #region Rotation
 
         /// <summary>
+        /// Max number of clockwise radians allow for an <see cref="Align"/> call.
+        /// </summary>
+        protected const double RotationLimit = 5 * ScreenCanvas.RADIANS_PER_DEGREE;
+
+        /// <summary>
+        /// Max number of counter-clockwise radians allow for an <see cref="Align"/> call.
+        /// </summary>
+        protected const double RotationLimitNeg = -5 * ScreenCanvas.RADIANS_PER_DEGREE;
+
+        /// <summary>
         /// Get the current rotational radians.
         /// </summary>
         public double GetRadians() => radians;
@@ -171,12 +182,18 @@ namespace Asteroids.Standard.Base
 
         /// <summary>
         /// Rotates all internal <see cref="Point"/>s used to generate polygons on draw
-        /// based on the alignment with the target point.
+        /// based on the alignment with the target point but no moren then 5 degrees at a time.
         /// </summary>
         /// <param name="alignPoint"><see cref="Point"/> to target.</param>
         protected void Align(Point alignPoint)
         {
-            radians = GeometryHelper.GetAngle(currLoc, alignPoint);
+            var radsToPoint = GeometryHelper.GetAngle(currLoc, alignPoint);
+            var delta = radsToPoint - radians;
+
+            radians += delta >= 0
+                ? Math.Min(delta, RotationLimit)
+                : Math.Max(delta, RotationLimitNeg);
+
             RotateInternal();
         }
 
@@ -190,7 +207,6 @@ namespace Asteroids.Standard.Base
             //Get radians in 1/FPS'th increment
             var radiansAdjust = degrees * ScreenCanvas.RADIANS_PER_DEGREE;
             radians += radiansAdjust / ScreenCanvas.FPS;
-            radians = radians % ScreenCanvas.RADIANS_PER_CIRCLE;
 
             RotateInternal();
         }
@@ -201,6 +217,8 @@ namespace Asteroids.Standard.Base
         /// </summary>
         private void RotateInternal()
         {
+            radians %= ScreenCanvas.RADIANS_PER_CIRCLE;
+
             double SinVal = Math.Sin(radians);
             double CosVal = Math.Cos(radians);
 
