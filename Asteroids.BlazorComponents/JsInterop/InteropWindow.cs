@@ -10,7 +10,21 @@ namespace Asteroids.BlazorComponents.JsInterop
     /// </summary>
     public class InteropWindow
     {
+        /// <summary>
+        /// Creates a new instance of <see cref="InteropWindow"/>.
+        /// </summary>
+        /// <param name="jsRuntime">JavaScript runtime bridge.</param>
+        public InteropWindow(IJSRuntime jsRuntime)
+        {
+            _jsRuntime = jsRuntime;
+        }
+
         #region Properties
+
+        /// <summary>
+        /// JavaScript runtime bridge.
+        /// </summary>
+        private readonly IJSRuntime _jsRuntime;
 
         /// <summary>
         /// JavaScript method container name.
@@ -31,7 +45,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// </summary>
         public async Task<string> Initialize()
         {
-            return await JSRuntime.Current.InvokeAsync<string>(
+            return await _jsRuntime.InvokeAsync<string>(
                 $"{JsInteropAsteroidsWindow}.{initialize}"
             );
         }
