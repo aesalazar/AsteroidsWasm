@@ -4,41 +4,14 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UseWPF>true</UseWPF>
-    <AssemblyName>Asteroids.Wpf</AssemblyName>
-    <RootNamespace>Asteroids.Wpf</RootNamespace>
-    <NoWin32Manifest>true</NoWin32Manifest>
-    <StartupObject></StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Asteroids.Wpf\Classes\GraphicContainer.cs" Link="Classes\GraphicContainer.cs" />
-    <Compile Include="..\Asteroids.Wpf\MainWindow.xaml.cs" Link="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Include="..\Asteroids.Wpf\MainWindow.xaml" Link="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <PackageReference Include="WriteableBitmapEx" Version="1.6.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Asteroids.Standard\Asteroids.Standard.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Page Update="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Classes\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="WriteableBitmapEx" Version="1.6.2" />
   </ItemGroup>
 
 </Project>
