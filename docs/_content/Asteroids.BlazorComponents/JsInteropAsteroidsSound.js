@@ -27,7 +27,7 @@ window.JsAsteroidsSound = {
 
     loadSounds: function (sounds) {
         sounds.forEach(sound => {
-            const str64 = sessionStorage.getItem(sound.path).slice(1, -1);;
+            const str64 = localStorage.getItem(sound.path).slice(1, -1);;
             const blob = b64toBlob(str64, "audio/wav");
             const blobUrl = URL.createObjectURL(blob);
 
