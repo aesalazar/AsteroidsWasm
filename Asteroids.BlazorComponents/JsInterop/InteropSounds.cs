@@ -11,6 +11,20 @@ namespace Asteroids.BlazorComponents.JsInterop
     public class InteropSounds
     {
         /// <summary>
+        /// Creates a new instance of <see cref="InteropSounds"/>.
+        /// </summary>
+        /// <param name="jsRuntime">JavaScript runtime bridge.</param>
+        public InteropSounds(IJSRuntime jsRuntime)
+        {
+            _jsRuntime = jsRuntime;
+        }
+
+        /// <summary>
+        /// JavaScript runtime bridge.
+        /// </summary>
+        private readonly IJSRuntime _jsRuntime;
+
+        /// <summary>
         /// JavaScript method container name.
         /// </summary>
         private const string JsAsteroidsSound = nameof(JsAsteroidsSound);
@@ -50,7 +64,7 @@ namespace Asteroids.BlazorComponents.JsInterop
                 })
                 .ToList();
 
-            return await JSRuntime.Current.InvokeAsync<string>(
+            return await _jsRuntime.InvokeAsync<string>(
                 $"{JsAsteroidsSound}.{loadSounds}"
                 , sounds
             );
@@ -62,7 +76,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <param name="name">Sound to play.</param>
         public async Task<string> Play(string name)
         {
-            return await JSRuntime.Current.InvokeAsync<string>(
+            return await _jsRuntime.InvokeAsync<string>(
                 $"{JsAsteroidsSound}.{play}"
                 , soundDict[name]
             );

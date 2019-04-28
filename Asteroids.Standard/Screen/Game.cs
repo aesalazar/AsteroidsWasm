@@ -16,6 +16,7 @@ namespace Asteroids.Standard.Screen
     {
         #region Fields and Constructor
 
+        private const int ASTEROID_START_COUNT = 4;
         private const int SAUCER_SCORE = 1000;
         private const int PAUSE_INTERVAL = (int)ScreenCanvas.FPS;
 
@@ -46,8 +47,7 @@ namespace Asteroids.Standard.Screen
             _textDraw = textDraw;
             _canvas = canvas;
 
-            //Start with 4 asteroids
-            _currentLevel = 4;
+            _currentLevel = ASTEROID_START_COUNT;
             _inProcess = true;
 
             //Setup caches with a new ship

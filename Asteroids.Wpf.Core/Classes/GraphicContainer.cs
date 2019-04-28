@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Asteroids.Standard.Interfaces;
 
-namespace Asteroids.Wpf.Classes
+namespace Asteroids.Wpf.Core.Classes
 {
     /// <summary>
     /// Control to paint vectors based on <see cref="WriteableBitmap"/>.

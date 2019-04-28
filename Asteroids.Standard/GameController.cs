@@ -111,6 +111,9 @@ namespace Asteroids.Standard
 
         public void KeyDown(PlayKey key)
         {
+            if (GameStatus == GameMode.Prep)
+                return;
+
             // Check escape key
             if (key == PlayKey.Escape) // Escape
             {

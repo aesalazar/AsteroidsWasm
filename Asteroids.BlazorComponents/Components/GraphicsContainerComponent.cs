@@ -9,12 +9,17 @@ using Asteroids.Standard;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using Asteroids.Standard.Sounds;
-using Blazor.Extensions.Storage;
-using Microsoft.AspNetCore.Blazor.Components;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace Asteroids.BlazorComponents.Components
 {
-    public class GraphicsContainerComponent : BlazorComponent, IGraphicContainer
+    /// <summary>
+    /// Implementation of <see cref="IGraphicContainer"/> to provide rendering of 
+    /// vectors and audio to the <see cref="SvgContentContainer"/>.
+    /// </summary>
+    public class GraphicsContainerComponent : ComponentBase, IGraphicContainer
     {
         #region Blazor Parameters
 
@@ -39,8 +44,14 @@ namespace Asteroids.BlazorComponents.Components
         /// Proxy to JavaScript SessionStorage collection.
         /// </summary>
         [Inject]
-        protected SessionStorage sessionStorage { get; set; }
+        protected ILocalStorageService LocalStorage { get; set; }
 
+        /// <summary>
+        /// JavaScript runtime bridge to provide to proxies.
+        /// </summary>
+        [Inject]
+        protected IJSRuntime JSRuntime { get; set; }
+        
         #endregion
 
         #region Constructor and Fields
@@ -88,7 +99,7 @@ namespace Asteroids.BlazorComponents.Components
             await LoadSoundStreams();
 
             //Load the sounds in JavaScript
-            _interopSounds = new InteropSounds();
+            _interopSounds = new InteropSounds(JSRuntime);
             var sounds = Enum
                 .GetNames(typeof(ActionSound))
                 .Select(s => s.ToLowerInvariant());
@@ -108,7 +119,7 @@ namespace Asteroids.BlazorComponents.Components
             if (_interopWindow != null)
                 return;
 
-            _interopWindow = new InteropWindow();
+            _interopWindow = new InteropWindow(JSRuntime);
             await _interopWindow.Initialize();
         }
 
@@ -267,13 +278,13 @@ namespace Asteroids.BlazorComponents.Components
 
         /// <summary>
         /// Loads sound <see cref="System.IO.Stream"/>s stored in <see cref="ActionSounds.SoundDictionary"/>
-        /// to HTML Session Storage via <see cref="sessionStorage"/>.
+        /// to HTML Session Storage via <see cref="SessionStorage"/>.
         /// </summary>
         private async Task LoadSoundStreams()
         {
             foreach (var kvp in ActionSounds.SoundDictionary)
             {
-                await sessionStorage.SetItem(
+                await LocalStorage.SetItemAsync(
                     kvp.Key.ToString().ToLower()
                     , kvp.Value.ToBase64()
                 );

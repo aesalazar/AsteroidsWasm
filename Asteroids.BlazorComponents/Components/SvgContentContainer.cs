@@ -2,15 +2,15 @@
 using System.Linq;
 using System.Text;
 using Asteroids.Standard.Interfaces;
-using Microsoft.AspNetCore.Blazor.Components;
-using Microsoft.AspNetCore.Blazor.RenderTree;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.RenderTree;
 
 namespace Asteroids.BlazorComponents.Components
 {
     /// <summary>
     /// Provides raw graphical content for an HTML SVG element.
     /// </summary>
-    public class SvgContentContainer : BlazorComponent
+    public class SvgContentContainer : ComponentBase
     {
         private const string StylePolygon = "stroke=width:1px; fill:transparent; ";
 

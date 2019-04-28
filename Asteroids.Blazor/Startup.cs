@@ -1,5 +1,5 @@
-using Blazor.Extensions.Storage;
-using Microsoft.AspNetCore.Blazor.Builder;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Asteroids.Blazor
@@ -8,11 +8,10 @@ namespace Asteroids.Blazor
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            //Add Blazor.Extensions.Storage, both SessionStorage and LocalStorage are registered
-            services.AddStorage();
+            services.AddBlazoredLocalStorage();
         }
 
-        public void Configure(IBlazorApplicationBuilder app)
+        public void Configure(IComponentsApplicationBuilder app)
         {
             app.AddComponent<App>("app");
         }
