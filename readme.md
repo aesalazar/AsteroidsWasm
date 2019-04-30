@@ -22,6 +22,8 @@ Currently, the project is made of the following:
 
 - Asteroids.WinForms - Reconstructed WinForms GUI that uses the game engine with a [PictureBox](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.picturebox) as the main renderer.  This is using the .NET Framework 4.8.
 
+- Asteroids.WinForms.Core - Idential in code to the Asteroids.WinForms project but using .NET Core 3 (see below for more info).
+
 - Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [WriteableBitmap](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap) as the main renderer with help from the [WritableBitmapEx](https://github.com/teichgraf/WriteableBitmapEx/) library.  This is using the .NET Framework 4.8.
 
 - Asteroids.Wpf.Core - Identical in code to the Asteroids.Wpf project but using .NET Core 3 (see below for more info).
@@ -38,13 +40,16 @@ Currently, the project is made of the following:
 
 ## General Notes
 
-All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance`.  Note that the Blazor and Wpf Core projects require Visual Studio 2019 or the latest Visual Studio Code to edit and compile; otherwise it can be done via Command Line.
+All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance`.  All are fully functional in terms of sound and keyboard support.  
 
-The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
+Note that the Blazor, WinForms and Wpf Core projects require Visual Studio 2019 or the latest Visual Studio Code to edit and compile; otherwise it can be done via Command Line.  As of the time of this writing, Visual Studio 2019 (16.0.2) still does not support WinForms Core in its Designer Editor but does allow the files to be edited in code.
 
-All applications are fully functional in terms sound and keyboard support.  Performance varies among the technologies with the Wpf Core being the clear winner for desktop and Firefox for Blazor/Web.
+Performance varies among the technologies with WinForms Core being the clear winner for desktop and Firefox for Blazor/Web.  Wpf Core is a close second for desktop.
 
 ## Xamarin Notes
+
+
+The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
 
 There is no Xamarin iOS app at this point only because Apple does not allow development on non-macs (which is what I am on) without connected hardware.  But there is no technical reason for it not to be possible.
 
