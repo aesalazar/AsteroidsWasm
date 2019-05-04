@@ -1,4 +1,4 @@
-# Asteroids WebAssembly
+# Asteroids in .NET Framework, .NET Core 3, and Blazor WebAssembly
 
 ## Live Demo: https://aesalazar.github.io/AsteroidsWasm/
 
