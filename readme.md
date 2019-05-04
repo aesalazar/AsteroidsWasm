@@ -46,6 +46,16 @@ Note that the Blazor, WinForms and Wpf Core projects require Visual Studio 2019 
 
 Performance varies among the technologies with WinForms Core being the clear winner for desktop and Firefox for Blazor/Web.  Wpf Core is a close second for desktop.
 
+## .NET Core Notes
+
+The three .NET Core 3 applications were written using Preview 4 of the SDK so remember to have it installed.  You can check what versions are installed (you can have multiple) by entering in a command prompt:
+
+`dotnet --info` or `dotnet --version`
+
+If using Visual Studio 2019, make sure to enable the use of preview versions of SDKs: 
+
+`Options > Project and Solutions > .NET Core > Use previews of the .NET Core SDK`
+
 ## Xamarin Notes
 
 
@@ -57,9 +67,11 @@ The UWP application is set to require the Windows 10 Fall Creators Update at a m
 
 ## Blazor Notes
 
-Microsoft has made Blazor offically part of .NET Core 3 and, as of the time of this writing, is currently in Preview.  So, version control will be important when trying to build and run this app. Currently, the app is using .NET Core 3 Preview 4.
+Microsoft has made Blazor offically part of .NET Core 3.  It was first included in Preview 4 which, as mentioned above, is what the .NET Core apps in this project use.  Prior to that it was a separate library/install.
 
-To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their Getting Stated page at [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/client). Doing it from CLI in the Asteroids.Blazor project folder is also an option:
+To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their Getting Stated page at [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/client).  Besides the .NET Core install there is an extension specific to Blazor that is needed.  
+
+Building from CLI in the Asteroids.Blazor project folder is also an option:
 
 `dotnet build`
 
