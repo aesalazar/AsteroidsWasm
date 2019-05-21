@@ -22,7 +22,7 @@ Currently, the project is made of the following:
 
 - Asteroids.WinForms - Reconstructed WinForms GUI that uses the game engine with a [PictureBox](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.picturebox) as the main renderer.  This is using the .NET Framework 4.8.
 
-- Asteroids.WinForms.Core - Idential in code to the Asteroids.WinForms project but using .NET Core 3 (see below for more info).
+- Asteroids.WinForms.Core - Identical in code to the Asteroids.WinForms project but using .NET Core 3 (see below for more info).
 
 - Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [WriteableBitmap](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap) as the main renderer with help from the [WritableBitmapEx](https://github.com/teichgraf/WriteableBitmapEx/) library.  This is using the .NET Framework 4.8.
 
@@ -48,7 +48,7 @@ Performance varies among the technologies with WinForms Core being the clear win
 
 ## .NET Core Notes
 
-The three .NET Core 3 applications were written using Preview 4 of the SDK so remember to have it installed.  You can check what versions are installed (you can have multiple) by entering in a command prompt:
+The three .NET Core 3 applications were written using Preview 5 of the SDK so remember to have it installed.  You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
@@ -58,7 +58,6 @@ If using Visual Studio 2019, make sure to enable the use of preview versions of 
 
 ## Xamarin Notes
 
-
 The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Oreo VM running on my dev machine.
 
 There is no Xamarin iOS app at this point only because Apple does not allow development on non-macs (which is what I am on) without connected hardware.  But there is no technical reason for it not to be possible.
@@ -67,13 +66,13 @@ The UWP application is set to require the Windows 10 Fall Creators Update at a m
 
 ## Blazor Notes
 
-Microsoft has made Blazor offically part of .NET Core 3.  It was first included in Preview 4 which, as mentioned above, is what the .NET Core apps in this project use.  Prior to that it was a separate library/install.
+Microsoft has made Blazor officially part of .NET Core 3.  It was first included in Preview 4.  Prior to that it was a separate library/install.
 
 To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their Getting Stated page at [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/client).  Besides the .NET Core install there is an extension specific to Blazor that is needed.  
 
 Building from CLI in the Asteroids.Blazor project folder is also an option:
 
-`dotnet build`
+`dotnet build -c Release`
 
 To run the application, simply hit F5 or ctrl+F5 in Visual Studio or from the CLI:
 
