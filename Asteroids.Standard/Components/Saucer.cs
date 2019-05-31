@@ -108,9 +108,13 @@ namespace Asteroids.Standard.Components
         public override IList<Explosion> Explode()
         {
             PlaySound(this, ActionSound.Explode1);
-            return base.Explode()
-                .Concat(Missile.Explode())
-                .ToList();
+            var explosions = base.Explode();
+
+            if (Missile?.IsAlive == true)
+                foreach (var exp in Missile.Explode())
+                    explosions.Add(exp);
+
+            return explosions;
         }
 
         #region Statics
