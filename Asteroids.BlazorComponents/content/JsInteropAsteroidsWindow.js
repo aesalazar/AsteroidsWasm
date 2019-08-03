@@ -19,7 +19,6 @@ window.JsInteropAsteroidsWindow = {
             , window.innerWidth
             , window.innerHeight
         );
-
-        return true;
+        return "true";
     },
 };
