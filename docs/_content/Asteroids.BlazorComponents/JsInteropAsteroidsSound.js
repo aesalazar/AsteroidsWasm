@@ -1,7 +1,7 @@
 ﻿const soundAudios = [];
 
 function b64toBlob(b64Data, contentType, sliceSize) {
-    contentType = contentType || '';
+    contentType = contentType || "";
     sliceSize = sliceSize || 512;
 
     const byteCharacters = atob(b64Data);
@@ -27,22 +27,18 @@ window.JsAsteroidsSound = {
 
     loadSounds: function (sounds) {
         sounds.forEach(sound => {
-            const str64 = localStorage.getItem(sound.path).slice(1, -1);;
+            const str64 = localStorage.getItem(sound.path);
             const blob = b64toBlob(str64, "audio/wav");
             const blobUrl = URL.createObjectURL(blob);
 
             const audio = new Audio(blobUrl);
             soundAudios[sound.id] = audio;
         });
-
-        return true;
     },
 
     play: function (id) {
         const audio = soundAudios[id];
         audio.currentTime = 0;
         audio.play();
-
-        return true;
-    },
+    }
 };
