@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using Asteroids.BlazorComponents.Classes;
-using Asteroids.BlazorComponents.JsInterop;
+﻿using Asteroids.BlazorComponents.JsInterop;
 using Asteroids.Standard;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
-using Asteroids.Standard.Sounds;
-using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Threading.Tasks;
 
 namespace Asteroids.BlazorComponents.Components
 {
@@ -41,16 +37,10 @@ namespace Asteroids.BlazorComponents.Components
         protected int ElementWidth { get; set; }
 
         /// <summary>
-        /// Proxy to JavaScript SessionStorage collection.
-        /// </summary>
-        [Inject]
-        protected ILocalStorageService LocalStorage { get; set; }
-
-        /// <summary>
         /// JavaScript runtime bridge to provide to proxies.
         /// </summary>
         [Inject]
-        protected IJSRuntime JSRuntime { get; set; }
+        protected IJSRuntime JsRuntime { get; set; }
         
         #endregion
 
@@ -90,28 +80,20 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Loads the sound streams in JavaScript.
         /// </summary>
-        /// <remarks>
-        ///  Base <see cref="BlazorComponent.OnInitAsync"/> returns null so do not call.
-        /// </remarks>
         protected override async Task OnInitAsync()
         {
-            //First load the stream to storage
-            await LoadSoundStreams();
+            await base.OnInitAsync();
 
             //Load the sounds in JavaScript
-            _interopSounds = new InteropSounds(JSRuntime);
-            var sounds = Enum
-                .GetNames(typeof(ActionSound))
-                .Select(s => s.ToLowerInvariant());
-
-            await _interopSounds.LoadSounds(sounds);
+            _interopSounds = new InteropSounds(JsRuntime);
+            await _interopSounds.Initialize();
         }
 
         /// <summary>
         ///  Initializes the <see cref="InteropWindow"/>.
         /// </summary>
         /// <remarks>
-        ///  Base <see cref="BlazorComponent.OnAfterRenderAsync"/> returns null so do not call.
+        ///  Base <see cref="ComponentBase.OnAfterRenderAsync"/> returns null so do not call.
         /// </remarks>
         protected override async Task OnAfterRenderAsync()
         {
@@ -119,7 +101,7 @@ namespace Asteroids.BlazorComponents.Components
             if (_interopWindow != null)
                 return;
 
-            _interopWindow = new InteropWindow(JSRuntime);
+            _interopWindow = new InteropWindow(JsRuntime);
             await _interopWindow.Initialize();
         }
 
@@ -274,21 +256,6 @@ namespace Asteroids.BlazorComponents.Components
             }
 
             _controller.KeyUp(key);
-        }
-
-        /// <summary>
-        /// Loads sound <see cref="System.IO.Stream"/>s stored in <see cref="ActionSounds.SoundDictionary"/>
-        /// to HTML Session Storage via <see cref="SessionStorage"/>.
-        /// </summary>
-        private async Task LoadSoundStreams()
-        {
-            foreach (var kvp in ActionSounds.SoundDictionary)
-            {
-                await LocalStorage.SetItemAsync(
-                    kvp.Key.ToString().ToLower()
-                    , kvp.Value.ToBase64()
-                );
-            }
         }
 
         /// <summary>
