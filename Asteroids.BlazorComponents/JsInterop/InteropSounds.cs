@@ -1,11 +1,9 @@
-﻿using Asteroids.BlazorComponents.Classes;
-using Asteroids.Standard.Enums;
-using Asteroids.Standard.Sounds;
-using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Asteroids.BlazorComponents.Classes;
+using Asteroids.Standard.Sounds;
+using Microsoft.JSInterop;
 
 namespace Asteroids.BlazorComponents.JsInterop
 {
@@ -92,7 +90,9 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// </summary>
         public async Task Initialize()
         {
-            //First load the stream to storage
+            //First load the streams to storage
+            var sounds = new List<string>();
+
             foreach (var kvp in ActionSounds.SoundDictionary)
             {
                 var str = kvp.Value.ToBase64();
@@ -102,13 +102,11 @@ namespace Asteroids.BlazorComponents.JsInterop
                     , kvp.Key.ToString().ToLower()
                     , str
                 );
+
+                sounds.Add(kvp.Key.ToString().ToLowerInvariant());
             }
 
             //Load the sounds in JavaScript
-            var sounds = Enum
-                .GetNames(typeof(ActionSound))
-                .Select(s => s.ToLowerInvariant());
-
             await LoadSounds(sounds);
         }
 
