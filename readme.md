@@ -42,17 +42,17 @@ Currently, the project is made of the following:
 
 All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance`.  All are fully functional in terms of sound and keyboard support.  
 
-Note that the Blazor, WinForms and Wpf Core projects require Visual Studio 2019 or the latest Visual Studio Code to edit and compile; otherwise it can be done via Command Line.  As of the time of this writing, Visual Studio 2019 (16.0.2) still does not support WinForms Core in its Designer Editor but does allow the files to be edited in code.
+Note that the Blazor, WinForms and Wpf Core projects require Visual Studio 2019 or the latest Visual Studio Code to edit and compile; otherwise it can be done via Command Line.  As of the time of this writing, Visual Studio 2019 (16.2) still does not support WinForms Core in its Designer Editor but does allow the files to be edited in code.
 
 Performance varies among the technologies with WinForms Core being the clear winner for desktop and Firefox for Blazor/Web.  Wpf Core is a close second for desktop.
 
 ## .NET Core Notes
 
-The three .NET Core 3 applications were written using Preview 5 of the SDK so remember to have it installed.  You can check what versions are installed (you can have multiple) by entering in a command prompt:
+The three .NET Core 3 applications were written using Preview 7 of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
-If using Visual Studio 2019, make sure to enable the use of preview versions of SDKs: 
+ Preview 7 will require Visual Studio 19.2 as the minimum version.  Make sure to enable the use of preview versions of SDKs: 
 
 `Options > Project and Solutions > .NET Core > Use previews of the .NET Core SDK`
 
