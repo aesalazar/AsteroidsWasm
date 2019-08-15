@@ -92,11 +92,10 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         ///  Initializes the <see cref="InteropWindow"/>.
         /// </summary>
-        /// <remarks>
-        ///  Base <see cref="ComponentBase.OnAfterRenderAsync"/> returns null so do not call.
-        /// </remarks>
         protected override async Task OnAfterRenderAsync()
         {
+            await base.OnAfterRenderAsync();
+
             //This can be called more then once
             if (_interopWindow != null)
                 return;
@@ -263,7 +262,7 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         private async void OnSoundPlayed(object sender, ActionSound sound)
         {
-            await _interopSounds.Play(sound.ToString().ToLowerInvariant());
+            await _interopSounds.Play(sound);
         }
 
         #endregion

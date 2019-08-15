@@ -26,13 +26,10 @@ function b64toBlob(b64Data, contentType, sliceSize) {
 window.JsAsteroidsSound = {
 
     loadSounds: function (sounds) {
-        sounds.forEach(sound => {
-            const str64 = localStorage.getItem(sound.path);
+        sounds.forEach((str64, idx) => {
             const blob = b64toBlob(str64, "audio/wav");
             const blobUrl = URL.createObjectURL(blob);
-
-            const audio = new Audio(blobUrl);
-            soundAudios[sound.id] = audio;
+            soundAudios[idx] = new Audio(blobUrl);
         });
     },
 
