@@ -86,7 +86,9 @@ namespace Asteroids.BlazorComponents.Components
 
             //Load the sounds in JavaScript
             _interopSounds = new InteropSounds(JsRuntime);
-            await _interopSounds.Initialize();
+
+            if (!await _interopSounds.Initialize())
+                Console.WriteLine($"ERROR '{nameof(InteropSounds)}': Could not initialize sounds in JavaScript.");
         }
 
         /// <summary>
@@ -262,7 +264,8 @@ namespace Asteroids.BlazorComponents.Components
         /// </summary>
         private async void OnSoundPlayed(object sender, ActionSound sound)
         {
-            await _interopSounds.Play(sound);
+            if (!await _interopSounds.Play(sound))
+                Console.WriteLine($"ERROR '{nameof(InteropSounds)}':Could not play sound: {sound}");
         }
 
         #endregion
