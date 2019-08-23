@@ -28,13 +28,13 @@ namespace Asteroids.BlazorComponents.Components
         /// Available width in the current window for the main container.
         /// </summary>
         [Parameter]
-        protected int ElementHeight { get; set; }
+        public int ElementHeight { get; set; }
 
         /// <summary>
         /// Available height in the current window for the main container.
         /// </summary>
         [Parameter]
-        protected int ElementWidth { get; set; }
+        public int ElementWidth { get; set; }
 
         /// <summary>
         /// JavaScript runtime bridge to provide to proxies.
@@ -80,9 +80,9 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Loads the sound streams in JavaScript.
         /// </summary>
-        protected override async Task OnInitAsync()
+        protected override async Task OnInitializedAsync()
         {
-            await base.OnInitAsync();
+            await base.OnInitializedAsync();
 
             //Load the sounds in JavaScript
             _interopSounds = new InteropSounds(JsRuntime);
