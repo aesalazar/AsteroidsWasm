@@ -48,7 +48,7 @@ Performance varies among the technologies with WinForms Core being the clear win
 
 ## .NET Core Notes
 
-The three .NET Core 3 applications were written using Preview 7 of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
+The three .NET Core 3 applications were written using Preview 8 of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
