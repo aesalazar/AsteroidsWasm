@@ -47,7 +47,8 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// Loads sound <see cref="System.IO.Stream"/>s stored in <see cref="ActionSounds.SoundDictionary"/>
         /// to HTML localStorage.
         /// </summary>
-        public async Task Initialize()
+        /// <returns>Indication if the sounds were loaded successfully.</returns>
+        public async Task<bool> Initialize()
         {
             //Load the sounds in JavaScript indexed by enum value
             var sounds = ActionSounds
@@ -57,7 +58,7 @@ namespace Asteroids.BlazorComponents.JsInterop
                 .ToList();
 
             //Index in the collection will be the map
-            await _jsRuntime.InvokeAsync<string>(
+            return await _jsRuntime.InvokeAsync<bool>(
                 $"{JsAsteroidsSound}.{loadSounds}"
                 , sounds
             );
@@ -67,9 +68,11 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// Call JavaScript to play a sound.
         /// </summary>
         /// <param name="sound">Sound to play.</param>
-        public async Task Play(ActionSound sound)
+        /// <returns>Indication if the sound was played successfully.</returns>
+        public async Task<bool> Play(ActionSound sound)
         {
-            await _jsRuntime.InvokeAsync<string>(
+            //Returns null so use object type
+            return await _jsRuntime.InvokeAsync<bool>(
                 $"{JsAsteroidsSound}.{play}"
                 , sound
             );
