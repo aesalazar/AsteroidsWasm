@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Asteroids.Standard.Components;
-using Asteroids.Standard.Helpers;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.Standard.Screen
@@ -20,11 +20,11 @@ namespace Asteroids.Standard.Screen
     {
         private readonly object _updatePointsLock;
         private readonly object _updatePolysLock;
-        private readonly IList<Tuple<Point[], string>> _points;
-        private readonly IList<Tuple<Point[], string>> _polys;
+        private readonly IList<Tuple<Point[], DrawColor>> _points;
+        private readonly IList<Tuple<Point[], DrawColor>> _polys;
 
         private Point _lastPoint;
-        private string _lastPen;
+        private DrawColor _lastPen;
 
         /// <summary>
         /// Creates a new instance of <see cref="ScreenCanvas"/>.
@@ -36,12 +36,12 @@ namespace Asteroids.Standard.Screen
 
             _updatePointsLock = new object();
             _updatePolysLock = new object();
-            _points = new List<Tuple<Point[], string>>();
-            _polys = new List<Tuple<Point[], string>>();
+            _points = new List<Tuple<Point[], DrawColor>>();
+            _polys = new List<Tuple<Point[], DrawColor>>();
 
             //Set in case a call to add to end is made prior to creating a line
             _lastPoint = new Point(0, 0);
-            _lastPen = ColorHexStrings.TransparentHex;
+            _lastPen = DrawColor.White;
         }
 
         /// <summary>
@@ -66,18 +66,18 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public async Task Draw(IGraphicContainer container)
         {
-            var pts = new List<Tuple<Point[], string>>();
+            var pts = new List<Tuple<Point[], DrawColor>>();
             lock (_updatePointsLock)
                 pts.AddRange(_points);
 
-            var polys = new List<Tuple<Point[], string>>();
+            var polys = new List<Tuple<Point[], DrawColor>>();
             lock (_updatePolysLock)
                 polys.AddRange(_polys);
 
             //Send lines
             var glines = pts.Select(tuple => new GraphicLine
             {
-                ColorHex = tuple.Item2,
+                Color = tuple.Item2,
                 Point1 = tuple.Item1[0],
                 Point2 = tuple.Item1[1]
             }).ToList();
@@ -85,7 +85,7 @@ namespace Asteroids.Standard.Screen
             //Send polygons
             var gpolys = polys.Select(tuple => new GraphicPolygon
             {
-                ColorHex = tuple.Item2,
+                Color = tuple.Item2,
                 Points = tuple.Item1
             }).ToList();
 
@@ -95,14 +95,14 @@ namespace Asteroids.Standard.Screen
         /// <summary>
         /// Adds a line between two points with a pen color without translation.
         /// </summary>
-        public void AddLine(Point ptStart, Point ptEnd, string penColor)
+        public void AddLine(Point ptStart, Point ptEnd, DrawColor penColor)
         {
             _lastPoint = ptEnd;
             _lastPen = penColor;
 
-            var pts = new Point[] { ptStart, ptEnd };
+            var pts = new [] { ptStart, ptEnd };
             lock (_updatePointsLock)
-                _points.Add(new Tuple<Point[], string>(pts, penColor));
+                _points.Add(new Tuple<Point[], DrawColor>(pts, penColor));
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public void AddLine(Point ptStart, Point ptEnd)
         {
-            AddLine(ptStart, ptEnd, ColorHexStrings.WhiteHex);
+            AddLine(ptStart, ptEnd, DrawColor.White);
         }
 
         /// <summary>
@@ -128,10 +128,10 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         /// <param name="polygonPoints">Collection of points to draw on the canvas.</param>
         /// <param name="penColor">Hex color to apply to the polygon.</param>
-        public void AddPolygon(Point[] polygonPoints, string penColor)
+        public void AddPolygon(Point[] polygonPoints, DrawColor penColor)
         {
             lock (_updatePolysLock)
-                _polys.Add(new Tuple<Point[], string>(polygonPoints, penColor));
+                _polys.Add(new Tuple<Point[], DrawColor>(polygonPoints, penColor));
         }
 
         /// <summary>
@@ -139,10 +139,10 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         /// <param name="polygonPoints">Collection of points to draw on the canvas.</param>
         /// <param name="penColor">Hex color to apply to the polygon.</param>
-        public void LoadPolygon(IList<Point> polygonPoints, string penColor)
+        public void LoadPolygon(IList<Point> polygonPoints, DrawColor penColor)
         {
             var ptsPoly = new Point[polygonPoints.Count];
-            for (int i = 0; i < polygonPoints.Count; i++)
+            for (var i = 0; i < polygonPoints.Count; i++)
             {
                 ptsPoly[i].X = (int)(polygonPoints[i].X / (double)CANVAS_WIDTH * Size.Width);
                 ptsPoly[i].Y = (int)(polygonPoints[i].Y / (double)CANVAS_HEIGHT * Size.Height);
@@ -158,7 +158,7 @@ namespace Asteroids.Standard.Screen
         /// <param name="canvasOffsetX">Offset X to be added AFTER translation of the origin.</param>
         /// <param name="canvasOffsetY">Offset Y to be added AFTER translation of the origin.</param>
         /// <param name="penColor">Hex color to apply to the line vector.</param>
-        public void LoadVector(Point origin, int canvasOffsetX, int canvasOffsetY, string penColor)
+        public void LoadVector(Point origin, int canvasOffsetX, int canvasOffsetY, DrawColor penColor)
         {
             var ptDraw = new Point(
                 (int)(origin.X / (double)CANVAS_WIDTH * Size.Width),

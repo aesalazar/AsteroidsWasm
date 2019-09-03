@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using Asteroids.Standard.Enums;
 
 namespace Asteroids.Standard.Interfaces
 {
@@ -8,9 +9,9 @@ namespace Asteroids.Standard.Interfaces
     public interface IGraphicLine
     {
         /// <summary>
-        /// HTML color hex code (e.g. #000000)
+        /// <see cref="DrawColor"/> for the graphic.
         /// </summary>
-        string ColorHex { get; }
+        DrawColor Color { get; }
 
         /// <summary>
         /// Staring point.

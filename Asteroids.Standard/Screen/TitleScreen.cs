@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using Asteroids.Standard.Components;
-using Asteroids.Standard.Helpers;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Managers;
 
 namespace Asteroids.Standard.Screen
 {
     /// <summary>
-    /// Splashscreen drawn when not playing the game.
+    /// Splash screen drawn when not playing the game.
     /// </summary>
     public class TitleScreen
     {
@@ -100,7 +100,7 @@ namespace Asteroids.Standard.Screen
             foreach (var asteroid in _cache.Asteroids)
             {
                 asteroid.ScreenObject.Move();
-                _canvas.LoadPolygon(asteroid.PolygonPoints, ColorHexStrings.WhiteHex);
+                _canvas.LoadPolygon(asteroid.PolygonPoints, DrawColor.White);
             }
         }
     }
