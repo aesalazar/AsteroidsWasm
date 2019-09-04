@@ -1,14 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.WinForms.Core.Classes
 {
     public class GraphicPictureBox : PictureBox, IGraphicContainer
     {
+        private static readonly IDictionary<DrawColor, Pen> ColorCache = new ReadOnlyDictionary<DrawColor, Pen>(
+            Standard.Colors.DrawColors.DrawColorMap
+                .ToDictionary(
+                    kvp => kvp.Key
+                    , kvp => new Pen(ColorTranslator.FromHtml(kvp.Value))
+                )
+        );
+
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
         private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
 
@@ -30,28 +40,10 @@ namespace Asteroids.WinForms.Core.Classes
         private void OnPaint(object sender, PaintEventArgs e)
         {
             foreach (var line in _lastLines)
-                e.Graphics.DrawLine(ColorHexToPen(line.ColorHex), line.Point1, line.Point2);
+                e.Graphics.DrawLine(ColorCache[line.Color], line.Point1, line.Point2);
 
             foreach (var poly in _lastPolygons)
-                e.Graphics.DrawPolygon(ColorHexToPen(poly.ColorHex), poly.Points.ToArray());
+                e.Graphics.DrawPolygon(ColorCache[poly.Color], poly.Points.ToArray());
         }
-
-        #region Color Pen
-
-        private string _lastColorHex;
-        private Pen _lastPen;
-
-        private Pen ColorHexToPen(string colorHex)
-        {
-            if (colorHex == _lastColorHex)
-                return _lastPen;
-
-            _lastColorHex = colorHex;
-            _lastPen = new Pen(ColorTranslator.FromHtml(colorHex));
-
-            return _lastPen;
-        }
-
-        #endregion
     }
 }

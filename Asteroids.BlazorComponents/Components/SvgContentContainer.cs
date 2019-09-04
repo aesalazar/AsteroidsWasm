@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Asteroids.Standard.Colors;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.RenderTree;
@@ -13,6 +16,10 @@ namespace Asteroids.BlazorComponents.Components
     public class SvgContentContainer : ComponentBase
     {
         private const string StylePolygon = "stroke=width:1px; fill:transparent; ";
+
+        private static readonly IDictionary<DrawColor, string> Colors = new ReadOnlyDictionary<DrawColor, string>(
+            DrawColors.DrawColorMap
+        );
 
         private const string AttributeLine = "line";
         private const string AttributeLineX1 = "x1";
@@ -63,7 +70,7 @@ namespace Asteroids.BlazorComponents.Components
                 builder.AddAttribute(count++, AttributeLineY1, line.Point1.Y);
                 builder.AddAttribute(count++, AttributeLineX2, line.Point2.X);
                 builder.AddAttribute(count++, AttributeLineY2, line.Point2.Y);
-                builder.AddAttribute(count++, AttributeStyle, $"{AttributeStroke}:{line.ColorHex}");
+                builder.AddAttribute(count++, AttributeStyle, $"{AttributeStroke}:{Colors[line.Color]}");
                 builder.CloseElement();
             }
 
@@ -79,7 +86,7 @@ namespace Asteroids.BlazorComponents.Components
 
                 builder.OpenElement(count++, AttributePolygon);
                 builder.AddAttribute(count++, AttributePoints, points.ToString());
-                builder.AddAttribute(count++, AttributeStyle, $"{AttributeStroke}:{polygon.ColorHex}; {StylePolygon}");
+                builder.AddAttribute(count++, AttributeStyle, $"{AttributeStroke}:{Colors[polygon.Color]}; {StylePolygon}");
                 builder.CloseElement();
             }
 

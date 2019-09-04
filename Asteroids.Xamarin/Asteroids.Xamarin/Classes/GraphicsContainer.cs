@@ -1,19 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using SkiaSharp;
 using SkiaSharp.Views.Forms;
-using IRegisterable = Xamarin.Forms.IRegisterable;
+using Xamarin.Forms;
 
 namespace Asteroids.Xamarin.Classes
 {
     public class GraphicsContainer : SKCanvasView, IGraphicContainer, IRegisterable
     {
+        private static readonly IDictionary<DrawColor, SKColor> ColorCache = new ReadOnlyDictionary<DrawColor, SKColor>(
+            Standard.Colors.DrawColors.DrawColorMap
+                .ToDictionary(
+                    kvp => kvp.Key
+                    , kvp => ColorHexToColor(kvp.Value)
+                )
+        );
+
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
         private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
+
 
         public Task Initialize()
         {
@@ -40,7 +50,7 @@ namespace Asteroids.Xamarin.Classes
             {
                 var paint = new SKPaint
                 {
-                    Color = ColorHexToColor(gline.ColorHex),
+                    Color = ColorCache[gline.Color],
                     IsStroke = true,
                 };
 
@@ -54,7 +64,7 @@ namespace Asteroids.Xamarin.Classes
             {
                    var paint = new SKPaint
                 {
-                    Color = ColorHexToColor(gpoly.ColorHex),
+                    Color = ColorCache[gpoly.Color],
                     IsStroke = true,
                 };
 
@@ -67,26 +77,17 @@ namespace Asteroids.Xamarin.Classes
 
         #region Color
 
-        private string _lastColorHex;
-        private SKColor _lastColor;
-
-        private SKColor ColorHexToColor(string colorHex)
+        private static SKColor ColorHexToColor(string colorHex)
         {
-            if (colorHex == _lastColorHex)
-                return _lastColor;
-
-            _lastColorHex = colorHex;
-
             var hex = colorHex.Replace("#", "");
             var length = hex.Length;
 
             var bytes = new byte[length / 2];
 
-            for (int i = 0; i < length; i += 2)
+            for (var i = 0; i < length; i += 2)
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
 
-            _lastColor = new SKColor(bytes[0], bytes[1], bytes[2]);
-            return _lastColor;
+            return new SKColor(bytes[0], bytes[1], bytes[2]);
         }
 
         #endregion
