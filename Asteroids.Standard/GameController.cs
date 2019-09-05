@@ -21,6 +21,9 @@ namespace Asteroids.Standard
             ActionSounds.SoundTriggered += PlaySound;
 
             _screenCanvas = new ScreenCanvas(new Rectangle());
+            _textManager = new TextManager(_screenCanvas);
+            _scoreManager = new ScoreManager(_textManager);
+            _currentTitle = new TitleScreen(_textManager, _screenCanvas);
         }
 
         public async Task Initialize(IGraphicContainer container, Rectangle frameRectangle)
@@ -32,9 +35,6 @@ namespace Asteroids.Standard
 
             await _container.Initialize();
 
-            _textManager = new TextManager(_screenCanvas);
-            _scoreManager = new ScoreManager(_textManager);
-            _currentTitle = new TitleScreen(_textManager, _screenCanvas);
             _currentTitle.InitTitleScreen();
 
             SetFlipTimer();
@@ -44,18 +44,19 @@ namespace Asteroids.Standard
 
         #region Fields
 
-        private const double TimerInterval = 1000 / ScreenCanvas.FPS;
+        private const double TimerInterval = 1000 / ScreenCanvas.FramesPerSecond;
 
         private IGraphicContainer _container;
         private Rectangle _frameRectangle;
 
         private bool _lastDrawn;
 
-        private TextManager _textManager;
+        private readonly TextManager _textManager;
+        private readonly ScoreManager _scoreManager;
+        private readonly ScreenCanvas _screenCanvas;
+
         private TitleScreen _currentTitle;
         private Game _game;
-        private ScoreManager _scoreManager;
-        private ScreenCanvas _screenCanvas;
 
         private bool _leftPressed;
         private bool _rightPressed;
@@ -185,7 +186,6 @@ namespace Asteroids.Standard
                     _pauseLastPressed = true;
                     _game.Pause();
                 }
-
             }
         }
 

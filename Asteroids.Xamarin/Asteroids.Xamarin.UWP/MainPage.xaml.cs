@@ -7,24 +7,23 @@ namespace Asteroids.Xamarin.UWP
 {
     public sealed partial class MainPage
     {
-        private Xamarin.MainPage _page;
-        private global::Xamarin.Forms.Application _app;
+        private readonly Xamarin.MainPage _page;
 
         public MainPage()
         {
             InitializeComponent();
 
-            _app = new Xamarin.App();
-            LoadApplication(_app);
+            var app = new Xamarin.App();
+            LoadApplication(app);
 
             //Get the controller from the page
-            _page = (Xamarin.MainPage)_app.MainPage;
+            _page = (Xamarin.MainPage)app.MainPage;
 
             Window.Current.CoreWindow.Dispatcher.AcceleratorKeyActivated += OnAcceleratorKeyActivated;
         }
 
         /// <summary>
-        /// Proceses incoming keyboard events.
+        /// Processes incoming keyboard events.
         /// </summary>
         private void OnAcceleratorKeyActivated(CoreDispatcher sender, AcceleratorKeyEventArgs args)
         {

@@ -7,22 +7,26 @@ using Asteroids.Standard.Screen;
 namespace Asteroids.Standard.Components
 {
     /// <summary>
-    /// Guided missle to target a <see cref="Ship"/>.
+    /// Guided missile to target a <see cref="Ship"/>.
     /// </summary>
-    class Missile : ScreenObject
+    internal class Missile : ScreenObject
     {
-        private const double Velocity = 2000 / ScreenCanvas.FPS;
+        private const double Velocity = 2000 / ScreenCanvas.FramesPerSecond;
 
         /// <summary>
-        /// Creates a new instace of <see cref="Missile"/>.
+        /// Creates a new instance of <see cref="Missile"/>.
         /// </summary>
         /// <param name="saucer">Parent <see cref="Saucer"/>.</param>
         public Missile(Saucer saucer) : base(saucer.GetCurrLoc())
         {
             ExplosionLength = 1;
+            InitPoints();
         }
 
-        protected override void InitPoints()
+        /// <summary>
+        /// Setup the points template for the missile.
+        /// </summary>
+        private void InitPoints()
         {
             ClearPoints();
             AddPoints(PointsTemplate);
@@ -39,8 +43,8 @@ namespace Asteroids.Standard.Components
             Align(target);
 
             //adjust velocity
-            velocityX = -Math.Sin(radians) * Velocity;
-            velocityY = Math.Cos(radians) * Velocity;
+            VelocityX = -Math.Sin(Radians) * Velocity;
+            VelocityY = Math.Cos(Radians) * Velocity;
 
             return Move();
         }
@@ -50,7 +54,7 @@ namespace Asteroids.Standard.Components
         /// <summary>
         /// Non-transformed point template for creating a new missile.
         /// </summary>
-        private static IList<Point> PointsTemplate = new List<Point>();
+        private static readonly IList<Point> PointsTemplate = new List<Point>();
 
         /// <summary>
         /// Index location in <see cref="PointsTemplate"/> for thrust point 1.

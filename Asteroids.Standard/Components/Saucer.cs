@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
@@ -12,23 +11,23 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Flying saucer to attack primary ship with guided missiles.
     /// </summary>
-    class Saucer : ScreenObject
+    internal class Saucer : ScreenObject
     {
         public const int MaximumPasses = 3;
         public const int KillScore = 1000;
-        private const double Velocity = 3000 / ScreenCanvas.FPS;
+        private const double Velocity = 3000 / ScreenCanvas.FramesPerSecond;
 
-        private int _currentPass = 0;
+        private int _currentPass;
 
         /// <summary>
         /// Creates a new instance of <see cref="Saucer"/>.
         /// </summary>
         /// <param name="location">Absolute origin (bottom-left) of the object.</param>
-        /// <param name="canvas">Canvas to draw on.</param>
         public Saucer(Point location) : base(location)
         {
             ExplosionLength = 2;
             SetVelocity();
+            InitPoints();
         }
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace Asteroids.Standard.Components
         /// <summary>
         /// Populates the base template collection of points to draw.
         /// </summary>
-        protected override void InitPoints()
+        private void InitPoints()
         {
             ClearPoints();
             AddPoints(PointsTemplate);
@@ -55,9 +54,9 @@ namespace Asteroids.Standard.Components
                 return false;
 
             //Stop if the next move will put it over the allow number of passes
-            var x = currLoc.X + velocityX;
+            var x = CurrLoc.X + VelocityX;
 
-            if ((x <= 0 || x >= ScreenCanvas.CANVAS_WIDTH)
+            if ((x <= 0 || x >= ScreenCanvas.CanvasWidth)
                 && (Interlocked.Increment(ref _currentPass) >= MaximumPasses))
                 return false;
 
@@ -68,7 +67,7 @@ namespace Asteroids.Standard.Components
         /// Moves <see cref="Missile"/> towards the <see cref="target"/>.
         /// </summary>
         /// <param name="target">
-        /// <see cref="Point"/> to target; <see cref="null"/> moves <see cref="Missile"/> forward.</param>
+        /// <see cref="Point"/> to target; <see langword="null"/> moves <see cref="Missile"/> forward.</param>
         public void Target(Point? target)
         {
             var isMissile = Missile?.IsAlive == true;
@@ -94,10 +93,10 @@ namespace Asteroids.Standard.Components
         /// </summary>
         protected void SetVelocity()
         {
-            var factor = currLoc.X < ScreenCanvas.CANVAS_WIDTH / 2 ? 1 : -1;
+            var factor = CurrLoc.X < ScreenCanvas.CanvasWidth / 2 ? 1 : -1;
 
-            velocityX = factor * Velocity;
-            velocityY = 0;
+            VelocityX = factor * Velocity;
+            VelocityY = 0;
             PlaySound(this, ActionSound.Saucer);
         }
 
@@ -126,7 +125,7 @@ namespace Asteroids.Standard.Components
         /// <summary>
         /// Non-transformed point template for creating a new flying saucer.
         /// </summary>
-        private static IList<Point> PointsTemplate = new List<Point>();
+        private static readonly IList<Point> PointsTemplate = new List<Point>();
 
         /// <summary>
         /// Setup the <see cref="Saucer"/>.

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Components;
@@ -13,17 +14,17 @@ namespace Asteroids.Standard.Managers
     /// <summary>
     /// Manages object collection and scoring for a <see cref="Game"/>.
     /// </summary>
-    class CollisionManager
+    internal class CollisionManager
     {
         #region Fields and constructor
 
-        private const int SAFE_DISTANCE = 2000;
+        private const int SafeDistance = 2000;
         private readonly CacheManager _cache;
 
         /// <summary>
         /// Creates a new instance of <see cref="CollisionManager"/>.
         /// </summary>
-        /// <param name="cache"><<see cref="CacheManager"/> to object object stte from./param>
+        /// <param name="cache"><see cref="CacheManager"/> to obtain objects from.</param>
         public CollisionManager(CacheManager cache)
         {
             _cache = cache;
@@ -60,7 +61,7 @@ namespace Asteroids.Standard.Managers
 
                 switch (newSize)
                 {
-                    case Asteroid.ASTEROID_SIZE.DNE:
+                    case Asteroid.AsteroidSize.Dne:
                         score += 250;
                         PlaySound(this, ActionSound.Explode3);
 
@@ -68,19 +69,25 @@ namespace Asteroids.Standard.Managers
                         _cache.RemoveAsteroid(i);
                         break;
 
-                    case Asteroid.ASTEROID_SIZE.SMALL:
+                    case Asteroid.AsteroidSize.Small:
                         score += 100;
                         PlaySound(this, ActionSound.Explode2);
                         break;
 
-                    case Asteroid.ASTEROID_SIZE.MEDIUM:
+                    case Asteroid.AsteroidSize.Medium:
                         score += 50;
                         PlaySound(this, ActionSound.Explode1);
                         break;
+
+                    case Asteroid.AsteroidSize.Large:
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException($"{nameof(Asteroid.AsteroidSize)}: {newSize.ToString()}");
                 }
 
                 // Add a new asteroid if it wasn't small
-                if (newSize != Asteroid.ASTEROID_SIZE.DNE)
+                if (newSize != Asteroid.AsteroidSize.Dne)
                     _cache.AddAsteroid(new Asteroid(asteroid));
 
                 //Break out of loop
@@ -97,14 +104,14 @@ namespace Asteroids.Standard.Managers
         /// <param name="asteroid">Asteroid cached object.</param>>
         /// <param name="pointsToCheck">Object points to check for collision.</param>>
         /// <returns>Indication if the point is inside the polygon.</returns>
-        private bool AsteroidCollision(CachedObject<Asteroid> asteroid, IList<Point> pointsToCheck)
+        private static bool AsteroidCollision(CachedObject<Asteroid> asteroid, IEnumerable<Point> pointsToCheck)
         {
             var inside = false;
 
             foreach (var ptCheck in pointsToCheck)
             {
                 var dist = ptCheck.DistanceTo(asteroid.Location);
-                var pixel = (int)asteroid.ScreenObject.Size * Asteroid.SIZE_INCREMENT;
+                var pixel = (int)asteroid.ScreenObject.Size * Asteroid.SizeIncrement;
 
                 if (dist > pixel)
                     continue;
@@ -129,11 +136,11 @@ namespace Asteroids.Standard.Managers
                 var separation = asteroid
                     .Location
                     .DistanceTo(
-                        ScreenCanvas.CANVAS_WIDTH / 2
-                        , ScreenCanvas.CANVAS_HEIGHT / 2
+                        ScreenCanvas.CanvasWidth / 2
+                        , ScreenCanvas.CanvasHeight / 2
                     );
 
-                safe = separation >= SAFE_DISTANCE;
+                safe = separation >= SafeDistance;
 
                 if (!safe)
                     break;
@@ -178,7 +185,7 @@ namespace Asteroids.Standard.Managers
         /// Registers explosions if any point in a collection is within
         /// the boundaries of the <see cref="Saucer.Missile"/>.
         /// </summary>
-        /// <param name="pointsToCheck">Point collection to check.</param>
+        /// <param name="polygonPoints">Point collection to check.</param>
         /// <returns>Indication if the point is within the missile.</returns>
         public bool MissileCollision(IList<Point> polygonPoints)
         {
@@ -219,7 +226,7 @@ namespace Asteroids.Standard.Managers
         }
 
         /// <summary>
-        /// Moves each <see cref="Explosions"/> in the cache and removes
+        /// Moves each <see cref="Explosion"/>s in the cache and removes
         /// any that are complete.
         /// </summary>
         public void MoveExplosions()
@@ -227,7 +234,7 @@ namespace Asteroids.Standard.Managers
             var explosions = _cache.GetExplosions();
 
             //Move does not use locks but have to account for removals
-            for (int i = explosions.Count - 1; i >= 0; i--)
+            for (var i = explosions.Count - 1; i >= 0; i--)
             {
                 var explosion = explosions[i];
 

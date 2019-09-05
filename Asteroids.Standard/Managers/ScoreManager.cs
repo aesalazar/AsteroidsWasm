@@ -23,7 +23,7 @@ namespace Asteroids.Standard.Managers
         /// <summary>
         /// Creates a new instance of <see cref="ScoreManager"/>.
         /// </summary>
-        /// <param name="textDraw"Text draw to write score on.</param>
+        /// <param name="textDraw">Text draw to write score on.</param>
         public ScoreManager(TextManager textDraw)
         {
             _textDraw = textDraw;
@@ -101,24 +101,18 @@ namespace Asteroids.Standard.Managers
         /// </summary>
         public void Draw()
         {
-
-            string strScore;
-
             // Draw Score + Ships left justified
-            strScore = CurrentScore.ToString("000000") + " ";
+            var strScore = CurrentScore.ToString("000000") + " ";
+
             if (_shipsRemaining > 10)
-            {
                 strScore += "^x" + (_shipsRemaining - 1);
-            }
             else
-            {
-                for (int i = 0; i < _shipsRemaining - 1; i++)
+                for (var i = 0; i < _shipsRemaining - 1; i++)
                     strScore += "^";
-            }
 
             _textDraw.DrawText(
                 strScore
-                , TextManager.Justify.LEFT
+                , TextManager.Justify.Left
                 , ScoreTop
                 , ScoreLetterWidth
                 , ScoreLetterHeight
@@ -129,7 +123,7 @@ namespace Asteroids.Standard.Managers
 
             _textDraw.DrawText(
                 strScore
-                , TextManager.Justify.CENTER
+                , TextManager.Justify.Center
                 , ScoreTop
                 , ScoreLetterWidth
                 , ScoreLetterHeight

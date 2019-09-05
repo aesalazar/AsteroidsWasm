@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Components;
@@ -14,28 +13,26 @@ namespace Asteroids.Standard.Base
     /// This object is based on a cartesian coordinate system 
     /// centered at 0, 0
     /// </summary>
-    abstract class ScreenObject
+    internal abstract class ScreenObject
     {
         /// <summary>
         /// Creates a new instance of <see cref="ScreenObject"/>.
         /// </summary>
         /// <param name="location">Absolute origin (bottom-left) of the object.</param>
-        public ScreenObject(Point location)
+        protected ScreenObject(Point location)
         {
             IsAlive = true;
 
             _updatePointsLock = new object();
             _updatePointsTransformedLock = new object();
 
-            //templatrs are drawn nose "up"
-            radians = 180 * ScreenCanvas.RADIANS_PER_DEGREE;
+            //templates are drawn nose "up"
+            Radians = 180 * ScreenCanvas.RadiansPerDegree;
 
             _points = new List<Point>();
             PointsTransformed = new List<Point>();
 
-            currLoc = location;
-
-            InitPoints();
+            CurrLoc = location;
         }
 
         #region State
@@ -43,7 +40,7 @@ namespace Asteroids.Standard.Base
         /// <summary>
         /// Relative time length at which the object explodes.
         /// </summary>
-        protected int ExplosionLength = ScreenCanvas.DEFAULT_EXPLOSION_LENGTH;
+        protected int ExplosionLength = ScreenCanvas.DefaultExplosionLength;
 
         /// <summary>
         /// Indicates if the object is alive.
@@ -53,13 +50,13 @@ namespace Asteroids.Standard.Base
         /// <summary>
         /// Blow up the object.
         /// </summary>
-        /// <returns>Explosion collection.</param>
+        /// <returns>Explosion collection.</returns>
         public virtual IList<Explosion> Explode()
         {
             IsAlive = false;
 
-            velocityX = 0;
-            velocityY = 0;
+            VelocityX = 0;
+            VelocityY = 0;
 
             return GetPoints()
                 .Select(p => new Explosion(p, ExplosionLength))
@@ -76,34 +73,13 @@ namespace Asteroids.Standard.Base
         /// <summary>
         /// Points is used for the internal cartesian system.
         /// </summary>
-        private IList<Point> _points;
+        private readonly IList<Point> _points;
 
         /// <summary>
-        /// Points is used for the internal cartesian system with rotaton angle appiled.
+        /// Points is used for the internal cartesian system with rotation angle applied.
         /// </summary>
         protected IList<Point> PointsTransformed; // exposed to simplify explosions
 
-        /// <summary>
-        /// Generates intial <see cref="Point"/>s needed to render the
-        /// when drawing on the screen.
-        /// </summary>
-        protected abstract void InitPoints();
-
-        /// <summary>
-        /// Add point to internal collection used to calculate drawn polygons.
-        /// </summary>
-        /// <param name="point"><see cref="Point"/> to add to internal collections.</param>
-        /// <returns>Index the point was inserted at.</returns>
-        public int AddPoint(Point point)
-        {
-            lock (_updatePointsLock)
-                _points.Add(point);
-
-            lock (_updatePointsTransformedLock)
-                PointsTransformed.Add(point);
-
-            return PointsTransformed.Count - 1;
-        }
 
         /// <summary>
         /// Add points to internal collection used to calculate drawn polygons.
@@ -117,10 +93,12 @@ namespace Asteroids.Standard.Base
                     _points.Add(point);
 
             lock (_updatePointsTransformedLock)
+            {
                 foreach (var point in points)
                     PointsTransformed.Add(point);
 
-            return PointsTransformed.Count - 1;
+                return PointsTransformed.Count - 1;
+            }
         }
 
         /// <summary>
@@ -136,15 +114,15 @@ namespace Asteroids.Standard.Base
             lock (_updatePointsTransformedLock)
                 foreach (var pt in PointsTransformed)
                     points.Add(new Point(
-                        pt.X + currLoc.X
-                        , pt.Y + currLoc.Y
+                        pt.X + CurrLoc.X
+                        , pt.Y + CurrLoc.Y
                     ));
 
             return points;
         }
 
         /// <summary>
-        /// Clears all insternal and transformed <see cref="Point"/>s used to generate 
+        /// Clears all internal and transformed <see cref="Point"/>s used to generate 
         /// polygons in a thead-safe manner.
         /// </summary>
         public void ClearPoints()
@@ -163,22 +141,22 @@ namespace Asteroids.Standard.Base
         /// <summary>
         /// Max number of clockwise radians allow for an <see cref="Align"/> call.
         /// </summary>
-        protected const double RotationLimit = 5 * ScreenCanvas.RADIANS_PER_DEGREE;
+        protected const double RotationLimit = 5 * ScreenCanvas.RadiansPerDegree;
 
         /// <summary>
         /// Max number of counter-clockwise radians allow for an <see cref="Align"/> call.
         /// </summary>
-        protected const double RotationLimitNeg = -5 * ScreenCanvas.RADIANS_PER_DEGREE;
+        protected const double RotationLimitNeg = -5 * ScreenCanvas.RadiansPerDegree;
 
         /// <summary>
         /// Get the current rotational radians.
         /// </summary>
-        public double GetRadians() => radians;
+        public double GetRadians() => Radians;
 
         /// <summary>
         /// Current rotation.
         /// </summary>
-        protected double radians;
+        protected double Radians;
 
         /// <summary>
         /// Rotates all internal <see cref="Point"/>s used to generate polygons on draw
@@ -187,10 +165,10 @@ namespace Asteroids.Standard.Base
         /// <param name="alignPoint"><see cref="Point"/> to target.</param>
         protected void Align(Point alignPoint)
         {
-            var radsToPoint = GeometryHelper.GetAngle(currLoc, alignPoint);
-            var delta = radsToPoint - radians;
+            var radsToPoint = GeometryHelper.GetAngle(CurrLoc, alignPoint);
+            var delta = radsToPoint - Radians;
 
-            radians += delta >= 0
+            Radians += delta >= 0
                 ? Math.Min(delta, RotationLimit)
                 : Math.Max(delta, RotationLimitNeg);
 
@@ -204,9 +182,9 @@ namespace Asteroids.Standard.Base
         /// <param name="degrees">Rotation amount in degrees.</param>
         protected void Rotate(double degrees)
         {
-            //Get radians in 1/FPS'th increment
-            var radiansAdjust = degrees * ScreenCanvas.RADIANS_PER_DEGREE;
-            radians += radiansAdjust / ScreenCanvas.FPS;
+            //Get radians in 1/FramesPerSecond'th increment
+            var radiansAdjust = degrees * ScreenCanvas.RadiansPerDegree;
+            Radians += radiansAdjust / ScreenCanvas.FramesPerSecond;
 
             RotateInternal();
         }
@@ -217,10 +195,10 @@ namespace Asteroids.Standard.Base
         /// </summary>
         private void RotateInternal()
         {
-            radians %= ScreenCanvas.RADIANS_PER_CIRCLE;
+            Radians %= ScreenCanvas.RadiansPerCircle;
 
-            double SinVal = Math.Sin(radians);
-            double CosVal = Math.Cos(radians);
+            var sinVal = Math.Sin(Radians);
+            var cosVal = Math.Cos(Radians);
 
             //Get points with some thread safety
             var newPointsTransformed = new List<Point>();
@@ -229,13 +207,12 @@ namespace Asteroids.Standard.Base
             lock (_updatePointsLock)
                 points.AddRange(_points);
 
-            //Retransform the points
+            //Re-transform the points
             var ptTransformed = new Point(0, 0);
-            for (int i = 0; i < _points.Count; i++)
+            foreach (var pt in points)
             {
-                var pt = _points[i];
-                ptTransformed.X = (int)(pt.X * CosVal + pt.Y * SinVal);
-                ptTransformed.Y = (int)(pt.X * SinVal - pt.Y * CosVal);
+                ptTransformed.X = (int)(pt.X * cosVal + pt.Y * sinVal);
+                ptTransformed.Y = (int)(pt.X * sinVal - pt.Y * cosVal);
                 newPointsTransformed.Add(ptTransformed);
             }
 
@@ -255,23 +232,32 @@ namespace Asteroids.Standard.Base
         /// <summary>
         /// Get the current absolute origin (top-left) of the object.
         /// </summary>
-        public Point GetCurrLoc() => currLoc;
+        public Point GetCurrLoc() => CurrLoc;
 
-        protected Point currLoc;
+        /// <summary>
+        /// Current absolute origin (top-left).
+        /// </summary>
+        protected Point CurrLoc;
 
         /// <summary>
         /// Get the current velocity along the X axis.
         /// </summary>
-        public double GetVelocityX() => velocityX;
+        public double GetVelocityX() => VelocityX;
 
-        protected double velocityX;
+        /// <summary>
+        /// Current velocity along the X axis.
+        /// </summary>
+        protected double VelocityX;
 
         /// <summary>
         /// Get the current velocity along the Y axis.
         /// </summary>
-        public double GetVelocityY() => velocityY;
+        public double GetVelocityY() => VelocityY;
 
-        protected double velocityY;
+        /// <summary>
+        /// Current velocity along the Y axis.
+        /// </summary>
+        protected double VelocityY;
 
         /// <summary>
         /// Move the object a single increment based on <see cref="GetVelocityX"/>
@@ -280,18 +266,18 @@ namespace Asteroids.Standard.Base
         /// <returns>Indication of the move being completed successfully.</returns>
         public virtual bool Move()
         {
-            currLoc.X += (int)velocityX;
-            currLoc.Y += (int)velocityY;
+            CurrLoc.X += (int)VelocityX;
+            CurrLoc.Y += (int)VelocityY;
 
-            if (currLoc.X < 0)
-                currLoc.X = ScreenCanvas.CANVAS_WIDTH - 1;
-            if (currLoc.X >= ScreenCanvas.CANVAS_WIDTH)
-                currLoc.X = 0;
+            if (CurrLoc.X < 0)
+                CurrLoc.X = ScreenCanvas.CanvasWidth - 1;
+            if (CurrLoc.X >= ScreenCanvas.CanvasWidth)
+                CurrLoc.X = 0;
 
-            if (currLoc.Y < 0)
-                currLoc.Y = ScreenCanvas.CANVAS_HEIGHT - 1;
-            if (currLoc.Y >= ScreenCanvas.CANVAS_HEIGHT)
-                currLoc.Y = 0;
+            if (CurrLoc.Y < 0)
+                CurrLoc.Y = ScreenCanvas.CanvasHeight - 1;
+            if (CurrLoc.Y >= ScreenCanvas.CanvasHeight)
+                CurrLoc.Y = 0;
 
             return true;
         }

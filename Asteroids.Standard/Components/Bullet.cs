@@ -9,17 +9,20 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Bullet is a missile fired by an object (ship or UFO)
     /// </summary>
-    class Bullet : ScreenObject
+    internal class Bullet : ScreenObject
     {
         private int _remainingFrames;
-        private const double speedPerSec = 1000 / ScreenCanvas.FPS;
 
         public Bullet() : base(new Point(0, 0))
         {
             _remainingFrames = 0;
+            InitPoints();
         }
 
-        protected override void InitPoints()
+        /// <summary>
+        /// Setup the point template for the bullet.
+        /// </summary>
+        private void InitPoints()
         {
             ClearPoints();
             AddPoints(PointsTemplate);
@@ -44,15 +47,15 @@ namespace Asteroids.Standard.Components
         /// <param name="parentShip">Parent <see cref="Ship"/> the bullet was fired from.</param>
         public void Shoot(Ship parentShip)
         {
-            _remainingFrames = (int)ScreenCanvas.FPS; // bullets live 1 sec
-            currLoc = parentShip.GetCurrLoc();
-            radians = parentShip.GetRadians();
+            _remainingFrames = (int)ScreenCanvas.FramesPerSecond; // bullets live 1 sec
+            CurrLoc = parentShip.GetCurrLoc();
+            Radians = parentShip.GetRadians();
 
-            double SinVal = Math.Sin(radians);
-            double CosVal = Math.Cos(radians);
+            var sinVal = Math.Sin(Radians);
+            var cosVal = Math.Cos(Radians);
 
-            velocityX = (int)(-100 * SinVal) + parentShip.GetVelocityX();
-            velocityY = (int)(100 * CosVal) + parentShip.GetVelocityY();
+            VelocityX = (int)(-100 * sinVal) + parentShip.GetVelocityX();
+            VelocityY = (int)(100 * cosVal) + parentShip.GetVelocityY();
         }
 
         /// <summary>
@@ -62,30 +65,19 @@ namespace Asteroids.Standard.Components
         public override bool Move()
         {
             // only draw if in flight
-            if (IsInFlight)
-            {
-                _remainingFrames -= 1;
-                return base.Move();
-            }
-            else
-            {
+            if (!IsInFlight)
                 return false;
-            }
-        }
 
-        //public override void Draw()
-        //{
-        //    // only draw things that are not available
-        //    if (!Available())
-        //        DrawPolygons(GetPoints(), GetRandomFireColor());
-        //}
+            _remainingFrames -= 1;
+            return base.Move();
+        }
 
         #region Statics
 
         /// <summary>
         /// Non-transformed point template for creating a new bullet.
         /// </summary>
-        private static IList<Point> PointsTemplate = new List<Point>();
+        private static readonly IList<Point> PointsTemplate = new List<Point>();
 
         /// <summary>
         /// Setup the point templates.

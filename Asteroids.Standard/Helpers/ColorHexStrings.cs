@@ -2,6 +2,9 @@
 
 namespace Asteroids.Standard.Helpers
 {
+    /// <summary>
+    /// Helpers for converting HEX-based colors and strings.
+    /// </summary>
     public static class ColorHexStrings
     {
         /// <summary>

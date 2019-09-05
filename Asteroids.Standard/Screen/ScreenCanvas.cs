@@ -144,8 +144,8 @@ namespace Asteroids.Standard.Screen
             var ptsPoly = new Point[polygonPoints.Count];
             for (var i = 0; i < polygonPoints.Count; i++)
             {
-                ptsPoly[i].X = (int)(polygonPoints[i].X / (double)CANVAS_WIDTH * Size.Width);
-                ptsPoly[i].Y = (int)(polygonPoints[i].Y / (double)CANVAS_HEIGHT * Size.Height);
+                ptsPoly[i].X = (int)(polygonPoints[i].X / (double)CanvasWidth * Size.Width);
+                ptsPoly[i].Y = (int)(polygonPoints[i].Y / (double)CanvasHeight * Size.Height);
             }
 
             AddPolygon(ptsPoly, penColor);
@@ -161,8 +161,8 @@ namespace Asteroids.Standard.Screen
         public void LoadVector(Point origin, int canvasOffsetX, int canvasOffsetY, DrawColor penColor)
         {
             var ptDraw = new Point(
-                (int)(origin.X / (double)CANVAS_WIDTH * Size.Width),
-                (int)(origin.Y / (double)CANVAS_HEIGHT * Size.Height)
+                (int)(origin.X / (double)CanvasWidth * Size.Width),
+                (int)(origin.Y / (double)CanvasHeight * Size.Height)
             );
 
             var ptDraw2 = new Point(ptDraw.X + canvasOffsetX, ptDraw.Y + canvasOffsetY);
@@ -174,17 +174,17 @@ namespace Asteroids.Standard.Screen
         /// <summary>
         /// Refresh rate.
         /// </summary>
-        public const double FPS = 60;
+        public const double FramesPerSecond = 60;
 
         /// <summary>
         /// Conversion from degrees to radians.
         /// </summary>
-        public const double RADIANS_PER_DEGREE = Math.PI / 180;
+        public const double RadiansPerDegree = Math.PI / 180;
 
         /// <summary>
         /// Amount of radians in a full circle (i.e. 360 degrees)
         /// </summary>
-        public const double RADIANS_PER_CIRCLE = Math.PI * 2;
+        public const double RadiansPerCircle = Math.PI * 2;
 
         /// <summary>
         /// Horizontal width (effective) of the drawing plane.
@@ -193,21 +193,21 @@ namespace Asteroids.Standard.Screen
         /// All points and polygons will be drawn using this value and then 
         /// translated to the actual value set by <see cref="Size"/>.
         /// </remarks>
-        public const int CANVAS_WIDTH = 10000;
+        public const int CanvasWidth = 10000;
 
         /// <summary>
-        /// Vertical heigth (effective) of the drawing plane.
+        /// Vertical height (effective) of the drawing plane.
         /// </summary>
         /// <remarks>
         /// All points and polygons will be drawn using this value and then 
         /// translated to the actual value set by <see cref="Size"/>.
         /// </remarks>
-        public const int CANVAS_HEIGHT = 7500;
+        public const int CanvasHeight = 7500;
 
         /// <summary>
-        /// Default explotion Timefactor.
+        /// Default explosion time factor relative to the <see cref="FramesPerSecond"/>.
         /// </summary>
-        public const int DEFAULT_EXPLOSION_LENGTH = 1;
+        public const int DefaultExplosionLength = 1;
 
         #endregion
     }

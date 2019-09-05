@@ -155,7 +155,7 @@ namespace Asteroids.Standard.Managers
         {
             var asteroids = _cache
                  .Asteroids
-                 .Where(a => a.ScreenObject.Size != Asteroid.ASTEROID_SIZE.DNE);
+                 .Where(a => a.ScreenObject.Size != Asteroid.AsteroidSize.Dne);
 
             foreach (var asteroid in asteroids)
                 DrawPolygon(asteroid.PolygonPoints);

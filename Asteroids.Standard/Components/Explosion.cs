@@ -7,28 +7,35 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Screen explosion with sized incremented by current frame.
     /// </summary>
-    class Explosion
+    internal class Explosion
     {
-        private const int NUM_EXP_POINTS = 22; // more points is more dazzling
-        private const int EXPLOSION_LIFE = (int)ScreenCanvas.FPS / 2; // default life of explosion is 1/2 sec
+        /// <summary>
+        /// More points is more dazzling.
+        /// </summary>
+        private const int NumExpPoints = 22;
+
+        /// <summary>
+        /// Default life of explosion is 1/2 sec.
+        /// </summary>
+        private const int ExplosionLife = (int)ScreenCanvas.FramesPerSecond / 2;
 
         /// <summary>
         /// Creates a new instance of <see cref="Explosion"/>.
         /// </summary>
         /// <param name="ptExplosion">Origin point to start at.</param>
-        /// <param name="timeFactor">Legth of the explosion relative to the <see cref="ScreenCanvas.FPS"/>.</param>
-        public Explosion(Point ptExplosion, double timeFactor = ScreenCanvas.DEFAULT_EXPLOSION_LENGTH)
+        /// <param name="timeFactor">Length of the explosion relative to the <see cref="ScreenCanvas.FramesPerSecond"/>.</param>
+        public Explosion(Point ptExplosion, double timeFactor = ScreenCanvas.DefaultExplosionLength)
         {
-            _framesRemaining = (int)(EXPLOSION_LIFE * timeFactor);
-            Points = new Point[NUM_EXP_POINTS];
-            Velocities = new Point[NUM_EXP_POINTS];
+            _framesRemaining = (int)(ExplosionLife * timeFactor);
+            Points = new Point[NumExpPoints];
+            Velocities = new Point[NumExpPoints];
 
-            for (int i = 0; i < NUM_EXP_POINTS; i++)
+            for (var i = 0; i < NumExpPoints; i++)
             {
                 Points[i] = ptExplosion;
                 Velocities[i] = new Point(
-                    (int)((RandomizeHelper.Random.Next(1200) - 600) / ScreenCanvas.FPS)
-                    , (int)((RandomizeHelper.Random.Next(1200) - 600) / ScreenCanvas.FPS)
+                    (int)((RandomizeHelper.Random.Next(1200) - 600) / ScreenCanvas.FramesPerSecond)
+                    , (int)((RandomizeHelper.Random.Next(1200) - 600) / ScreenCanvas.FramesPerSecond)
                 );
             }
         }
@@ -57,18 +64,18 @@ namespace Asteroids.Standard.Components
             if (_framesRemaining <= 0)
                 return false;
 
-            for (int i = 0; i < NUM_EXP_POINTS; i++)
+            for (var i = 0; i < NumExpPoints; i++)
             {
                 Points[i].X += Velocities[i].X;
                 Points[i].Y += Velocities[i].Y;
 
                 if (Points[i].X < 0)
-                    Points[i].X = ScreenCanvas.CANVAS_WIDTH - 1;
-                if (Points[i].X >= ScreenCanvas.CANVAS_WIDTH)
+                    Points[i].X = ScreenCanvas.CanvasWidth - 1;
+                if (Points[i].X >= ScreenCanvas.CanvasWidth)
                     Points[i].X = 0;
                 if (Points[i].Y < 0)
-                    Points[i].Y = ScreenCanvas.CANVAS_HEIGHT - 1;
-                if (Points[i].Y >= ScreenCanvas.CANVAS_HEIGHT)
+                    Points[i].Y = ScreenCanvas.CanvasHeight - 1;
+                if (Points[i].Y >= ScreenCanvas.CanvasHeight)
                     Points[i].Y = 0;
             }
 

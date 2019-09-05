@@ -12,7 +12,7 @@ namespace Asteroids.Standard.Helpers
         /// <summary>
         /// Static random number generator.
         /// </summary>
-        public static Random Random = new Random();
+        public static Random Random { get; } = new Random();
 
         /// <summary>
         /// Generates a random color for any fire or explosion.
