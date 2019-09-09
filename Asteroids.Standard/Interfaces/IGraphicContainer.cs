@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using System.Threading.Tasks;
+using Asteroids.Standard.Enums;
 
 namespace Asteroids.Standard.Interfaces
 {
@@ -12,7 +12,8 @@ namespace Asteroids.Standard.Interfaces
         /// <summary>
         /// Initialize the container before painting starts.
         /// </summary>
-        Task Initialize();
+        /// <param name="drawColorMap">Collection (read-only) of <see cref="DrawColor"/> used by the game engine and associated HEX-based (HTML) color strings.</param>
+        Task Initialize(IDictionary<DrawColor, string> drawColorMap);
 
         /// <summary>
         /// Paint or repaint the canvas with the collections of lines and polygons (unfilled).

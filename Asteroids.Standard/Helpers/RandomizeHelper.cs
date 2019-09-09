@@ -1,4 +1,6 @@
 ﻿using System;
+using Asteroids.Standard.Colors;
+using Asteroids.Standard.Enums;
 
 namespace Asteroids.Standard.Helpers
 {
@@ -10,33 +12,16 @@ namespace Asteroids.Standard.Helpers
         /// <summary>
         /// Static random number generator.
         /// </summary>
-        public static Random Random = new Random();
+        public static Random Random { get; } = new Random();
 
         /// <summary>
-        /// Generates a ranom color for any fire or explosion.
+        /// Generates a random color for any fire or explosion.
         /// </summary>
-        /// <returns>Color hex string.</returns>
-        public static string GetRandomFireColor()
+        /// <returns>Random <see cref="DrawColor"/>.</returns>
+        public static DrawColor GetRandomFireColor()
         {
-            string penDraw;
-
-            switch (Random.Next(3))
-            {
-                case 0:
-                    penDraw = ColorHexStrings.RedHex;
-                    break;
-                case 1:
-                    penDraw = ColorHexStrings.YellowHex;
-                    break;
-                case 2:
-                    penDraw = ColorHexStrings.OrangeHex;
-                    break;
-                default:
-                    penDraw = ColorHexStrings.WhiteHex;
-                    break;
-            }
-
-            return penDraw;
+            var idx = Random.Next(DrawColors.DrawColorList.Count);
+            return DrawColors.DrawColorList[idx];
         }
     }
 }

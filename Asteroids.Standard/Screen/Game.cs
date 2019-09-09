@@ -10,19 +10,18 @@ using static Asteroids.Standard.Sounds.ActionSounds;
 namespace Asteroids.Standard.Screen
 {
     /// <summary>
-    /// Core game engine that manages object interation and screen painting.
+    /// Core game engine that manages object interaction and screen painting.
     /// </summary>
     public class Game
     {
         #region Fields and Constructor
 
-        private const int ASTEROID_START_COUNT = 4;
-        private const int SAUCER_SCORE = 1000;
-        private const int PAUSE_INTERVAL = (int)ScreenCanvas.FPS;
+        private const int AsteroidStartCount = 4;
+        private const int SaucerScore = 1000;
+        private const int PauseInterval = (int)ScreenCanvas.FramesPerSecond;
 
         private readonly ScoreManager _score;
         private readonly TextManager _textDraw;
-        private readonly ScreenCanvas _canvas;
 
         private readonly CacheManager _cache;
         private readonly CollisionManager _collisionManager;
@@ -33,7 +32,7 @@ namespace Asteroids.Standard.Screen
         private bool _paused;
         private int _pauseTimer;
 
-        private int _neededSaucerPoints = SAUCER_SCORE;
+        private int _neededSaucerPoints = SaucerScore;
 
         /// <summary>
         /// Creates new instance of <see cref="Game"/>.
@@ -45,9 +44,8 @@ namespace Asteroids.Standard.Screen
         {
             _score = score;
             _textDraw = textDraw;
-            _canvas = canvas;
 
-            _currentLevel = ASTEROID_START_COUNT;
+            _currentLevel = AsteroidStartCount;
             _inProcess = true;
 
             //Setup caches with a new ship
@@ -59,11 +57,11 @@ namespace Asteroids.Standard.Screen
             );
 
             _collisionManager = new CollisionManager(_cache);
-            _drawingManager = new DrawingManager(_cache, _canvas);
+            _drawingManager = new DrawingManager(_cache, canvas);
 
             //Unpaused
             _paused = false;
-            _pauseTimer = PAUSE_INTERVAL;
+            _pauseTimer = PauseInterval;
         }
 
         #endregion
@@ -83,7 +81,7 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public void Pause()
         {
-            _pauseTimer = PAUSE_INTERVAL;
+            _pauseTimer = PauseInterval;
             _paused = !_paused;
         }
 
@@ -95,18 +93,18 @@ namespace Asteroids.Standard.Screen
             if (_paused)
             {
                 // Pause flashes on and off
-                if (_pauseTimer > PAUSE_INTERVAL / 2)
+                if (_pauseTimer > PauseInterval / 2)
                 {
                     _textDraw.DrawText(
                         "PAUSE"
-                        , TextManager.Justify.CENTER
-                        , ScreenCanvas.CANVAS_HEIGHT / 3
+                        , TextManager.Justify.Center
+                        , ScreenCanvas.CanvasHeight / 3
                         , 200, 400
                     );
                 }
 
                 if (--_pauseTimer < 0)
-                    _pauseTimer = PAUSE_INTERVAL;
+                    _pauseTimer = PauseInterval;
             }
             else // Do all game processing if game is not paused
             {
@@ -153,7 +151,7 @@ namespace Asteroids.Standard.Screen
                     {
                         //Saucer has completed its passes
                         _cache.UpdateSaucer(null);
-                        _neededSaucerPoints = SAUCER_SCORE;
+                        _neededSaucerPoints = SaucerScore;
                     }
                 }
 
@@ -184,7 +182,7 @@ namespace Asteroids.Standard.Screen
                     if (_collisionManager.SaucerCollision(shipPoints)
                         || _collisionManager.MissileCollision(shipPoints)
                         || _collisionManager.AsteroidBeltCollision(shipPoints)
-                        )
+                    )
                         foreach (var explosion in _cache.Ship.Explode())
                             _cache.AddExplosion(explosion);
                 }
@@ -193,7 +191,7 @@ namespace Asteroids.Standard.Screen
                 if (_cache.Saucer != null && !_cache.Saucer.IsAlive)
                 {
                     _cache.UpdateSaucer(null);
-                    _neededSaucerPoints = SAUCER_SCORE;
+                    _neededSaucerPoints = SaucerScore;
                 }
 
                 //See if the score is enough to show a suacer
@@ -204,8 +202,8 @@ namespace Asteroids.Standard.Screen
                     if (_neededSaucerPoints <= 0)
                     {
                         var pt = new Point(
-                            RandomizeHelper.Random.Next(2) == 0 ? 0 : ScreenCanvas.CANVAS_WIDTH
-                            , RandomizeHelper.Random.Next(10, 90) * ScreenCanvas.CANVAS_HEIGHT / 100
+                            RandomizeHelper.Random.Next(2) == 0 ? 0 : ScreenCanvas.CanvasWidth
+                            , RandomizeHelper.Random.Next(10, 90) * ScreenCanvas.CanvasHeight / 100
                         );
 
                         _cache.UpdateSaucer(new Saucer(pt));
@@ -225,40 +223,59 @@ namespace Asteroids.Standard.Screen
 
         #region Ship Controls
 
-        private bool _isShipActive => !_paused && _cache.Ship.IsAlive;
+        /// <summary>
+        /// Indicates if <see cref="CacheManager.Ship"/> is considered active (alive and not paused).
+        /// </summary>
+        private bool IsShipActive => !_paused && _cache.Ship.IsAlive;
 
-        public void Thrust(bool bThrustOn)
+        /// <summary>
+        /// Moves the <see cref="Ship"/> if active.
+        /// </summary>
+        /// <param name="showThrust">Indication if <see cref="Ship.Thrust"/> should also be called.</param>
+        public void Thrust(bool showThrust)
         {
-            if (!_isShipActive)
+            if (!IsShipActive)
                 return;
 
             _cache.Ship.DecayThrust();
 
-            if (bThrustOn)
+            if (showThrust)
                 _cache.Ship.Thrust();
         }
 
+        /// <summary>
+        /// Rotate the <see cref="Ship"/> left if active.
+        /// </summary>
         public void Left()
         {
-            if (_isShipActive)
+            if (IsShipActive)
                 _cache.Ship.RotateLeft();
         }
 
+        /// <summary>
+        /// Rotate the <see cref="Ship"/> right if active.
+        /// </summary>
         public void Right()
         {
-            if (_isShipActive)
+            if (IsShipActive)
                 _cache.Ship.RotateRight();
         }
 
+        /// <summary>
+        /// Jump the <see cref="Ship"/> into Hyperspace if active.
+        /// </summary>
         public void Hyperspace()
         {
-            if (!_isShipActive)
+            if (!IsShipActive)
                 return;
 
             if (!_cache.Ship.Hyperspace())
                 _cache.AddExplosions(_cache.Ship.Explode());
         }
 
+        /// <summary>
+        /// Fire a <see cref="Bullet"/> from the <see cref="Ship"/> right if available.
+        /// </summary>
         public void Shoot()
         {
             if (_paused)

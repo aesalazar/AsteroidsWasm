@@ -22,7 +22,7 @@ namespace Asteroids.Standard.Managers
         /// <summary>
         /// Text horizontal justification.
         /// </summary>
-        public enum Justify { LEFT, CENTER, RIGHT };
+        public enum Justify { Left, Center, Right };
 
         /// <summary>
         /// Coverts text to vector and draws on the <see cref="ScreenCanvas"/>.
@@ -35,18 +35,18 @@ namespace Asteroids.Standard.Managers
         public void DrawText(string text, Justify justification, int locationTop, int letterWidth, int letterHeight)
         {
             int printStart;
-            const int width = ScreenCanvas.CANVAS_WIDTH;
-            const int height = ScreenCanvas.CANVAS_HEIGHT;
+            const int width = ScreenCanvas.CanvasWidth;
+            const int height = ScreenCanvas.CanvasHeight;
 
             switch (justification)
             {
-                case Justify.LEFT:
+                case Justify.Left:
                     printStart = 100;
                     break;
-                case Justify.CENTER:
+                case Justify.Center:
                     printStart = (int)((width - text.Length * letterWidth) / 2.0);
                     break;
-                case Justify.RIGHT:
+                case Justify.Right:
                     printStart = height - 100 - text.Length * letterWidth;
                     break;
                 default:
@@ -56,7 +56,7 @@ namespace Asteroids.Standard.Managers
             var x = _screenCanvas.Size.Width;
             var y = _screenCanvas.Size.Height;
 
-            for (int i = 0; i < text.Length; i++)
+            for (var i = 0; i < text.Length; i++)
                 DrawLetter(
                     text[i]
                     , (int)((printStart + i * letterWidth) / (double)width * x)
@@ -76,19 +76,19 @@ namespace Asteroids.Standard.Managers
         /// <param name="letterHeight">Letter height.</param>
         private void DrawLetter(char character, int letterLeft, int letterTop, int letterWidth, int letterHeight)
         {
-            int newLeft = (int)(letterLeft + letterWidth * .2);
-            int newTop = (int)(letterTop + letterHeight * .1);
-            int halfRight = (newLeft + letterLeft + letterWidth) / 2;
-            int halfDown = (newTop + letterTop + letterHeight) / 2;
-            int rightSide = letterLeft + letterWidth;
-            int bottomSide = letterTop + letterHeight;
+            var newLeft = (int)(letterLeft + letterWidth * .2);
+            var newTop = (int)(letterTop + letterHeight * .1);
+            var halfRight = (newLeft + letterLeft + letterWidth) / 2;
+            var halfDown = (newTop + letterTop + letterHeight) / 2;
+            var rightSide = letterLeft + letterWidth;
+            var bottomSide = letterTop + letterHeight;
 
             switch (character)
             {
                 case '^':/* Ship */
-                    int pointInUp = (int)(bottomSide - letterHeight * .2);
-                    int pointInLeft = (int)(newLeft + letterWidth * .25);
-                    int pointInRight = (int)(rightSide - letterWidth * .25);
+                    var pointInUp = (int)(bottomSide - letterHeight * .2);
+                    var pointInLeft = (int)(newLeft + letterWidth * .25);
+                    var pointInRight = (int)(rightSide - letterWidth * .25);
                     _screenCanvas.AddLine(new Point(halfRight, newTop), new Point(rightSide, bottomSide));
                     _screenCanvas.AddLineTo(new Point(pointInRight, pointInUp));
                     _screenCanvas.AddLineTo(new Point(pointInLeft, pointInUp));

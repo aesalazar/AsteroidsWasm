@@ -1,24 +1,24 @@
 using System.Collections.Generic;
 using Asteroids.Standard.Components;
-using Asteroids.Standard.Helpers;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Managers;
 
 namespace Asteroids.Standard.Screen
 {
     /// <summary>
-    /// Splashscreen drawn when not playing the game.
+    /// Splash screen drawn when not playing the game.
     /// </summary>
     public class TitleScreen
     {
-        private const string instructions = "PRESS SPACE TO PLAY";
-        private const int instructionSize = 200;
-        private const int instructionOffset = instructionSize * 5;
+        private const string Instructions = "PRESS SPACE TO PLAY";
+        private const int InstructionSize = 200;
+        private const int InstructionOffset = InstructionSize * 5;
 
-        private const int titleSize = 200;
-        private const int titleOffset1 = ScreenCanvas.CANVAS_HEIGHT - titleSize * 4;
-        private const int titleOffset2 = ScreenCanvas.CANVAS_HEIGHT - titleSize * 2;
-        private const string copyright1 = "CREATED BY HOWARD UMAN";
-        private const string copyright2 = "PORTED BY ERNIE SALAZAR";
+        private const int TitleSize = 200;
+        private const int TitleOffset1 = ScreenCanvas.CanvasHeight - TitleSize * 4;
+        private const int TitleOffset2 = ScreenCanvas.CanvasHeight - TitleSize * 2;
+        private const string Copyright1 = "CREATED BY HOWARD UMAN";
+        private const string Copyright2 = "PORTED BY ERNIE SALAZAR";
 
         private string _title;
         private int _letterSize;
@@ -43,7 +43,7 @@ namespace Asteroids.Standard.Screen
             _cache = new CacheManager(
                 new ScoreManager(new TextManager(_canvas))
                 , null
-                , new AsteroidBelt(15, Asteroid.ASTEROID_SIZE.SMALL)
+                , new AsteroidBelt(15, Asteroid.AsteroidSize.Small)
                 , new List<Bullet>()
             );
         }
@@ -54,7 +54,7 @@ namespace Asteroids.Standard.Screen
         public void InitTitleScreen()
         {
             _letterSize = 40;
-            _increment = (int)(1000 / ScreenCanvas.FPS);
+            _increment = (int)(1000 / ScreenCanvas.FramesPerSecond);
             _title = "GAME OVER";
         }
 
@@ -65,10 +65,10 @@ namespace Asteroids.Standard.Screen
         {
             //Draw instructions
             _textManager.DrawText(
-                instructions
-                , TextManager.Justify.CENTER
-                , instructionOffset
-                , instructionSize, instructionSize
+                Instructions
+                , TextManager.Justify.Center
+                , InstructionOffset
+                , InstructionSize, InstructionSize
             );
 
             // Flip back and forth between "Game Over" and "Asteroids"
@@ -77,22 +77,36 @@ namespace Asteroids.Standard.Screen
                 _increment = -_increment;
                 if (_letterSize < 40)
                 {
-                    if (_title == "GAME OVER")
-                        _title = "ASTEROIDS";
-                    else
-                        _title = "GAME OVER";
+                    _title = _title == "GAME OVER" 
+                        ? "ASTEROIDS"
+                        : "GAME OVER";
                 }
             }
             _letterSize += _increment;
-            _textManager.DrawText(_title, TextManager.Justify.CENTER,
-                              ScreenCanvas.CANVAS_HEIGHT / 2 - _letterSize, _letterSize, _letterSize * 2);
+            _textManager.DrawText(
+                _title
+                , TextManager.Justify.Center
+                , ScreenCanvas.CanvasHeight / 2 - _letterSize
+                , _letterSize
+                , _letterSize * 2
+            );
 
             // Draw copyright notice
-            _textManager.DrawText(copyright1, TextManager.Justify.CENTER,
-                              titleOffset1, titleSize, titleSize);
+            _textManager.DrawText(
+                Copyright1
+                , TextManager.Justify.Center
+                , TitleOffset1
+                , TitleSize
+                , TitleSize
+            );
 
-            _textManager.DrawText(copyright2, TextManager.Justify.CENTER,
-                              titleOffset2, titleSize, titleSize);
+            _textManager.DrawText(
+                Copyright2
+                , TextManager.Justify.Center
+                , TitleOffset2
+                , TitleSize
+                , TitleSize
+            );
 
             // Draw the asteroid belt
             _cache.Repopulate();
@@ -100,7 +114,7 @@ namespace Asteroids.Standard.Screen
             foreach (var asteroid in _cache.Asteroids)
             {
                 asteroid.ScreenObject.Move();
-                _canvas.LoadPolygon(asteroid.PolygonPoints, ColorHexStrings.WhiteHex);
+                _canvas.LoadPolygon(asteroid.PolygonPoints, DrawColor.White);
             }
         }
     }

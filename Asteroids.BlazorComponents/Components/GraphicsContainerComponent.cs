@@ -87,7 +87,7 @@ namespace Asteroids.BlazorComponents.Components
             //Load the sounds in JavaScript
             _interopSounds = new InteropSounds(JsRuntime);
 
-            if (!await _interopSounds.Initialize())
+            if (!await _interopSounds.Initialize(_controller.ActionSounds))
                 Console.WriteLine($"ERROR '{nameof(InteropSounds)}': Could not initialize sounds in JavaScript.");
         }
 
@@ -113,8 +113,11 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Wires the key press handlers.
         /// </summary>
-        public Task Initialize()
+        /// <param name="drawColorMap">Collection (read-only) of <see cref="DrawColor"/> used by the game engine and associated HEX-based (HTML) color strings.</param>
+        public Task Initialize(IDictionary<DrawColor, string> drawColorMap)
         {
+            ChildSvgContainer.Initialize(drawColorMap);
+
             InteropKeyPress.KeyUp += OnKeyUp;
             InteropKeyPress.KeyDown += OnKeyDown;
 

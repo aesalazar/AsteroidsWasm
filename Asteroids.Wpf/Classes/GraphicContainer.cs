@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.Wpf.Classes
@@ -16,6 +18,7 @@ namespace Asteroids.Wpf.Classes
     public class GraphicContainer : Image, IGraphicContainer, IDisposable
     {
         private readonly Dispatcher _mainDispatcher = Dispatcher.CurrentDispatcher;
+        private IDictionary<DrawColor, Color> _colorCache;
         private WriteableBitmap _bitmap;
 
         /// <summary>
@@ -27,7 +30,7 @@ namespace Asteroids.Wpf.Classes
         }
 
         /// <summary>
-        /// Reisize the <see cref="WriteableBitmap"/> based on new control size.
+        /// Resize the <see cref="WriteableBitmap"/> based on new control size.
         /// </summary>
         private void OnSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
         {
@@ -44,8 +47,16 @@ namespace Asteroids.Wpf.Classes
         /// <summary>
         /// Initialize the <see cref="WriteableBitmap"/> with the current width and height.
         /// </summary>
-        public Task Initialize()
+        public Task Initialize(IDictionary<DrawColor, string> drawColorMap)
         {
+            //Cache the colors
+            _colorCache = new ReadOnlyDictionary<DrawColor, Color>(
+                drawColorMap.ToDictionary(
+                    kvp => kvp.Key
+                    , kvp => (Color) (ColorConverter.ConvertFromString(kvp.Value) ?? Colors.White)
+                )
+            );
+
             //Since the control has no size yet simply draw a size bitmap
             _bitmap = BitmapFactory.New(0, 0);
             Source = _bitmap;
@@ -71,7 +82,7 @@ namespace Asteroids.Wpf.Classes
                             , gline.Point1.Y
                             , gline.Point2.X
                             , gline.Point2.Y
-                            , HexToColor(gline.ColorHex)
+                            , _colorCache[gline.Color]
                         );
                     }
 
@@ -92,7 +103,7 @@ namespace Asteroids.Wpf.Classes
 
                         _bitmap.DrawPolyline(
                             points
-                            , HexToColor(gpoly.ColorHex)
+                            , _colorCache[gpoly.Color]
                         );
                     }
                 });
@@ -110,26 +121,5 @@ namespace Asteroids.Wpf.Classes
         {
             SizeChanged -= OnSizeChanged;
         }
-
-        #region Color
-
-        private string _lastColorHex;
-        private Color _lastColor;
-
-        /// <summary>
-        /// Converts color hex string to <see cref="Color"/>.
-        /// </summary>
-        private Color HexToColor(string colorHex)
-        {
-            if (colorHex == _lastColorHex)
-                return _lastColor;
-
-            _lastColorHex = colorHex;
-            _lastColor = (Color)ColorConverter.ConvertFromString(_lastColorHex);
-
-            return _lastColor;
-        }
-
-        #endregion
     }
 }

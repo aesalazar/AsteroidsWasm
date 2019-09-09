@@ -2,14 +2,11 @@
 
 namespace Asteroids.Standard.Helpers
 {
+    /// <summary>
+    /// Helpers for converting HEX-based colors and strings.
+    /// </summary>
     public static class ColorHexStrings
     {
-        public static string RedHex = Color.Red.ToHexString();
-        public static string YellowHex = Color.Yellow.ToHexString();
-        public static string OrangeHex = Color.Orange.ToHexString();
-        public static string WhiteHex = Color.White.ToHexString();
-        public static string TransparentHex = Color.White.ToHexString();
-
         /// <summary>
         /// Converts a <see cref="Color"/> to an html-formatted text string (e.g. #RRGGBB).
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace Asteroids.BlazorComponents.Classes
 {
@@ -8,7 +9,7 @@ namespace Asteroids.BlazorComponents.Classes
         /// <summary>
         /// Converts the passed <see cref="Stream"/> to a base64 string using <see cref="Encoding.UTF8"/> encoding.
         /// </summary>
-        /// <remarks><see cref="Encoding.UTF8.GetBytes"/> can be used to convert back.</remarks>
+        /// <remarks>Encoding.UTF8.GetBytes can be used to convert back.</remarks>
         public static string ToBase64(this Stream stream)
         {
             byte[] bytes;

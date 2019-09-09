@@ -11,7 +11,7 @@ namespace Asteroids.Standard.Managers
     /// Manages object collection and scoring for a <see cref="Game"/> in an effort
     /// to optimize locking and point manipulation.
     /// </summary>
-    class CacheManager
+    internal class CacheManager
     {
         #region Constructor
 
@@ -230,7 +230,7 @@ namespace Asteroids.Standard.Managers
         #region Bullets
 
         /// <summary>
-        /// Gets the current collection of Bullets in flight in a thread-safe maner.
+        /// Gets the current collection of Bullets in flight in a thread-safe manner.
         /// </summary>
         /// <returns>Collection of bullets in flight.</returns>
         public IList<CachedObject<Bullet>> GetBulletsInFlight()
@@ -240,7 +240,7 @@ namespace Asteroids.Standard.Managers
         }
 
         /// <summary>
-        /// Gets the current collection of Bullets not in flight in a thread-safe maner.
+        /// Gets the current collection of Bullets not in flight in a thread-safe manner.
         /// </summary>
         /// <returns>Collection of bullets not in flight.</returns>
         public IList<CachedObject<Bullet>> GetBulletsAvailable()

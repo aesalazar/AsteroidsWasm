@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Asteroids.WinForms.Core
 {
-    static class Program
+    internal static class Program
     {
         private static FrmAsteroids _mainForm;
 
@@ -14,7 +11,7 @@ namespace Asteroids.WinForms.Core
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

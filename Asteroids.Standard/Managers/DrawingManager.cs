@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 
@@ -13,7 +14,7 @@ namespace Asteroids.Standard.Managers
     /// Manages and optimizes the drawing of the state of <see cref="ScreenObject"/>s 
     /// stored in a <see cref="CacheManager"/> to a <see cref="ScreenCanvas"/>.
     /// </summary>
-    class DrawingManager
+    internal class DrawingManager
     {
         private readonly CacheManager _cache;
         private readonly ScreenCanvas _canvas;
@@ -31,19 +32,14 @@ namespace Asteroids.Standard.Managers
 
         #region Drawing Primatives
 
-        private void DrawPolygon(IList<Point> points)
+        private void DrawPolygon(IList<Point> points, DrawColor color = DrawColor.White)
         {
-            DrawPolygon(points, ColorHexStrings.WhiteHex);
+            _canvas.LoadPolygon(points, color);
         }
 
-        private void DrawPolygon(IList<Point> points, string colorHex)
+        private void DrawVector(Point origin, int offsetX, int offsetY, DrawColor color)
         {
-            _canvas.LoadPolygon(points, colorHex);
-        }
-
-        private void DrawVector(Point origin, int offsetX, int offsetY, string colorHex)
-        {
-            _canvas.LoadVector(origin, offsetX, offsetY, colorHex);
+            _canvas.LoadVector(origin, offsetX, offsetY, color);
         }
 
         #endregion
@@ -131,7 +127,7 @@ namespace Asteroids.Standard.Managers
             thrustPoints.Add(pt2);
 
             // random thrust effect
-            int size = RandomizeHelper.Random.Next(50) + 50;
+            var size = RandomizeHelper.Random.Next(50) + 50;
             var radians = _cache.Saucer.Missile.GetRadians();
 
             thrustPoints.Add(new Point(
@@ -159,7 +155,7 @@ namespace Asteroids.Standard.Managers
         {
             var asteroids = _cache
                  .Asteroids
-                 .Where(a => a.ScreenObject.Size != Asteroid.ASTEROID_SIZE.DNE);
+                 .Where(a => a.ScreenObject.Size != Asteroid.AsteroidSize.Dne);
 
             foreach (var asteroid in asteroids)
                 DrawPolygon(asteroid.PolygonPoints);

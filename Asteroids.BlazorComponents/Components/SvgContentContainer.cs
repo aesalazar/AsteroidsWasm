@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.RenderTree;
@@ -13,6 +15,8 @@ namespace Asteroids.BlazorComponents.Components
     public class SvgContentContainer : ComponentBase
     {
         private const string StylePolygon = "stroke=width:1px; fill:transparent; ";
+
+        private IDictionary<DrawColor, string> _colors;
 
         private const string AttributeLine = "line";
         private const string AttributeLineX1 = "x1";
@@ -28,6 +32,15 @@ namespace Asteroids.BlazorComponents.Components
 
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
         private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
+
+        /// <summary>
+        /// Initialize the SVG in anticipation of drawing.
+        /// </summary>
+        /// <param name="drawColorMap">Collection (read-only) of <see cref="DrawColor"/> used by the game engine and associated HEX-based (HTML) color strings.</param>
+        public void Initialize(IDictionary<DrawColor, string> drawColorMap)
+        {
+            _colors = new ReadOnlyDictionary<DrawColor, string>(drawColorMap);
+        }
 
         /// <summary>
         /// Repaint the SVG content with the collections of lines and polygons (unfilled).
@@ -63,7 +76,7 @@ namespace Asteroids.BlazorComponents.Components
                 builder.AddAttribute(count++, AttributeLineY1, line.Point1.Y);
                 builder.AddAttribute(count++, AttributeLineX2, line.Point2.X);
                 builder.AddAttribute(count++, AttributeLineY2, line.Point2.Y);
-                builder.AddAttribute(count++, AttributeStyle, $"{AttributeStroke}:{line.ColorHex}");
+                builder.AddAttribute(count++, AttributeStyle, $"{AttributeStroke}:{_colors[line.Color]}");
                 builder.CloseElement();
             }
 
@@ -79,7 +92,7 @@ namespace Asteroids.BlazorComponents.Components
 
                 builder.OpenElement(count++, AttributePolygon);
                 builder.AddAttribute(count++, AttributePoints, points.ToString());
-                builder.AddAttribute(count++, AttributeStyle, $"{AttributeStroke}:{polygon.ColorHex}; {StylePolygon}");
+                builder.AddAttribute(count++, AttributeStyle, $"{AttributeStroke}:{_colors[polygon.Color]}; {StylePolygon}");
                 builder.CloseElement();
             }
 

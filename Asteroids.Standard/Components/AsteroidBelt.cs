@@ -11,24 +11,24 @@ namespace Asteroids.Standard.Components
         private readonly object _updateAsteroidsLock;
         private IList<Asteroid> _asteroids;
 
-        public AsteroidBelt(int iNumAsteroids) : this(iNumAsteroids, Asteroid.ASTEROID_SIZE.LARGE)
+        public AsteroidBelt(int iNumAsteroids) : this(iNumAsteroids, Asteroid.AsteroidSize.Large)
         {
         }
 
-        public AsteroidBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize)
+        public AsteroidBelt(int iNumAsteroids, Asteroid.AsteroidSize iMinSize)
         {
             _updateAsteroidsLock = new object();
             StartBelt(iNumAsteroids, iMinSize);
         }
 
-        public void StartBelt(int iNumAsteroids, Asteroid.ASTEROID_SIZE iMinSize)
+        public void StartBelt(int iNumAsteroids, Asteroid.AsteroidSize iMinSize)
         {
-            var minSize = Asteroid.ASTEROID_SIZE.LARGE - iMinSize + 1;
+            var minSize = Asteroid.AsteroidSize.Large - iMinSize + 1;
             var asteroids = new List<Asteroid>();
 
             for (int i = 0; i < iNumAsteroids; i++)
             {
-                var size = Asteroid.ASTEROID_SIZE.LARGE - RandomizeHelper.Random.Next(minSize);
+                var size = Asteroid.AsteroidSize.Large - RandomizeHelper.Random.Next(minSize);
                 asteroids.Add(new Asteroid(size));
             }
 

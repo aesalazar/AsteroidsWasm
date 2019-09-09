@@ -12,24 +12,24 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Primary craft for the user to control.
     /// </summary>
-    class Ship : ScreenObject
+    internal class Ship : ScreenObject
     {
-        const double ROTATE_SPEED = 12000 / ScreenCanvas.FPS;
+        private const double RotateSpeed = 12000 / ScreenCanvas.FramesPerSecond;
 
         /// <summary>
         /// Creates and immediately draws an instance of <see cref="Ship"/>.
         /// </summary>
-        /// <param name="canvas">Canvas to draw on.</param>
-        public Ship() : base(new Point(ScreenCanvas.CANVAS_WIDTH / 2, ScreenCanvas.CANVAS_HEIGHT / 2))
+        public Ship() : base(new Point(ScreenCanvas.CanvasWidth / 2, ScreenCanvas.CanvasHeight / 2))
         {
             IsThrustOn = false;
             ExplosionLength = 2;
+            InitPoints();
         }
 
         /// <summary>
         /// Initialize the internal point collections base on the template.
         /// </summary>
-        protected override void InitPoints()
+        private void InitPoints()
         {
             ClearPoints();
             AddPoints(PointsTemplate);
@@ -46,11 +46,11 @@ namespace Asteroids.Standard.Components
         /// <returns>Indication if the jump was considered a failure.</returns>
         public bool Hyperspace()
         {
-            const int w = ScreenCanvas.CANVAS_WIDTH;
-            const int h = ScreenCanvas.CANVAS_HEIGHT;
+            const int w = ScreenCanvas.CanvasWidth;
+            const int h = ScreenCanvas.CanvasHeight;
 
-            currLoc.X = RandomizeHelper.Random.Next((int)(0.1 * w), (int)(0.9 * w));
-            currLoc.Y = RandomizeHelper.Random.Next((int)(0.1 * h), (int)(0.9 * h));
+            CurrLoc.X = RandomizeHelper.Random.Next((int)(0.1 * w), (int)(0.9 * w));
+            CurrLoc.Y = RandomizeHelper.Random.Next((int)(0.1 * h), (int)(0.9 * h));
 
             return RandomizeHelper.Random.Next(10) != 1;
         }
@@ -75,8 +75,8 @@ namespace Asteroids.Standard.Components
         {
             IsThrustOn = false;
 
-            velocityX = velocityX * (1 - 1 / ScreenCanvas.FPS);
-            velocityY = velocityY * (1 - 1 / ScreenCanvas.FPS);
+            VelocityX *= (1 - 1 / ScreenCanvas.FramesPerSecond);
+            VelocityY *= (1 - 1 / ScreenCanvas.FramesPerSecond);
         }
 
         /// <summary>
@@ -86,25 +86,25 @@ namespace Asteroids.Standard.Components
         {
             IsThrustOn = true;
 
-            double SinVal = Math.Sin(radians);
-            double CosVal = Math.Cos(radians);
-            double addThrust = 90 / ScreenCanvas.FPS;
-            double maxThrustSpeed = 5000 / ScreenCanvas.FPS;
-            double incX, incY;
+            var sinVal = Math.Sin(Radians);
+            var cosVal = Math.Cos(Radians);
+            const double addThrust = 90 / ScreenCanvas.FramesPerSecond;
+            const double maxThrustSpeed = 5000 / ScreenCanvas.FramesPerSecond;
 
-            incX = -(addThrust * SinVal);
-            incY = addThrust * CosVal;
+            var incX = -(addThrust * sinVal);
+            var incY = addThrust * cosVal;
 
-            velocityX += incX;
-            if (velocityX > maxThrustSpeed)
-                velocityX = maxThrustSpeed;
-            if (velocityX < -maxThrustSpeed)
-                velocityX = -maxThrustSpeed;
-            velocityY += incY;
-            if (velocityY > maxThrustSpeed)
-                velocityY = maxThrustSpeed;
-            if (velocityY < -maxThrustSpeed)
-                velocityY = -maxThrustSpeed;
+            VelocityX += incX;
+            if (VelocityX > maxThrustSpeed)
+                VelocityX = maxThrustSpeed;
+            if (VelocityX < -maxThrustSpeed)
+                VelocityX = -maxThrustSpeed;
+
+            VelocityY += incY;
+            if (VelocityY > maxThrustSpeed)
+                VelocityY = maxThrustSpeed;
+            if (VelocityY < -maxThrustSpeed)
+                VelocityY = -maxThrustSpeed;
 
             PlaySound(this, ActionSound.Thrust);
         }
@@ -114,7 +114,7 @@ namespace Asteroids.Standard.Components
         /// </summary>
         public void RotateLeft()
         {
-            Rotate(-ROTATE_SPEED);
+            Rotate(-RotateSpeed);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace Asteroids.Standard.Components
         /// </summary>
         public void RotateRight()
         {
-            Rotate(ROTATE_SPEED);
+            Rotate(RotateSpeed);
         }
 
         #region Statics
@@ -130,7 +130,7 @@ namespace Asteroids.Standard.Components
         /// <summary>
         /// Non-transformed point template for creating a new ship.
         /// </summary>
-        private static IList<Point> PointsTemplate = new List<Point>();
+        private static readonly IList<Point> PointsTemplate = new List<Point>();
 
         /// <summary>
         /// Index location in <see cref="PointsTemplate"/> for thrust point 1.

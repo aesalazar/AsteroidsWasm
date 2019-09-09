@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Media;
@@ -27,8 +26,8 @@ namespace Asteroids.WinForms.Core
             _controller = new GameController();
             _controller.SoundPlayed += OnSoundPlayed;
 
-            _soundPlayers = Standard
-                .Sounds.ActionSounds.SoundDictionary
+            _soundPlayers = _controller
+                .ActionSounds
                 .ToDictionary(
                     kvp => kvp.Key
                     , kvp => new SoundPlayer(kvp.Value)

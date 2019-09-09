@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Asteroids.Standard.Helpers
 {
+    /// <summary>
+    /// Helpers for performing Geometric calculations.
+    /// </summary>
     public static class GeometryHelper
     {
         #region Distance Between Two Points
@@ -20,9 +23,9 @@ namespace Asteroids.Standard.Helpers
         /// <summary>
         /// Calculate the distance between two points.
         /// </summary>
-        public static double DistanceTo(this Point point1, int X2, int Y2)
+        public static double DistanceTo(this Point point1, int x2, int y2)
         {
-            return Math.Sqrt(Math.Pow(point1.X - X2, 2) + Math.Pow(point1.Y - Y2, 2));
+            return Math.Sqrt(Math.Pow(point1.X - x2, 2) + Math.Pow(point1.Y - y2, 2));
         }
 
         #endregion
@@ -41,7 +44,7 @@ namespace Asteroids.Standard.Helpers
             var firstPoint = polygonPoints.First();
             var lastPoint = polygonPoints.Last();
 
-            var total_angle = GetAngle(
+            var totalAngle = GetAngle(
                 lastPoint.X, lastPoint.Y,
                 point.X, point.Y,
                 firstPoint.X, firstPoint.Y
@@ -50,7 +53,7 @@ namespace Asteroids.Standard.Helpers
             // Add the angles from the point  to each other pair of vertices.
             for (var i = 0; i < polygonPoints.Count - 1; i++)
             {
-                total_angle += GetAngle(
+                totalAngle += GetAngle(
                     polygonPoints[i].X, polygonPoints[i].Y,
                     point.X, point.Y,
                     polygonPoints[i + 1].X, polygonPoints[i + 1].Y
@@ -60,7 +63,7 @@ namespace Asteroids.Standard.Helpers
             // The total angle should be 2 * PI or -2 * PI if
             // the point is in the polygon and close to zero
             // if the point is outside the polygon.
-            return Math.Abs(total_angle) > 0.000001;
+            return Math.Abs(totalAngle) > 0.000001;
         }
 
         /// <summary>
@@ -96,16 +99,16 @@ namespace Asteroids.Standard.Helpers
         /// Return a value between PI and -PI. Note that the value is the opposite of what you 
         /// might expect because Y coordinates increase downward.
         /// </remarks>
-        public static double GetAngle(double Ax, double Ay, double Bx, double By, double Cx, double Cy)
+        public static double GetAngle(double ax, double ay, double bx, double by, double cx, double cy)
         {
             // Get the dot product.
-            var dot_product = DotProduct(Ax, Ay, Bx, By, Cx, Cy);
+            var dotProduct = DotProduct(ax, ay, bx, by, cx, cy);
 
             // Get the cross product.
-            var cross_product = CrossProductLength(Ax, Ay, Bx, By, Cx, Cy);
+            var crossProduct = CrossProductLength(ax, ay, bx, by, cx, cy);
 
             // Calculate the angle.
-            return Math.Atan2(cross_product, dot_product);
+            return Math.Atan2(crossProduct, dotProduct);
         }
         
         /// <summary>
@@ -116,13 +119,13 @@ namespace Asteroids.Standard.Helpers
         /// Return a value between PI and -PI. Note that the value is the opposite of what you 
         /// might expect because Y coordinates increase downward.
         /// </remarks>
-        public static double GetAngle(Point A, Point B)
+        public static double GetAngle(Point a, Point b)
         {
             //dot product, cross product from the 0 angle
-            var cross_product = A.X - B.X;
-            var dot_product = B.Y - A.Y;
+            var crossProduct = a.X - b.X;
+            var dotProduct = b.Y - a.Y;
 
-            return Math.Atan2(cross_product, dot_product);
+            return Math.Atan2(crossProduct, dotProduct);
         }
 
         #endregion
@@ -137,16 +140,16 @@ namespace Asteroids.Standard.Helpers
         /// with direction given by the right-hand rule. For two vectors in the X-Y plane, the result is a
         /// vector with X and Y components 0 so the Z component gives the vector's length and direction.
         /// </remarks>
-        public static double CrossProductLength(double Ax, double Ay, double Bx, double By, double Cx, double Cy)
+        public static double CrossProductLength(double ax, double ay, double bx, double @by, double cx, double cy)
         {
             // Get the vectors' coordinates.
-            var BAx = Ax - Bx;
-            var BAy = Ay - By;
-            var BCx = Cx - Bx;
-            var BCy = Cy - By;
+            var bAx = ax - bx;
+            var bAy = ay - @by;
+            var bCx = cx - bx;
+            var bCy = cy - @by;
 
             // Calculate the Z coordinate of the cross product.
-            return (BAx * BCy - BAy * BCx);
+            return (bAx * bCy - bAy * bCx);
         }
 
         /// <summary>
@@ -155,16 +158,16 @@ namespace Asteroids.Standard.Helpers
         /// <remarks>
         /// Note that AB · BC = |AB| * |BC| * Cos(theta).
         /// </remarks>
-        private static double DotProduct(double Ax, double Ay, double Bx, double By, double Cx, double Cy)
+        private static double DotProduct(double ax, double ay, double bx, double @by, double cx, double cy)
         {
             // Get the vectors' coordinates.
-            var BAx = Ax - Bx;
-            var BAy = Ay - By;
-            var BCx = Cx - Bx;
-            var BCy = Cy - By;
+            var bAx = ax - bx;
+            var bAy = ay - @by;
+            var bCx = cx - bx;
+            var bCy = cy - @by;
 
             // Calculate the dot product.
-            return BAx * BCx + BAy * BCy;
+            return bAx * bCx + bAy * bCy;
         }
 
         #endregion

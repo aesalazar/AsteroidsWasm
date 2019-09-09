@@ -24,7 +24,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// </summary>
         /// <param name="e"><see cref="ConsoleKey"/> number.</param>
         /// <returns>
-        /// JavaScript Promise with the converted <see cref="ConsoleKey"/> value or <see cref="null"/> if
+        /// JavaScript Promise with the converted <see cref="ConsoleKey"/> value or <see langword="null"/> if
         /// no equivalent is found.
         /// </returns>
         [JSInvokable]
@@ -54,7 +54,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// </summary>
         /// <param name="e"><see cref="ConsoleKey"/> number.</param>
         /// <returns>
-        /// JavaScript Promise with the converted <see cref="ConsoleKey"/> value or <see cref="null"/> if
+        /// JavaScript Promise with the converted <see cref="ConsoleKey"/> value or <see langword="null"/> if
         /// no equivalent is found.
         /// </returns>
         [JSInvokable]

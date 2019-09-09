@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 using Asteroids.Standard.Enums;
 
@@ -46,8 +48,13 @@ namespace Asteroids.Standard.Interfaces
         void Dispose();
 
         /// <summary>
-        /// Fires when the game calculation results in a sound to be played by UI.
+        /// Fires when the game calculation results in a sound stored in <see cref="ActionSounds"/> to be played by UI.
         /// </summary>
         event EventHandler<ActionSound> SoundPlayed;
+
+        /// <summary>
+        /// Collection (read-only) of <see cref="ActionSounds"/> used by the game engine and associated WAV <see cref="Stream"/>s.
+        /// </summary>
+        IDictionary<ActionSound, Stream> ActionSounds { get; }
     }
 }
