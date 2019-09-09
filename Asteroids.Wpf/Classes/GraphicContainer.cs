@@ -17,15 +17,8 @@ namespace Asteroids.Wpf.Classes
     /// </summary>
     public class GraphicContainer : Image, IGraphicContainer, IDisposable
     {
-        private static readonly IDictionary<DrawColor, Color> ColorCache = new ReadOnlyDictionary<DrawColor, Color>(
-            Standard.Colors.DrawColors.DrawColorMap
-                .ToDictionary(
-                    kvp => kvp.Key
-                    , kvp => (Color)(ColorConverter.ConvertFromString(kvp.Value) ?? Colors.White)
-                )
-        );
-
         private readonly Dispatcher _mainDispatcher = Dispatcher.CurrentDispatcher;
+        private IDictionary<DrawColor, Color> _colorCache;
         private WriteableBitmap _bitmap;
 
         /// <summary>
@@ -54,8 +47,16 @@ namespace Asteroids.Wpf.Classes
         /// <summary>
         /// Initialize the <see cref="WriteableBitmap"/> with the current width and height.
         /// </summary>
-        public Task Initialize()
+        public Task Initialize(IDictionary<DrawColor, string> drawColorMap)
         {
+            //Cache the colors
+            _colorCache = new ReadOnlyDictionary<DrawColor, Color>(
+                drawColorMap.ToDictionary(
+                    kvp => kvp.Key
+                    , kvp => (Color) (ColorConverter.ConvertFromString(kvp.Value) ?? Colors.White)
+                )
+            );
+
             //Since the control has no size yet simply draw a size bitmap
             _bitmap = BitmapFactory.New(0, 0);
             Source = _bitmap;
@@ -81,7 +82,7 @@ namespace Asteroids.Wpf.Classes
                             , gline.Point1.Y
                             , gline.Point2.X
                             , gline.Point2.Y
-                            , ColorCache[gline.Color]
+                            , _colorCache[gline.Color]
                         );
                     }
 
@@ -102,7 +103,7 @@ namespace Asteroids.Wpf.Classes
 
                         _bitmap.DrawPolyline(
                             points
-                            , ColorCache[gpoly.Color]
+                            , _colorCache[gpoly.Color]
                         );
                     }
                 });

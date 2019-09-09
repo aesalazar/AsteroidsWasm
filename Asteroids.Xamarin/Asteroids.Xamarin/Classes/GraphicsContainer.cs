@@ -13,20 +13,20 @@ namespace Asteroids.Xamarin.Classes
 {
     public class GraphicsContainer : SKCanvasView, IGraphicContainer, IRegisterable
     {
-        private static readonly IDictionary<DrawColor, SKColor> ColorCache = new ReadOnlyDictionary<DrawColor, SKColor>(
-            Standard.Colors.DrawColors.DrawColorMap
-                .ToDictionary(
-                    kvp => kvp.Key
-                    , kvp => ColorHexToColor(kvp.Value)
-                )
-        );
-
+        private IDictionary<DrawColor, SKColor> _colorCache;
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
         private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
 
 
-        public Task Initialize()
+        public Task Initialize(IDictionary<DrawColor, string> drawColorMap)
         {
+            _colorCache = new ReadOnlyDictionary<DrawColor, SKColor>(
+                drawColorMap.ToDictionary(
+                    kvp => kvp.Key
+                    , kvp => ColorHexToColor(kvp.Value)
+                )
+            );
+
             PaintSurface += OnPaintSurface;
             return Task.CompletedTask;
         }
@@ -50,7 +50,7 @@ namespace Asteroids.Xamarin.Classes
             {
                 var paint = new SKPaint
                 {
-                    Color = ColorCache[gline.Color],
+                    Color = _colorCache[gline.Color],
                     IsStroke = true,
                 };
 
@@ -64,7 +64,7 @@ namespace Asteroids.Xamarin.Classes
             {
                    var paint = new SKPaint
                 {
-                    Color = ColorCache[gpoly.Color],
+                    Color = _colorCache[gpoly.Color],
                     IsStroke = true,
                 };
 

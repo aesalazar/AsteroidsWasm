@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Asteroids.BlazorComponents.Classes;
 using Asteroids.Standard.Enums;
@@ -47,12 +49,12 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// Loads sound <see cref="System.IO.Stream"/>s stored in <see cref="ActionSounds.SoundDictionary"/>
         /// to HTML localStorage.
         /// </summary>
+        /// <param name="actionSoundMap">Collection of <see cref="ActionSound"/> <see cref="Stream"/>s to cache.</param>
         /// <returns>Indication if the sounds were loaded successfully.</returns>
-        public async Task<bool> Initialize()
+        public async Task<bool> Initialize(IDictionary<ActionSound, Stream> actionSoundMap)
         {
             //Load the sounds in JavaScript indexed by enum value
-            var sounds = ActionSounds
-                .SoundDictionary
+            var sounds = actionSoundMap
                 .OrderBy(kvp => kvp.Key)
                 .Select(kvp => kvp.Value.ToBase64())
                 .ToList();

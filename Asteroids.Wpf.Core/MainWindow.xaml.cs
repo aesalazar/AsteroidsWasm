@@ -24,8 +24,8 @@ namespace Asteroids.Wpf.Core
 
             _controller = new GameController();
 
-            _soundPlayers = Standard
-                .Sounds.ActionSounds.SoundDictionary
+            _soundPlayers = _controller
+                .ActionSounds
                 .ToDictionary(
                     kvp => kvp.Key
                     , kvp => new SoundPlayer(kvp.Value)

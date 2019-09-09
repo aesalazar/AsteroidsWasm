@@ -91,7 +91,7 @@ namespace Asteroids.Xamarin
         private void SetupSounds()
         {
             //Preprocess each sound
-            foreach(var kvp in Standard.Sounds.ActionSounds.SoundDictionary)
+            foreach(var kvp in _controller.ActionSounds)
             {
                 var player = CrossSimpleAudioPlayer.CreateSimpleAudioPlayer();
                 player.Load(kvp.Value);

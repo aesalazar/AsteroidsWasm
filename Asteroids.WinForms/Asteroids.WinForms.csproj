@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\GraphicContainer.cs">
+    <Compile Include="Classes\GraphicPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="frmAsteroids.cs">

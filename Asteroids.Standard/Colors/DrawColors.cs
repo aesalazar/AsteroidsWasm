@@ -10,7 +10,7 @@ namespace Asteroids.Standard.Colors
     /// <summary>
     /// Drawing colors used by the game engine.
     /// </summary>
-    public static class DrawColors
+    internal static class DrawColors
     {
         /// <summary>
         /// Collection of <see cref="DrawColor"/> HEX string values used by the game engine.

@@ -1,24 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 using System.Timers;
+using Asteroids.Standard.Colors;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using Asteroids.Standard.Managers;
 using Asteroids.Standard.Screen;
-using Asteroids.Standard.Sounds;
 
 namespace Asteroids.Standard
 {
+    /// <summary>
+    /// Asteroids game engine that will calculate the lines and polygons and react to control key events.
+    /// </summary>
+
     public class GameController : IDisposable, IGameController
     {
         #region Constructor
 
+        /// <summary>
+        /// Creates a new instance of <see cref="GameController"/>.
+        /// </summary>
         public GameController()
         {
             GameStatus = GameMode.Prep;
             _lastDrawn = false;
-            ActionSounds.SoundTriggered += PlaySound;
+            Sounds.ActionSounds.SoundTriggered += PlaySound;
 
             _screenCanvas = new ScreenCanvas(new Rectangle());
             _textManager = new TextManager(_screenCanvas);
@@ -33,7 +42,7 @@ namespace Asteroids.Standard
             GameStatus = GameMode.Title;
             ResizeGame(frameRectangle);
 
-            await _container.Initialize();
+            await _container.Initialize(DrawColors.DrawColorMap);
 
             _currentTitle.InitTitleScreen();
 
@@ -71,18 +80,32 @@ namespace Asteroids.Standard
 
         #region Properties
 
+        /// <summary>
+        /// Current state of the game.
+        /// </summary>
         public GameMode GameStatus { get; private set; }
+
+        /// <summary>
+        /// Collection (read-only) of <see cref="ActionSounds"/> used by the game engine and associated WAV <see cref="Stream"/>s.
+        /// </summary>
+        public IDictionary<ActionSound, Stream> ActionSounds => Sounds.ActionSounds.SoundDictionary;
 
         #endregion
 
         #region Events
 
+        /// <summary>
+        /// Fires when the game calculation results in a sound stored in <see cref="ActionSounds"/> to be played by UI.
+        /// </summary>
         public event EventHandler<ActionSound> SoundPlayed;
 
         #endregion
 
         #region Methods (public)
 
+        /// <summary>
+        /// Shutdown the game.
+        /// </summary>
         public void Dispose()
         {
             // Ensure game exits when close is hit
@@ -100,16 +123,10 @@ namespace Asteroids.Standard
             _screenCanvas.Size = _frameRectangle;
         }
 
-        private async Task Repaint()
-        {
-            // Only allow the canvas to be drawn once if there is an invalidate, it's ok, the other canvas will soon be drawn
-            if (_lastDrawn)
-                return;
-
-            _lastDrawn = true;
-            await _screenCanvas.Draw(_container);
-        }
-
+        /// <summary>
+        /// Apply a key-down event to the game.
+        /// </summary>
+        /// <param name="key"><see cref="PlayKey"/> to apply.</param>
         public void KeyDown(PlayKey key)
         {
             if (GameStatus == GameMode.Prep)
@@ -189,6 +206,10 @@ namespace Asteroids.Standard
             }
         }
 
+        /// <summary>
+        /// Apply a key-up event to the game.
+        /// </summary>
+        /// <param name="key"><see cref="PlayKey"/> to apply.</param>
         public void KeyUp(PlayKey key)
         {
             // Rotate Left
@@ -219,6 +240,16 @@ namespace Asteroids.Standard
         #endregion
 
         #region Methods (private)
+
+        private async Task Repaint()
+        {
+            // Only allow the canvas to be drawn once if there is an invalidate, it's ok, the other canvas will soon be drawn
+            if (_lastDrawn)
+                return;
+
+            _lastDrawn = true;
+            await _screenCanvas.Draw(_container);
+        }
 
         private void TitleScreen()
         {
