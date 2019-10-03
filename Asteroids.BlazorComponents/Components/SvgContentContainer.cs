@@ -5,7 +5,7 @@ using System.Text;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.AspNetCore.Components.Rendering;
 
 namespace Asteroids.BlazorComponents.Components
 {

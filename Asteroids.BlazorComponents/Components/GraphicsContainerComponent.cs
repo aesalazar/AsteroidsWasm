@@ -94,12 +94,12 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         ///  Initializes the <see cref="InteropWindow"/>.
         /// </summary>
-        protected override async Task OnAfterRenderAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            await base.OnAfterRenderAsync();
+            await base.OnAfterRenderAsync(firstRender);
 
             //This can be called more then once
-            if (_interopWindow != null)
+            if (!firstRender)
                 return;
 
             _interopWindow = new InteropWindow(JsRuntime);
