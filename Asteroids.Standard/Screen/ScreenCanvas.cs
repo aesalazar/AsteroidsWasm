@@ -144,8 +144,8 @@ namespace Asteroids.Standard.Screen
             var ptsPoly = new Point[polygonPoints.Count];
             for (var i = 0; i < polygonPoints.Count; i++)
             {
-                ptsPoly[i].X = (int)(polygonPoints[i].X / (double)CanvasWidth * Size.Width);
-                ptsPoly[i].Y = (int)(polygonPoints[i].Y / (double)CanvasHeight * Size.Height);
+                ptsPoly[i].X = (int)(polygonPoints[i].X / CanvasWidthDouble * Size.Width);
+                ptsPoly[i].Y = (int)(polygonPoints[i].Y / CanvasHeightDouble * Size.Height);
             }
 
             AddPolygon(ptsPoly, penColor);
@@ -161,8 +161,8 @@ namespace Asteroids.Standard.Screen
         public void LoadVector(Point origin, int canvasOffsetX, int canvasOffsetY, DrawColor penColor)
         {
             var ptDraw = new Point(
-                (int)(origin.X / (double)CanvasWidth * Size.Width),
-                (int)(origin.Y / (double)CanvasHeight * Size.Height)
+                (int)(origin.X / CanvasWidthDouble * Size.Width),
+                (int)(origin.Y / CanvasHeightDouble * Size.Height)
             );
 
             var ptDraw2 = new Point(ptDraw.X + canvasOffsetX, ptDraw.Y + canvasOffsetY);
@@ -196,6 +196,11 @@ namespace Asteroids.Standard.Screen
         public const int CanvasWidth = 10000;
 
         /// <summary>
+        /// <see cref="CanvasWidth"/> as <see langword="double"/> to avoid casting.
+        /// </summary>
+        public const double CanvasWidthDouble = CanvasWidth;
+
+        /// <summary>
         /// Vertical height (effective) of the drawing plane.
         /// </summary>
         /// <remarks>
@@ -203,6 +208,11 @@ namespace Asteroids.Standard.Screen
         /// translated to the actual value set by <see cref="Size"/>.
         /// </remarks>
         public const int CanvasHeight = 7500;
+
+        /// <summary>
+        /// <see cref="CanvasHeight"/> as <see langword="double"/> to avoid casting.
+        /// </summary>
+        public const double CanvasHeightDouble = CanvasHeight;
 
         /// <summary>
         /// Default explosion time factor relative to the <see cref="FramesPerSecond"/>.

@@ -42,19 +42,17 @@ Currently, the project is made of the following:
 
 All applications are written in Visual Studio so they can be launch simply by doing `Debug -> Start New Instance`.  All are fully functional in terms of sound and keyboard support.  
 
-Note that the Blazor, WinForms and Wpf Core projects require Visual Studio 2019 or the latest Visual Studio Code to edit and compile; otherwise it can be done via Command Line.  As of the time of this writing, Visual Studio 2019 (16.2) still does not support WinForms Core in its Designer Editor but does allow the files to be edited in code.
+Note that the Blazor, WinForms and Wpf Core projects require Visual Studio 2019 or the latest Visual Studio Code to edit and compile; otherwise it can be done via Command Line.  As of the time of this writing, Visual Studio 2019 (16.3) still does not support WinForms Core in its Designer Editor but does allow the files to be edited in code.
 
 Performance varies among the technologies with WinForms Core being the clear winner for desktop and Firefox for Blazor/Web.  Wpf Core is a close second for desktop.
 
 ## .NET Core Notes
 
-The three .NET Core 3 applications were written using Preview 8 of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
+The three .NET Core 3 applications are updated to use the official release of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
- Preview 7 will require Visual Studio 19.2 as the minimum version.  Make sure to enable the use of preview versions of SDKs: 
-
-`Options > Project and Solutions > .NET Core > Use previews of the .NET Core SDK`
+ Core 3 GA will require Visual Studio 19.3 as the minimum version.  Blazor is still in preview.
 
 ## Xamarin Notes
 
@@ -67,6 +65,8 @@ The UWP application is set to require the Windows 10 Fall Creators Update at a m
 ## Blazor Notes
 
 Microsoft has made Blazor officially part of .NET Core 3.  It was first included in Preview 4.  Prior to that it was a separate library/install.
+
+Note that while .NET Core 3 is official, Blazor is still in preview.  Microsoft is targeting a release window of May 2020 for a final first version.
 
 To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their Getting Stated page at [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/client).  Besides the .NET Core install there is an extension specific to Blazor that is needed.  
 
