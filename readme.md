@@ -1,4 +1,4 @@
-# Asteroids in .NET Framework, .NET Core 3.1, and Blazor WebAssembly
+# Asteroids in .NET Framework, .NET Core 3.1.1, and Blazor WebAssembly
 
 ## Live Demo: https://aesalazar.github.io/AsteroidsWasm/
 
@@ -13,6 +13,10 @@ This project is a POC to determine the plausibility of writing a .NET Standard l
 The original code was adopted from a very cool WinForms project on CodePlex by Howard Uman, circa 2004:
 
 https://www.codeproject.com/articles/7428/c-asteroids
+
+Which now resides here:
+
+https://github.com/unhuman/csharp-asteroids
 
 It was chosen because it was already in C# and very straight forward in terms of inheritance and logic.  Separating the logic from the UI layer was relatively simple.
 
@@ -48,7 +52,7 @@ Performance varies among the technologies with WinForms Core being the clear win
 
 ## .NET Core Notes
 
-The three .NET Core 3.1 applications are updated to use the official release of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
+The three .NET Core 3.1.1 applications are updated to use the official release of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
@@ -66,7 +70,7 @@ The UWP application is set to require the Windows 10 Fall Creators Update at a m
 
 Microsoft has made Blazor officially part of .NET Core.  It was first included in 3.0 Preview 4.  Prior to that it was a separate library/install.
 
-Note that while .NET Core 3.1 is official, Blazor is still in preview.  Microsoft is targeting a release window of May 2020 for a final first version.
+Note that while .NET Core 3.1.1 is official, Blazor is still in preview.  Microsoft is targeting a release window of May 2020 for a final first version.
 
 To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their Getting Stated page at [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/client).  Besides the .NET Core install there is an extension specific to Blazor that is needed.  
 
