@@ -74,17 +74,7 @@ namespace Asteroids.Standard.Helpers
         /// <returns>Indication if ANY point is contained in the polygon.</returns>
         public static bool ContainsAnyPoint(this IList<Point> ptsPolygon, IList<Point> ptsCheck)
         {
-            var inside = false;
-            foreach (var pt in ptsCheck)
-            {
-                if (!pt.IsInsidePolygon(ptsPolygon))
-                    continue;
-
-                inside = true;
-                break;
-            }
-
-            return inside;
+            return ptsCheck.Any(pt => pt.IsInsidePolygon(ptsPolygon));
         }
 
         #endregion
@@ -140,13 +130,13 @@ namespace Asteroids.Standard.Helpers
         /// with direction given by the right-hand rule. For two vectors in the X-Y plane, the result is a
         /// vector with X and Y components 0 so the Z component gives the vector's length and direction.
         /// </remarks>
-        public static double CrossProductLength(double ax, double ay, double bx, double @by, double cx, double cy)
+        public static double CrossProductLength(double ax, double ay, double bx, double by, double cx, double cy)
         {
             // Get the vectors' coordinates.
             var bAx = ax - bx;
-            var bAy = ay - @by;
+            var bAy = ay - by;
             var bCx = cx - bx;
-            var bCy = cy - @by;
+            var bCy = cy - by;
 
             // Calculate the Z coordinate of the cross product.
             return (bAx * bCy - bAy * bCx);
@@ -158,13 +148,13 @@ namespace Asteroids.Standard.Helpers
         /// <remarks>
         /// Note that AB · BC = |AB| * |BC| * Cos(theta).
         /// </remarks>
-        private static double DotProduct(double ax, double ay, double bx, double @by, double cx, double cy)
+        private static double DotProduct(double ax, double ay, double bx, double by, double cx, double cy)
         {
             // Get the vectors' coordinates.
             var bAx = ax - bx;
-            var bAy = ay - @by;
+            var bAy = ay - by;
             var bCx = cx - bx;
-            var bCy = cy - @by;
+            var bCy = cy - by;
 
             // Calculate the dot product.
             return bAx * bCx + bAy * bCy;
