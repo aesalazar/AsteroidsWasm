@@ -8,14 +8,14 @@
     <None Remove="Sounds\explode1.wav" />
     <None Remove="Sounds\explode2.wav" />
     <None Remove="Sounds\explode3.wav" />
-    <None Remove="Sounds\fire.WAV" />
+    <None Remove="Sounds\fire.wav" />
     <None Remove="Sounds\life.wav" />
     <None Remove="Sounds\lsaucer.wav" />
-    <None Remove="Sounds\sfire.WAV" />
-    <None Remove="Sounds\ssaucer.WAV" />
+    <None Remove="Sounds\sfire.wav" />
+    <None Remove="Sounds\ssaucer.wav" />
     <None Remove="Sounds\thrust.wav" />
-    <None Remove="Sounds\thumphi.WAV" />
-    <None Remove="Sounds\thumplo.WAV" />
+    <None Remove="Sounds\thumphi.wav" />
+    <None Remove="Sounds\thumplo.wav" />
   </ItemGroup>
 
   <ItemGroup>
