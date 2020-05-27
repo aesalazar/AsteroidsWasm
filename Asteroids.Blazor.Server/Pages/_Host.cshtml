@@ -1,0 +1,27 @@
+﻿@page "/"
+@namespace Asteroids.Blazor.Server.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Asteroids.Blazor.Server</title>
+    <base href="~/" />
+</head>
+<body style="margin:0px; overflow:hidden;">
+    <app>
+        <component type="typeof(App)" render-mode="Server" />
+    </app>
+
+    <script src="_framework/blazor.server.js"></script>
+
+    <script src="_content/Asteroids.BlazorComponents/JsInteropAsteroidsKeyPress.js"></script>
+    <script src="_content/Asteroids.BlazorComponents/JsInteropAsteroidsSound.js"></script>
+    <script src="_content/Asteroids.BlazorComponents/JsInteropAsteroidsWindow.js"></script>
+
+</body>
+</html>

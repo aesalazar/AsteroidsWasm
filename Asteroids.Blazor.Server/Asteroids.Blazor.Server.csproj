@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Description>Asteroids.Standard running as Blazor Server.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Asteroids.BlazorComponents\Asteroids.BlazorComponents.csproj" />
+  </ItemGroup>
+
+</Project>

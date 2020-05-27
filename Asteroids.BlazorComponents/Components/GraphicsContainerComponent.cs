@@ -78,20 +78,6 @@ namespace Asteroids.BlazorComponents.Components
         #region Overrides
 
         /// <summary>
-        /// Loads the sound streams in JavaScript.
-        /// </summary>
-        protected override async Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
-
-            //Load the sounds in JavaScript
-            _interopSounds = new InteropSounds(JsRuntime);
-
-            if (!await _interopSounds.Initialize(_controller.ActionSounds))
-                Console.WriteLine($"ERROR '{nameof(InteropSounds)}': Could not initialize sounds in JavaScript.");
-        }
-
-        /// <summary>
         ///  Initializes the <see cref="InteropWindow"/>.
         /// </summary>
         protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -102,8 +88,18 @@ namespace Asteroids.BlazorComponents.Components
             if (!firstRender)
                 return;
 
+            //Load the sound interop in JavaScript
+            _interopSounds = new InteropSounds(JsRuntime);
+
+            if (!await _interopSounds.Initialize(_controller.ActionSounds))
+                Console.WriteLine($"ERROR '{nameof(InteropSounds)}': Could not initialize sounds in JavaScript.");
+
+            //Load the window interop in JavaScript
             _interopWindow = new InteropWindow(JsRuntime);
             await _interopWindow.Initialize();
+
+            //Force a refresh
+            await InvokeAsync(StateHasChanged);
         }
 
         #endregion
@@ -116,7 +112,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <param name="drawColorMap">Collection (read-only) of <see cref="DrawColor"/> used by the game engine and associated HEX-based (HTML) color strings.</param>
         public Task Initialize(IDictionary<DrawColor, string> drawColorMap)
         {
-            ChildSvgContainer.Initialize(drawColorMap);
+            InvokeAsync(() => ChildSvgContainer.Initialize(drawColorMap));
 
             InteropKeyPress.KeyUp += OnKeyUp;
             InteropKeyPress.KeyDown += OnKeyDown;
@@ -131,7 +127,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <param name="polygons">Collection of <see cref="IGraphicPolygon"/>.</param>
         public Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
-            ChildSvgContainer.Draw(lines, polygons);
+            InvokeAsync(() => ChildSvgContainer.Draw(lines, polygons));
             return Task.CompletedTask;
         }
 
@@ -159,8 +155,7 @@ namespace Asteroids.BlazorComponents.Components
             ElementHeight = e.Height;
 
             _controller.ResizeGame(e);
-
-            StateHasChanged();
+            InvokeAsync(StateHasChanged);
         }
 
         #endregion

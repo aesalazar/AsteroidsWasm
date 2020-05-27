@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Asteroids.Blazor
+namespace Asteroids.Blazor.Wasm
 {
     public class Program
     {
