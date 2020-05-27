@@ -40,7 +40,10 @@ Currently, the project is made of the following:
 
 - Asteroids.Blazor.Wasm - WebAssembly project that uses Microsoft's [Blazor Client](https://dotnet.microsoft.com/apps/aspnet/web-apps/client) to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
 
-- Asteroids.Blazor.Server - Similar to the Wasm project but instead uses Microsoft's [Blazor Server](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1#blazor-server) to execute of application server-side (see below for more info).
+- Asteroids.Blazor.Server - Similar to the Wasm project but instead uses Microsoft's [Blazor Server](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1#blazor-server) to execute the application server-side (see below for more info).
+
+
+- Asteroids.Blazor.Electron - Similar to the above Blazor Server project but running inside [Electron](https://www.electronjs.org/) to execute the application as a Desktop application.
 
 - Asteroids.BlazorComponents - Blazor Class Library that contains the actual game engine instantiated object and associated HTML and JavaScript bridge to allow rendering in the browser.
 
@@ -58,7 +61,7 @@ The three .NET Core applications are updated to use version 3.1.300 of the SDK s
 
 `dotnet --info` or `dotnet --version`
 
-For Blazor, the version for the offical release is actually 3.2.0.  Therofore, to run all of the projects in this solution will require the installation of Visual Studios 16.6 minimum or the latest Visual Studio Code.
+For Blazor, the version for the official release is actually 3.2.0.  Therefore, to run all of the projects in this solution will require the installation of Visual Studios 16.6 minimum or the latest Visual Studio Code.
 
 ## Xamarin Notes
 
@@ -78,12 +81,30 @@ To build the app, simply do it from Visual Studio - just make sure you have all 
 
 Building from CLI in the `Asteroids.Blazor.Wasm` project folder is also an option:
 
-`dotnet build -c Release`
+```
+dotnet build -c Release
+```
 
 To run the application, simply hit F5 or ctrl+F5 in Visual Studio or from the CLI:
 
-`dotnet run`
+```
+dotnet run
+```
 
 The app can be published with:
 
-`dotnet publish -c Release`
+```
+dotnet publish -c Release
+```
+
+## Blazor Electron Notes
+
+The Blazor Electron project is probably the most experimental of all in this repo.  It uses the [Electron.NET](https://github.com/ElectronNET/Electron.NET) wrapper in conjunction with a Blazor Server app to show a the game in a Desktop application.  
+
+It requires the **global** installation of the ElectronNet.CLI before it can be ran:
+
+```
+dotnet tool install ElectronNET.CLI -g
+```
+
+Once done, it can be ran like any other project from within Visual Studio.  Note that breakpoints do not work with this project but `/watch` option is enabled with the CLI so changes made to the source code will trigger an automatic refresh when running.
