@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28407.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.Blazor.Wasm", "Asteroids.Blazor\Asteroids.Blazor.Wasm.csproj", "{D950B4DD-7426-4272-8601-AC51340D9124}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.Blazor.Wasm", "Asteroids.Blazor.Wasm\Asteroids.Blazor.Wasm.csproj", "{D950B4DD-7426-4272-8601-AC51340D9124}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.Standard", "Asteroids.Standard\Asteroids.Standard.csproj", "{10AB7D83-5711-4C7B-A216-94BB8F25660F}"
 EndProject
