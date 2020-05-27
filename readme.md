@@ -38,7 +38,9 @@ Currently, the project is made of the following:
 
 - Asteroid.Xamarin.UWP - UWP GUI that uses the core Xamarin library.
 
-- Asteroids.Blazor - WASM project that uses Microsoft's [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/client) to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
+- Asteroids.Blazor.Wasm - WebAssembly project that uses Microsoft's [Blazor Client](https://dotnet.microsoft.com/apps/aspnet/web-apps/client) to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
+
+- Asteroids.Blazor.Server - Similar to the Wasm project but instead uses Microsoft's [Blazor Server](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1#blazor-server) to execute of application server-side (see below for more info).
 
 - Asteroids.BlazorComponents - Blazor Class Library that contains the actual game engine instantiated object and associated HTML and JavaScript bridge to allow rendering in the browser.
 
@@ -70,9 +72,11 @@ The UWP application is set to require the Windows 10 Fall Creators Update at a m
 
 Microsoft has made Blazor officially part of .NET Core.  It was first included in 3.0 Preview 4.  Prior to that it was a separate library/install.
 
+The difference between the Wasm and Server projects is the hosting model.  With Blazor, you have the option to either fully host the code and application on Client-Side via WebAssembly or Server-Side with updates pushed to the Client via [SignalR](https://docs.microsoft.com/en-us/aspnet/core/signalr/introduction?view=aspnetcore-3.1).  In a production application, the choice would be highly dependent on the situation and more information can be found on Microsoft's [Hosting Models](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1) Page.
+
 To build the app, simply do it from Visual Studio - just make sure you have all dependencies listed on their Getting Stated page at [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/client).
 
-Building from CLI in the Asteroids.Blazor project folder is also an option:
+Building from CLI in the `Asteroids.Blazor.Wasm` project folder is also an option:
 
 `dotnet build -c Release`
 
