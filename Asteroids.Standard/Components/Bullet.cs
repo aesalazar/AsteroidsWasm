@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Screen;
 
 namespace Asteroids.Standard.Components
@@ -9,7 +8,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Bullet is a missile fired by an object (ship or UFO)
     /// </summary>
-    internal class Bullet : ScreenObject
+    internal class Bullet : ScreenObjectBase
     {
         private int _remainingFrames;
 
@@ -48,7 +47,7 @@ namespace Asteroids.Standard.Components
         public void Shoot(Ship parentShip)
         {
             _remainingFrames = (int)ScreenCanvas.FramesPerSecond; // bullets live 1 sec
-            CurrLoc = parentShip.GetCurrLoc();
+            CurrentLocation = parentShip.GetCurrentLocation();
             Radians = parentShip.GetRadians();
 
             var sinVal = Math.Sin(Radians);

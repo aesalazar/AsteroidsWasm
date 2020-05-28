@@ -2,24 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Asteroids.Standard.Components;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 
-namespace Asteroids.Standard.Base
+namespace Asteroids.Standard.Components
 {
     /// <summary>
-    /// ScreenObject - defines an object to be displayed on screen
+    /// ScreenObjectBase - defines an object to be displayed on screen
     /// This object is based on a cartesian coordinate system 
     /// centered at 0, 0
     /// </summary>
-    internal abstract class ScreenObject
+    internal abstract class ScreenObjectBase
     {
         /// <summary>
-        /// Creates a new instance of <see cref="ScreenObject"/>.
+        /// Creates a new instance of <see cref="ScreenObjectBase"/>.
         /// </summary>
         /// <param name="location">Absolute origin (bottom-left) of the object.</param>
-        protected ScreenObject(Point location)
+        protected ScreenObjectBase(Point location)
         {
             IsAlive = true;
 
@@ -32,7 +31,7 @@ namespace Asteroids.Standard.Base
             _points = new List<Point>();
             PointsTransformed = new List<Point>();
 
-            CurrLoc = location;
+            CurrentLocation = location;
         }
 
         #region State
@@ -78,8 +77,8 @@ namespace Asteroids.Standard.Base
         /// <summary>
         /// Points is used for the internal cartesian system with rotation angle applied.
         /// </summary>
-        protected IList<Point> PointsTransformed; // exposed to simplify explosions
-
+        /// <remarks>Exposed to simplify explosions.</remarks>
+        protected IList<Point> PointsTransformed;
 
         /// <summary>
         /// Add points to internal collection used to calculate drawn polygons.
@@ -114,8 +113,8 @@ namespace Asteroids.Standard.Base
             lock (_updatePointsTransformedLock)
                 foreach (var pt in PointsTransformed)
                     points.Add(new Point(
-                        pt.X + CurrLoc.X
-                        , pt.Y + CurrLoc.Y
+                        pt.X + CurrentLocation.X
+                        , pt.Y + CurrentLocation.Y
                     ));
 
             return points;
@@ -160,12 +159,12 @@ namespace Asteroids.Standard.Base
 
         /// <summary>
         /// Rotates all internal <see cref="Point"/>s used to generate polygons on draw
-        /// based on the alignment with the target point but no moren then 5 degrees at a time.
+        /// based on the alignment with the target point but no more then 5 degrees at a time.
         /// </summary>
         /// <param name="alignPoint"><see cref="Point"/> to target.</param>
         protected void Align(Point alignPoint)
         {
-            var radsToPoint = GeometryHelper.GetAngle(CurrLoc, alignPoint);
+            var radsToPoint = GeometryHelper.GetAngle(CurrentLocation, alignPoint);
             var delta = radsToPoint - Radians;
 
             Radians += delta >= 0
@@ -182,7 +181,7 @@ namespace Asteroids.Standard.Base
         /// <param name="degrees">Rotation amount in degrees.</param>
         protected void Rotate(double degrees)
         {
-            //Get radians in 1/FramesPerSecond'th increment
+            //Get radians in 1/FramesPerSecond increments
             var radiansAdjust = degrees * ScreenCanvas.RadiansPerDegree;
             Radians += radiansAdjust / ScreenCanvas.FramesPerSecond;
 
@@ -232,12 +231,12 @@ namespace Asteroids.Standard.Base
         /// <summary>
         /// Get the current absolute origin (top-left) of the object.
         /// </summary>
-        public Point GetCurrLoc() => CurrLoc;
+        public Point GetCurrentLocation() => CurrentLocation;
 
         /// <summary>
         /// Current absolute origin (top-left).
         /// </summary>
-        protected Point CurrLoc;
+        protected Point CurrentLocation;
 
         /// <summary>
         /// Get the current velocity along the X axis.
@@ -266,18 +265,18 @@ namespace Asteroids.Standard.Base
         /// <returns>Indication of the move being completed successfully.</returns>
         public virtual bool Move()
         {
-            CurrLoc.X += (int)VelocityX;
-            CurrLoc.Y += (int)VelocityY;
+            CurrentLocation.X += (int)VelocityX;
+            CurrentLocation.Y += (int)VelocityY;
 
-            if (CurrLoc.X < 0)
-                CurrLoc.X = ScreenCanvas.CanvasWidth - 1;
-            if (CurrLoc.X >= ScreenCanvas.CanvasWidth)
-                CurrLoc.X = 0;
+            if (CurrentLocation.X < 0)
+                CurrentLocation.X = ScreenCanvas.CanvasWidth - 1;
+            if (CurrentLocation.X >= ScreenCanvas.CanvasWidth)
+                CurrentLocation.X = 0;
 
-            if (CurrLoc.Y < 0)
-                CurrLoc.Y = ScreenCanvas.CanvasHeight - 1;
-            if (CurrLoc.Y >= ScreenCanvas.CanvasHeight)
-                CurrLoc.Y = 0;
+            if (CurrentLocation.Y < 0)
+                CurrentLocation.Y = ScreenCanvas.CanvasHeight - 1;
+            if (CurrentLocation.Y >= ScreenCanvas.CanvasHeight)
+                CurrentLocation.Y = 0;
 
             return true;
         }

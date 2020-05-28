@@ -1,5 +1,4 @@
 ﻿using System;
-using Asteroids.Standard.Colors;
 using Asteroids.Standard.Enums;
 
 namespace Asteroids.Standard.Helpers
@@ -20,8 +19,8 @@ namespace Asteroids.Standard.Helpers
         /// <returns>Random <see cref="DrawColor"/>.</returns>
         public static DrawColor GetRandomFireColor()
         {
-            var idx = Random.Next(DrawColors.DrawColorList.Count);
-            return DrawColors.DrawColorList[idx];
+            var idx = Random.Next(ColorHelper.DrawColorList.Count);
+            return ColorHelper.DrawColorList[idx];
         }
     }
 }

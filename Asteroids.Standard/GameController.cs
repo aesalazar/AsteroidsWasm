@@ -4,8 +4,8 @@ using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
 using System.Timers;
-using Asteroids.Standard.Colors;
 using Asteroids.Standard.Enums;
+using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Interfaces;
 using Asteroids.Standard.Managers;
 using Asteroids.Standard.Screen;
@@ -42,7 +42,7 @@ namespace Asteroids.Standard
             GameStatus = GameMode.Title;
             ResizeGame(frameRectangle);
 
-            await _container.Initialize(DrawColors.DrawColorMap);
+            await _container.Initialize(ColorHelper.DrawColorMap);
 
             _currentTitle.InitTitleScreen();
 

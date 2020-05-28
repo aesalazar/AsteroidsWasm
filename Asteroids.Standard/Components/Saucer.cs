@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Screen;
 using static Asteroids.Standard.Sounds.ActionSounds;
@@ -11,7 +10,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Flying saucer to attack primary ship with guided missiles.
     /// </summary>
-    internal class Saucer : ScreenObject
+    internal class Saucer : ScreenObjectBase
     {
         public const int MaximumPasses = 3;
         public const int KillScore = 1000;
@@ -54,7 +53,7 @@ namespace Asteroids.Standard.Components
                 return false;
 
             //Stop if the next move will put it over the allow number of passes
-            var x = CurrLoc.X + VelocityX;
+            var x = CurrentLocation.X + VelocityX;
 
             if ((x <= 0 || x >= ScreenCanvas.CanvasWidth)
                 && (Interlocked.Increment(ref _currentPass) >= MaximumPasses))
@@ -93,7 +92,7 @@ namespace Asteroids.Standard.Components
         /// </summary>
         protected void SetVelocity()
         {
-            var factor = CurrLoc.X < ScreenCanvas.CanvasWidth / 2 ? 1 : -1;
+            var factor = CurrentLocation.X < ScreenCanvas.CanvasWidth / 2 ? 1 : -1;
 
             VelocityX = factor * Velocity;
             VelocityY = 0;

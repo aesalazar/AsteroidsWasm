@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Helpers;
@@ -11,7 +10,7 @@ using Asteroids.Standard.Screen;
 namespace Asteroids.Standard.Managers
 {
     /// <summary>
-    /// Manages and optimizes the drawing of the state of <see cref="ScreenObject"/>s 
+    /// Manages and optimizes the drawing of the state of <see cref="ScreenObjectBase"/>s 
     /// stored in a <see cref="CacheManager"/> to a <see cref="ScreenCanvas"/>.
     /// </summary>
     internal class DrawingManager

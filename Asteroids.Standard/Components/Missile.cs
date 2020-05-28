@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Screen;
 
 namespace Asteroids.Standard.Components
@@ -9,7 +8,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Guided missile to target a <see cref="Ship"/>.
     /// </summary>
-    internal class Missile : ScreenObject
+    internal class Missile : ScreenObjectBase
     {
         private const double Velocity = 2000 / ScreenCanvas.FramesPerSecond;
 
@@ -17,7 +16,7 @@ namespace Asteroids.Standard.Components
         /// Creates a new instance of <see cref="Missile"/>.
         /// </summary>
         /// <param name="saucer">Parent <see cref="Saucer"/>.</param>
-        public Missile(Saucer saucer) : base(saucer.GetCurrLoc())
+        public Missile(Saucer saucer) : base(saucer.GetCurrentLocation())
         {
             ExplosionLength = 1;
             InitPoints();

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
@@ -12,7 +11,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Primary craft for the user to control.
     /// </summary>
-    internal class Ship : ScreenObject
+    internal class Ship : ScreenObjectBase
     {
         private const double RotateSpeed = 12000 / ScreenCanvas.FramesPerSecond;
 
@@ -49,8 +48,8 @@ namespace Asteroids.Standard.Components
             const int w = ScreenCanvas.CanvasWidth;
             const int h = ScreenCanvas.CanvasHeight;
 
-            CurrLoc.X = RandomizeHelper.Random.Next((int)(0.1 * w), (int)(0.9 * w));
-            CurrLoc.Y = RandomizeHelper.Random.Next((int)(0.1 * h), (int)(0.9 * h));
+            CurrentLocation.X = RandomizeHelper.Random.Next((int)(0.1 * w), (int)(0.9 * w));
+            CurrentLocation.Y = RandomizeHelper.Random.Next((int)(0.1 * h), (int)(0.9 * h));
 
             return RandomizeHelper.Random.Next(10) != 1;
         }

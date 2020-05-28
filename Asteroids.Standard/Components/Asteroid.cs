@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 
@@ -10,7 +9,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Summary description for Asteroid.
     /// </summary>
-    internal class Asteroid : ScreenObject
+    internal class Asteroid : ScreenObjectBase
     {
         /// <summary>
         /// Current rotation speed of the asteroid.
@@ -26,8 +25,8 @@ namespace Asteroids.Standard.Components
             Size = size;
 
             // Can't place the object randomly in constructor - stinky
-            CurrLoc.X = RandomizeHelper.Random.Next(2) * (ScreenCanvas.CanvasWidth - 1);
-            CurrLoc.Y = RandomizeHelper.Random.Next(ScreenCanvas.CanvasHeight - 1);
+            CurrentLocation.X = RandomizeHelper.Random.Next(2) * (ScreenCanvas.CanvasWidth - 1);
+            CurrentLocation.Y = RandomizeHelper.Random.Next(ScreenCanvas.CanvasHeight - 1);
 
             RandomVelocity();
             InitPoints();
@@ -37,7 +36,7 @@ namespace Asteroids.Standard.Components
         /// Creates a new instance of <see cref="Asteroid"/>.
         /// </summary>
         /// <param name="asteroid"><see cref="Asteroid"/> to clone.</param>
-        public Asteroid(Asteroid asteroid) : base(asteroid.CurrLoc)
+        public Asteroid(Asteroid asteroid) : base(asteroid.CurrentLocation)
         {
             Size = asteroid.Size;
             RandomVelocity();

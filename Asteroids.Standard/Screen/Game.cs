@@ -142,7 +142,7 @@ namespace Asteroids.Standard.Screen
                     {
                         //Aim for the ship oe nothing
                         var target = _cache.Ship.IsAlive
-                            ? _cache.Ship.GetCurrLoc()
+                            ? _cache.Ship.GetCurrentLocation()
                             : default(Point?);
 
                         _cache.Saucer.Target(target);

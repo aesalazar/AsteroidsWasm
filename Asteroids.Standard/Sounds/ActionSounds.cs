@@ -20,7 +20,8 @@ namespace Asteroids.Standard.Sounds
             var dirName = $"{asmName}.{SoundDir}";
             var assembly = AppDomain
                 .CurrentDomain
-                .GetAssemblies().First(a => a.GetName().Name == asmName);
+                .GetAssemblies()
+                .First(a => a.GetName().Name == asmName);
 
             SoundDictionary = new ReadOnlyDictionary<ActionSound, Stream>(new Dictionary<ActionSound, Stream>
             {

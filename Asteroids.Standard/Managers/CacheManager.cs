@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Asteroids.Standard.Base;
 using Asteroids.Standard.Components;
 using Asteroids.Standard.Screen;
 
@@ -64,7 +63,7 @@ namespace Asteroids.Standard.Managers
         #region Prep
 
         /// <summary>
-        /// Resets all cache based on the current state of <see cref="ScreenObject"/>s.
+        /// Resets all cache based on the current state of <see cref="ScreenObjectBase"/>s.
         /// </summary>
         public void Repopulate()
         {
@@ -257,7 +256,7 @@ namespace Asteroids.Standard.Managers
         /// <see cref="ScreenObject"/> currently in <see cref="CacheManager"/>.
         /// </summary>
         /// <typeparam name="T">Object Type</typeparam>
-        public class CachedObject<T> where T : ScreenObject
+        public class CachedObject<T> where T : ScreenObjectBase
         {
             /// <summary>
             /// Creates a new instance of <see cref="CachedObject{T}"/>.
@@ -266,7 +265,7 @@ namespace Asteroids.Standard.Managers
             public CachedObject(T screenObject)
             {
                 ScreenObject = screenObject;
-                Location = ScreenObject.GetCurrLoc();
+                Location = ScreenObject.GetCurrentLocation();
                 PolygonPoints = ScreenObject.GetPoints();
             }
 
