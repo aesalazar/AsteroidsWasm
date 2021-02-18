@@ -11,10 +11,9 @@
     "Electron.NET App": {
       "commandName": "Executable",
       "executablePath": "electronize",
-      "commandLineArgs": "start /watch",
+      "commandLineArgs": "start",
       "workingDirectory": "."
     },
-
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
@@ -25,10 +24,10 @@
     "Asteroids.Blazor.Electron": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
     }
   }
 }

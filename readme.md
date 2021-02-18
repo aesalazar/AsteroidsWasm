@@ -106,4 +106,8 @@ It requires the **global** installation of the ElectronNet.CLI before it can be 
 dotnet tool install ElectronNET.CLI -g
 ```
 
-Once done, it can be ran like any other project from within Visual Studio.  Note that breakpoints do not work with this project but `/watch` option is enabled with the CLI so changes made to the source code will trigger an automatic refresh when running (i.e. hot reload).
+Once done, it can be ran like any other project from within Visual Studio.
+
+NOTE: Electron.NET requires node.js and npm so make sure to have them installed.  If you do not just grab the latest LTS:
+
+https://nodejs.org/en/

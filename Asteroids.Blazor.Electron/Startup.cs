@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Threading.Tasks;
 
 namespace Asteroids.Blazor.Electron
 {
@@ -46,7 +47,7 @@ namespace Asteroids.Blazor.Electron
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            ElectronNET.API.Electron.WindowManager.CreateWindowAsync();
+            Task.Run(async () => await ElectronNET.API.Electron.WindowManager.CreateWindowAsync());
         }
     }
 }
