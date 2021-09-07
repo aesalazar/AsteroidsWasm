@@ -3,7 +3,7 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ElectronNET.API" Version="11.5.1" />
+    <PackageReference Include="ElectronNET.API" Version="13.5.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Asteroids.BlazorComponents\Asteroids.BlazorComponents.csproj" />
