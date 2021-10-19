@@ -21,7 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{CFE33B50-3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.Wpf.Core", "Asteroids.Wpf.Core\Asteroids.Wpf.Core.csproj", "{6DEA01BA-4FF6-4E89-A27B-5273048E86AF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.WinForms.Core", "Asteroids.WinForms.Core\Asteroids.WinForms.Core.csproj", "{28829ABF-15BF-4513-8CF4-2B9CB76A65B1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.WinForms", "Asteroids.WinForms\Asteroids.WinForms.csproj", "{28829ABF-15BF-4513-8CF4-2B9CB76A65B1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asteroids.Blazor.Server", "Asteroids.Blazor.Server\Asteroids.Blazor.Server.csproj", "{49AF563A-6AD7-4C0D-8521-08047FFCCB30}"
 EndProject
