@@ -5,51 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Sounds\explode1.wav" />
-    <None Remove="Sounds\explode2.wav" />
-    <None Remove="Sounds\explode3.wav" />
-    <None Remove="Sounds\fire.wav" />
-    <None Remove="Sounds\life.wav" />
-    <None Remove="Sounds\lsaucer.wav" />
-    <None Remove="Sounds\sfire.wav" />
-    <None Remove="Sounds\ssaucer.wav" />
-    <None Remove="Sounds\thrust.wav" />
-    <None Remove="Sounds\thumphi.wav" />
-    <None Remove="Sounds\thumplo.wav" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Sounds\explode1.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\explode2.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\explode3.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\fire.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\life.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\lsaucer.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\sfire.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\ssaucer.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\thrust.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\thumphi.wav">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Sounds\thumplo.wav">
+    <None Remove="Sounds\*.wav" />
+    <EmbeddedResource Include="Sounds\*.wav">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
