@@ -2,13 +2,14 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFrameworks>net4.8;net5.0-windows</TargetFrameworks>
     <UseWPF>true</UseWPF>
     <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="WriteableBitmapEx" Version="1.6.8" />
+    <PackageReference Include="IndexRange" Version="1.0.0" Condition="'$(TargetFramework)'=='net4.8'" />
   </ItemGroup>
 
   <ItemGroup>
