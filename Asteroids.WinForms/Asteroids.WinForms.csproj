@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net4.8;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>net5.0-windows;net4.8</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
     <LangVersion>8</LangVersion>
   </PropertyGroup>
