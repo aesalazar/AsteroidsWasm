@@ -10,7 +10,7 @@ using System.Windows.Threading;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 
-namespace Asteroids.Wpf.Classes
+namespace Asteroids.Wpf.Core.Classes
 {
     /// <summary>
     /// Control to paint vectors based on <see cref="WriteableBitmap"/>.
@@ -98,8 +98,8 @@ namespace Asteroids.Wpf.Classes
                         }
 
                         var first = gpoly.Points.First();
-                        points[points.Length - 2] = first.X;
-                        points[points.Length - 1] = first.Y;
+                        points[^2] = first.X;
+                        points[^1] = first.Y;
 
                         _bitmap.DrawPolyline(
                             points

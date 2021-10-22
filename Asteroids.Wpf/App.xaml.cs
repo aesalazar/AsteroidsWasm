@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Asteroids.Wpf
+namespace Asteroids.Wpf.Core
 {
     public partial class App : Application
     {

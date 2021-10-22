@@ -10,7 +10,7 @@ using Asteroids.Standard;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 
-namespace Asteroids.Wpf
+namespace Asteroids.Wpf.Core
 {
     public partial class MainWindow : IDisposable
     {
