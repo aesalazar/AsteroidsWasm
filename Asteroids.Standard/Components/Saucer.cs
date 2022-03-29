@@ -10,7 +10,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Flying saucer to attack primary ship with guided missiles.
     /// </summary>
-    internal class Saucer : ScreenObjectBase
+    internal sealed class Saucer : ScreenObjectBase
     {
         public const int MaximumPasses = 3;
         public const int KillScore = 1000;
@@ -90,7 +90,7 @@ namespace Asteroids.Standard.Components
         /// <summary>
         /// Updates the X-axis velocity.
         /// </summary>
-        protected void SetVelocity()
+        private void SetVelocity()
         {
             var factor = CurrentLocation.X < ScreenCanvas.CanvasWidth / 2 ? 1 : -1;
 

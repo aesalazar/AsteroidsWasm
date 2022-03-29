@@ -9,7 +9,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Summary description for Asteroid.
     /// </summary>
-    internal class Asteroid : ScreenObjectBase
+    internal sealed class Asteroid : ScreenObjectBase
     {
         /// <summary>
         /// Current rotation speed of the asteroid.
@@ -50,7 +50,7 @@ namespace Asteroids.Standard.Components
         /// <summary>
         /// Sets the rotational spine of the asteroid randomly based on its current <see cref="AsteroidSize"/>.
         /// </summary>
-        protected void RandomVelocity()
+        private void RandomVelocity()
         {
             const double fps = ScreenCanvas.FramesPerSecond;
             var sizeFactor = (AsteroidSize.Large - Size + 1) * 1.05;

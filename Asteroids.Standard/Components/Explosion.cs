@@ -7,7 +7,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Screen explosion with sized incremented by current frame.
     /// </summary>
-    internal class Explosion
+    internal sealed class Explosion
     {
         /// <summary>
         /// More points is more dazzling.

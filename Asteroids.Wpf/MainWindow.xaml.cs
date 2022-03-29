@@ -10,9 +10,9 @@ using Asteroids.Standard;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 
-namespace Asteroids.Wpf.Core
+namespace Asteroids.Wpf
 {
-    public partial class MainWindow : IDisposable
+    public sealed partial class MainWindow : IDisposable
     {
         private readonly IGameController _controller;
         private readonly IDictionary<ActionSound, SoundPlayer> _soundPlayers;

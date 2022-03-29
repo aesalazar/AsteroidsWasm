@@ -8,7 +8,7 @@ namespace Asteroids.Standard.Helpers
     /// <summary>
     /// Helpers for performing Geometric calculations.
     /// </summary>
-    public static class GeometryHelper
+    internal static class GeometryHelper
     {
         #region Distance Between Two Points
 

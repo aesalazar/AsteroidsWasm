@@ -6,7 +6,7 @@ namespace Asteroids.Standard.Helpers
     /// <summary>
     /// Helper functions to generate random data.
     /// </summary>
-    public static class RandomizeHelper
+    internal static class RandomizeHelper
     {
         /// <summary>
         /// Static random number generator.

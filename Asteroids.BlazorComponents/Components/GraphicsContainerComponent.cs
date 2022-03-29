@@ -15,7 +15,7 @@ namespace Asteroids.BlazorComponents.Components
     /// Implementation of <see cref="IGraphicContainer"/> to provide rendering of 
     /// vectors and audio to the <see cref="SvgContentContainer"/>.
     /// </summary>
-    public class GraphicsContainerComponent : ComponentBase, IGraphicContainer
+    public abstract class GraphicsContainerComponent : ComponentBase, IGraphicContainer
     {
         #region Blazor Parameters
 

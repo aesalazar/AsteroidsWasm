@@ -10,12 +10,12 @@ using System.Windows.Threading;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 
-namespace Asteroids.Wpf.Core.Classes
+namespace Asteroids.Wpf.Classes
 {
     /// <summary>
     /// Control to paint vectors based on <see cref="WriteableBitmap"/>.
     /// </summary>
-    public class GraphicContainer : Image, IGraphicContainer, IDisposable
+    internal sealed class GraphicContainer : Image, IGraphicContainer, IDisposable
     {
         private readonly Dispatcher _mainDispatcher = Dispatcher.CurrentDispatcher;
         private IDictionary<DrawColor, Color> _colorCache;

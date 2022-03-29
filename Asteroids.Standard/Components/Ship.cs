@@ -11,7 +11,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Primary craft for the user to control.
     /// </summary>
-    internal class Ship : ScreenObjectBase
+    internal sealed class Ship : ScreenObjectBase
     {
         private const double RotateSpeed = 12000 / ScreenCanvas.FramesPerSecond;
 

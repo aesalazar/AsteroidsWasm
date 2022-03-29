@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace Asteroids.Xamarin.Classes
 {
-    public class GraphicsContainer : SKCanvasView, IGraphicContainer, IRegisterable
+    internal sealed class GraphicsContainer : SKCanvasView, IGraphicContainer, IRegisterable
     {
         private IDictionary<DrawColor, SKColor> _colorCache;
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();

@@ -11,7 +11,7 @@ using Xamarin.Forms;
 
 namespace Asteroids.Xamarin
 {
-    public partial class MainPage : IDisposable
+    public sealed partial class MainPage : IDisposable
     {
         public MainPage()
         {

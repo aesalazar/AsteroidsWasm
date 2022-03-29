@@ -8,7 +8,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Guided missile to target a <see cref="Ship"/>.
     /// </summary>
-    internal class Missile : ScreenObjectBase
+    internal sealed class Missile : ScreenObjectBase
     {
         private const double Velocity = 2000 / ScreenCanvas.FramesPerSecond;
 

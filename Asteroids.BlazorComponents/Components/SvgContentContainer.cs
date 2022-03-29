@@ -12,7 +12,7 @@ namespace Asteroids.BlazorComponents.Components
     /// <summary>
     /// Provides raw graphical content for an HTML SVG element.
     /// </summary>
-    public class SvgContentContainer : ComponentBase
+    public sealed class SvgContentContainer : ComponentBase
     {
         private const string StylePolygon = "stroke=width:1px; fill:transparent; ";
 

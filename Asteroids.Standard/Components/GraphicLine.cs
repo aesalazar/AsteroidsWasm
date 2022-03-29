@@ -4,7 +4,7 @@ using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.Standard.Components
 {
-    public class GraphicLine : IGraphicLine
+    internal sealed class GraphicLine : IGraphicLine
     {
         public DrawColor Color { get; set; }
 
