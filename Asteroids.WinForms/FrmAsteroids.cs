@@ -9,7 +9,7 @@ using Asteroids.Standard;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 
-namespace Asteroids.WinForms.Core
+namespace Asteroids.WinForms
 {
     public partial class FrmAsteroids : Form
     {

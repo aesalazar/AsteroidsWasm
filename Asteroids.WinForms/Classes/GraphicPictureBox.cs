@@ -7,9 +7,9 @@ using System.Windows.Forms;
 using Asteroids.Standard.Enums;
 using Asteroids.Standard.Interfaces;
 
-namespace Asteroids.WinForms.Core.Classes
+namespace Asteroids.WinForms.Classes
 {
-    public class GraphicPictureBox : PictureBox, IGraphicContainer
+    internal sealed class GraphicPictureBox : PictureBox, IGraphicContainer
     {
         private IDictionary<DrawColor, Pen> _colorCache;
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace Asteroids.WinForms.Core
+namespace Asteroids.WinForms
 {
-    partial class FrmAsteroids
+    public sealed partial class FrmAsteroids
     {
         #region Setup
 

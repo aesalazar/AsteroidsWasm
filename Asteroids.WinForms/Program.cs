@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using Asteroids.WinForms;
 
-namespace Asteroids.WinForms.Core
+namespace Asteroids.WinForms
 {
     internal static class Program
     {
