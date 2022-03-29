@@ -6,7 +6,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Summary description for AsteroidBelt.
     /// </summary>
-    internal class AsteroidBelt
+    internal sealed class AsteroidBelt
     {
         private readonly object _updateAsteroidsLock;
         private IList<Asteroid> _asteroids;

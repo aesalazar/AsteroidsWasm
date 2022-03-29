@@ -8,7 +8,7 @@ namespace Asteroids.Standard.Components
     /// <summary>
     /// Bullet is a missile fired by an object (ship or UFO)
     /// </summary>
-    internal class Bullet : ScreenObjectBase
+    internal sealed class Bullet : ScreenObjectBase
     {
         private int _remainingFrames;
 

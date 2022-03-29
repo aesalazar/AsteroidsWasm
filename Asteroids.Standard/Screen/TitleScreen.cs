@@ -8,7 +8,7 @@ namespace Asteroids.Standard.Screen
     /// <summary>
     /// Splash screen drawn when not playing the game.
     /// </summary>
-    public class TitleScreen
+    internal sealed class TitleScreen
     {
         private const string Instructions = "PRESS SPACE TO PLAY";
         private const int InstructionSize = 200;

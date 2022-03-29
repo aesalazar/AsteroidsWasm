@@ -10,7 +10,7 @@ namespace Asteroids.Standard.Managers
     /// Manages object collection and scoring for a <see cref="Game"/> in an effort
     /// to optimize locking and point manipulation.
     /// </summary>
-    internal class CacheManager
+    internal sealed class CacheManager
     {
         #region Constructor
 

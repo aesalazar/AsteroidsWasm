@@ -12,7 +12,7 @@ namespace Asteroids.Standard.Screen
     /// <summary>
     /// Core game engine that manages object interaction and screen painting.
     /// </summary>
-    public class Game
+    internal sealed class Game
     {
         #region Fields and Constructor
 

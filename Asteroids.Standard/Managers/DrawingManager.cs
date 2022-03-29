@@ -13,7 +13,7 @@ namespace Asteroids.Standard.Managers
     /// Manages and optimizes the drawing of the state of <see cref="ScreenObjectBase"/>s 
     /// stored in a <see cref="CacheManager"/> to a <see cref="ScreenCanvas"/>.
     /// </summary>
-    internal class DrawingManager
+    internal sealed class DrawingManager
     {
         private readonly CacheManager _cache;
         private readonly ScreenCanvas _canvas;

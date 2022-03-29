@@ -6,7 +6,7 @@ namespace Asteroids.Standard.Managers
     /// <summary>
     /// Converts and draws text to a <see cref="ScreenCanvas"/>.
     /// </summary>
-    public class TextManager
+    internal sealed class TextManager
     {
         private readonly ScreenCanvas _screenCanvas;
 

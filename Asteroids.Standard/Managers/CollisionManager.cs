@@ -14,7 +14,7 @@ namespace Asteroids.Standard.Managers
     /// <summary>
     /// Manages object collection and scoring for a <see cref="Game"/>.
     /// </summary>
-    internal class CollisionManager
+    internal sealed class CollisionManager
     {
         #region Fields and constructor
 

@@ -6,7 +6,7 @@ namespace Asteroids.Standard.Managers
     /// <summary>
     /// Maintains the score information for the game.
     /// </summary>
-    public class ScoreManager
+    internal sealed class ScoreManager
     {
         private const int FreeShipIncrement = 10000;
 

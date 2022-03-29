@@ -10,7 +10,7 @@ namespace Asteroids.Standard.Sounds
     /// <summary>
     /// Collection of <see cref="ActionSound"/> <see cref="Stream"/>s.
     /// </summary>
-    internal class ActionSounds
+    internal sealed class ActionSounds
     {
         private const string SoundDir = "Sounds";
 

@@ -16,7 +16,7 @@ namespace Asteroids.Standard.Screen
     /// <remarks>
     /// Angle 0 is pointing "down", 90 is "left" on the canvas
     /// </remarks>
-    public class ScreenCanvas
+    internal sealed class ScreenCanvas
     {
         private readonly object _updatePointsLock;
         private readonly object _updatePolysLock;

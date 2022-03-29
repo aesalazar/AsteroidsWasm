@@ -5,7 +5,7 @@ using Asteroids.Standard.Interfaces;
 
 namespace Asteroids.Standard.Components
 {
-    public class GraphicPolygon : IGraphicPolygon
+    internal sealed class GraphicPolygon : IGraphicPolygon
     {
         public DrawColor Color { get; set; }
 
