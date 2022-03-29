@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Asteroids.Blazor.Electron
 {
-    public class Startup
+    public sealed class Startup
     {
         public Startup(IConfiguration configuration)
         {

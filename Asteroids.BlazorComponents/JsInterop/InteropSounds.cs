@@ -12,7 +12,7 @@ namespace Asteroids.BlazorComponents.JsInterop
     /// <summary>
     /// Proxy to manage sounds stored in JavaScript.
     /// </summary>
-    public class InteropSounds
+    public sealed class InteropSounds
     {
         /// <summary>
         /// Creates a new instance of <see cref="InteropSounds"/>.

@@ -8,7 +8,7 @@ namespace Asteroids.BlazorComponents.JsInterop
     /// <summary>
     /// Proxy for drawing on a JavaScript Window.
     /// </summary>
-    public class InteropWindow
+    public sealed class InteropWindow
     {
         /// <summary>
         /// Creates a new instance of <see cref="InteropWindow"/>.
