@@ -8,7 +8,7 @@ using Asteroids.Standard.Enums;
 namespace Asteroids.Xamarin.Droid
 {
     [Activity(Label = "Asteroids.Xamarin", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    public sealed class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         private global::Xamarin.Forms.Application _app;
         private Xamarin.MainPage _page;
