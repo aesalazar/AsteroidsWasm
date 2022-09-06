@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Asteroids.Standard.Enums;
+using GameMode = Asteroids.Standard.Enums.GameMode;
 
 namespace Asteroids.Xamarin.Droid
 {
@@ -11,7 +12,7 @@ namespace Asteroids.Xamarin.Droid
     public sealed class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         private global::Xamarin.Forms.Application _app;
-        private Xamarin.MainPage _page;
+        private MainPage _page;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -69,9 +70,6 @@ namespace Asteroids.Xamarin.Droid
                 case Keycode.P:
                     key = PlayKey.P;
                     break;
-
-                default:
-                    break;
             }
 
             if (key.HasValue)
@@ -113,9 +111,6 @@ namespace Asteroids.Xamarin.Droid
 
                 case Keycode.P:
                     key = PlayKey.P;
-                    break;
-
-                default:
                     break;
             }
 

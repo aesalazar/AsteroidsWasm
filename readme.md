@@ -52,7 +52,7 @@ Performance varies among the technologies with WinForms in .NET 6 being the clea
 
 ## .NET 6 Notes
 
-All .NET 6 applications including Blazor are tested on version `6.0.101` of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
+All .NET 6 applications including Blazor are tested on version `6.0.400` of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
@@ -107,3 +107,5 @@ Once done, it can be ran like any other project from within Visual Studio.
 NOTE: Electron.NET requires node.js and npm so make sure to have them installed.  If you do not just grab the latest LTS:
 
 https://nodejs.org/en/
+
+NOTE 2:  Sometimes I get an "is being used by another process" error when attempting to start from Visual Studio.  I have not been able to narrow it down but it seems to be a known issue with the package.  You can easily tell by trying to delete the obj or bin folders and getting file lock errors.  If it happens, look in Task Manager for any running instances of electron.exe.  Kill them and it should resolve.
