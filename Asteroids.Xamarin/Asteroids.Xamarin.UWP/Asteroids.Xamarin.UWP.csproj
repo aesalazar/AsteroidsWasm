@@ -143,8 +143,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2337" />
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.13" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2515" />
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Asteroids.Standard\Asteroids.Standard.csproj">
