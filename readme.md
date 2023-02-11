@@ -1,4 +1,4 @@
-# Asteroids in .NET Framework, .NET 6, and Blazor WebAssembly
+# Asteroids in .NET Framework, .NET 7, and Blazor WebAssembly
 
 ## Live Demo: https://aesalazar.github.io/AsteroidsWasm/
 
@@ -24,9 +24,9 @@ Currently, the project is made of the following:
 
 - Asteroids.Standard - .Net Standard Library containing the game engine.
 
-- Asteroids.WinForms - Reconstructed WinForms GUI that uses the game engine with a [PictureBox](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.picturebox) as the main renderer.  This is targets .NET 6 by default but can also be set for .NET Framework 4.8.
+- Asteroids.WinForms - Reconstructed WinForms GUI that uses the game engine with a [PictureBox](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.picturebox) as the main renderer.  This is targets .NET 7 by default but can also be set for .NET Framework 4.8.
 
-- Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [WriteableBitmap](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap) as the main renderer with help from the [WritableBitmapEx](https://github.com/teichgraf/WriteableBitmapEx/) library.  This is targets .NET 6 by default but can also be set for .NET Framework 4.8.
+- Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [WriteableBitmap](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap) as the main renderer with help from the [WritableBitmapEx](https://github.com/teichgraf/WriteableBitmapEx/) library.  This is targets .NET 7 by default but can also be set for .NET Framework 4.8.
 
 - Asteroids.Xamarin - The core Xamarin application that uses SkiaSharp for 2D rendering via a [SKCanvasView](https://docs.microsoft.com/en-us/dotnet/api/skiasharp.views.forms.skcanvasview).
 
@@ -40,19 +40,21 @@ Currently, the project is made of the following:
 
 - Asteroids.Blazor.Electron - Similar to the above Blazor Server project but running inside [Electron](https://www.electronjs.org/) to execute the code as a Desktop application.
 
+- Asteroids.Blazor.Maui - Similar to the Blazor WASM project but instead uses [Blazor Hybrid MAUI](https://learn.microsoft.com/en-us/aspnet/core/blazor/hybrid/?view=aspnetcore-7.0) to host the same game engine as a desktop or mobile app (see below for more info).
+
 - Asteroids.BlazorComponents - Blazor Class Library that contains the actual game engine instantiated object and associated HTML and JavaScript bridge to allow rendering in the browser.
 
 ## General Notes
 
 All applications are written in Visual Studio and can be launch simply by doing `Debug -> Start New Instance`.  All are fully functional in terms of sound and keyboard support.  
 
-Note that the Blazor, WinForms .NET 6 and Wpf .NET 6 projects require Visual Studio 2022 or the latest Visual Studio Code to edit and compile; otherwise it can be done via Command Line.
+Note that the Blazor, WinForms .NET 7 and Wpf .NET 7 projects require Visual Studio 2022 or the latest Visual Studio Code to edit and compile; otherwise it can be done via Command Line.
 
-Performance varies among the technologies with WinForms in .NET 6 being the clear winner for desktop and Firefox for Blazor/Web.  Wpf in .NET 6 is a close second for desktop, however, the UWP app is also quite fast and has better sound support in that more then one can play at a time, out of the box.
+Performance varies among the technologies with WinForms in .NET 7 being the clear winner for desktop and Firefox for Blazor/Web.  Wpf in .NET 7 is a close second for desktop, however, the UWP app is also quite fast and has better sound support in that more then one can play at a time, out of the box.  The new MAUI app is also quite fast and maybe even the fastest but would require a more scientific analysis to really make the call.
 
-## .NET 6 Notes
+## .NET 7 Notes
 
-All .NET 6 applications including Blazor are tested on version `6.0.400` of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
+All .NET 7 applications including Blazor are tested on version `7.0.102` of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
@@ -60,11 +62,11 @@ To run all projects in this solution requires the installation of Visual Studio 
 
 ## Xamarin Notes
 
-The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Android `10.0` VM running on my dev machine.
+The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Android `13.0` VM running on my dev machine.
 
 There is no Xamarin iOS app at this point only because Apple does not allow development on non-macs (which is what I am on) without connected hardware.  But there is no technical reason for it not to be possible.
 
-The UWP application is set to require the Windows 10 Fall Creators Update at a minimum.  This is necessary to run the latest .NET 6 and Standard versions.
+The UWP application is set to require the Windows 10 Fall Creators Update at a minimum.  This is necessary to run the latest .NET 7 and Standard versions.
 
 ## Blazor Notes
 
@@ -109,3 +111,9 @@ NOTE: Electron.NET requires node.js and npm so make sure to have them installed.
 https://nodejs.org/en/
 
 NOTE 2:  Sometimes I get an "is being used by another process" error when attempting to start from Visual Studio.  I have not been able to narrow it down but it seems to be a known issue with the package.  You can easily tell by trying to delete the obj or bin folders and getting file lock errors.  If it happens, look in Task Manager for any running instances of electron.exe.  Kill them and it should resolve.
+
+## Blazor MAUI Notes
+
+This is the most recent addition to the collection.  It was created using the Visual Studio Wizard for a Blazor MAUI project.  The Weather demo components were removed along with a general cleanup.  Then a reference to the Astorids.BlazorComponents project was made and added to the main layout.  It is very similar to how the Asterdoids.Blazor.Wasm project works.
+
+I left all of the Platform resources as is (Windows, Android, iOS, etc.).  I have only tested Windows and Android, both of which started up flawlessly.  Android used the same simiulator I had created for the Asteroids.Xamarin.Andoird project.  I didnt have an Apple developer subscription available but I image it will work with little effort.
