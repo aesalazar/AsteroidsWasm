@@ -54,7 +54,7 @@ Performance varies among the technologies with WinForms in .NET 7 being the clea
 
 ## .NET 7 Notes
 
-All .NET 7 applications including Blazor are tested on version `7.0.102` of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
+All .NET 7 applications including Blazor are tested on version `7.0.306` of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
