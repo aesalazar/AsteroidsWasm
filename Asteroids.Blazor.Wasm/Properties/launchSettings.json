@@ -16,6 +16,17 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+    "Hot Reload": {
+      "commandName": "Executable",
+      "launchBrowser": true,
+      "launchUrl": "http://localhost:5000/",
+      "commandLineArgs": "watch run",
+      "workingDirectory": "$(ProjectDir)",
+      "executablePath": "dotnet.exe",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },  
     "Asteroids.Blazor": {
       "commandName": "Project",
       "launchBrowser": true,

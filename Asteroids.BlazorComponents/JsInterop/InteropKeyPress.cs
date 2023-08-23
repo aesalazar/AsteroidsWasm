@@ -1,23 +1,68 @@
-﻿using System;
+﻿using Microsoft.JSInterop;
+using System;
 using System.Threading.Tasks;
-using Microsoft.JSInterop;
 
 namespace Asteroids.BlazorComponents.JsInterop
 {
     /// <summary>
     /// Proxy for receiving key press events from JavaScript.
     /// </summary>
-    public static class InteropKeyPress
+    public sealed class InteropKeyPress : IDisposable
     {
+        #region Constructor
+
+        /// <summary>
+        /// Creates a new instance of <see cref="InteropKeyPress"/>.
+        /// </summary>
+        /// <param name="jsRuntime">JavaScript runtime bridge.</param>
+        public InteropKeyPress(IJSRuntime jsRuntime)
+        {
+            _jsRuntime = jsRuntime;
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// JavaScript runtime bridge.
+        /// </summary>
+        private readonly IJSRuntime _jsRuntime;
+
+        /// <summary>
+        /// JavaScript reference created when registering this instance.
+        /// </summary>
+        private DotNetObjectReference<InteropKeyPress> _dotNetReference;
+
+        #endregion
+
+        #region Events
+
         /// <summary>
         /// Fires when a KeyUp message is received from JavaScript.
         /// </summary>
-        public static event EventHandler<ConsoleKey> KeyUp;
+        public event EventHandler<ConsoleKey> KeyUp;
 
         /// <summary>
         /// Fires when a KeyDown message is received from JavaScript.
         /// </summary>
-        public static event EventHandler<ConsoleKey> KeyDown;
+        public event EventHandler<ConsoleKey> KeyDown;
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Registers this instance with JavaScript.
+        /// </summary>
+        public async Task Initialize()
+        {
+            _dotNetReference = DotNetObjectReference.Create(this);
+            await _jsRuntime.InvokeVoidAsync(
+                $"{InteropConstants.JsInteropKeyPressClassName}.{InteropConstants.JsInteropRegistrationMethodName}",
+                _dotNetReference
+            );
+        }
 
         /// <summary>
         /// Called by JavaScript when a Key Down event fires.
@@ -28,7 +73,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// no equivalent is found.
         /// </returns>
         [JSInvokable]
-        public static Task<bool> JsKeyDown(int e)
+        public Task<bool> JsKeyDown(int e)
         {
             var found = false;
             var consoleKey = default(ConsoleKey);
@@ -58,7 +103,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// no equivalent is found.
         /// </returns>
         [JSInvokable]
-        public static Task<bool> JsKeyUp(int e)
+        public Task<bool> JsKeyUp(int e)
         {
             var found = false;
             var consoleKey = default(ConsoleKey);
@@ -78,5 +123,15 @@ namespace Asteroids.BlazorComponents.JsInterop
 
             return Task.FromResult(found);
         }
+
+        /// <summary>
+        /// Clears any references to JavaScript.
+        /// </summary>
+        public void Dispose()
+        {
+            _dotNetReference?.Dispose();
+        }
+
+        #endregion
     }
 }
