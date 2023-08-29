@@ -15,7 +15,7 @@ namespace Asteroids.BlazorComponents.Components
     /// Implementation of <see cref="IGraphicContainer"/> to provide rendering of 
     /// vectors and audio to the <see cref="SvgContentContainer"/>.
     /// </summary>
-    public abstract class GraphicsContainerComponent : ComponentBase, IGraphicContainer
+    public abstract class GraphicsContainerComponent : ComponentBase, IGraphicContainer, IDisposable
     {
         #region Blazor Parameters
 
@@ -52,6 +52,11 @@ namespace Asteroids.BlazorComponents.Components
         private readonly IGameController _controller;
 
         /// <summary>
+        /// Interop handler between .NET and JavaScript runtime for key press events.
+        /// </summary>
+        private InteropKeyPress _interopKeyPress;
+
+        /// <summary>
         /// Proxy to JavaScript command to draw on the main Window.
         /// </summary>
         private InteropWindow _interopWindow;
@@ -68,9 +73,6 @@ namespace Asteroids.BlazorComponents.Components
         {
             _controller = new GameController();
             _controller.SoundPlayed += OnSoundPlayed;
-
-            InteropWindow.Initialized += InteropWindow_Loaded;
-            InteropWindow.SizeChanged += InteropWindow_SizeChanged;
         }
 
         #endregion
@@ -96,6 +98,8 @@ namespace Asteroids.BlazorComponents.Components
 
             //Load the window interop in JavaScript
             _interopWindow = new InteropWindow(JsRuntime);
+            _interopWindow.Initialized += InteropWindow_Loaded;
+            _interopWindow.SizeChanged += InteropWindow_SizeChanged;
             await _interopWindow.Initialize();
 
             //Force a refresh
@@ -110,14 +114,14 @@ namespace Asteroids.BlazorComponents.Components
         /// Wires the key press handlers.
         /// </summary>
         /// <param name="drawColorMap">Collection (read-only) of <see cref="DrawColor"/> used by the game engine and associated HEX-based (HTML) color strings.</param>
-        public Task Initialize(IDictionary<DrawColor, string> drawColorMap)
+        public async Task Initialize(IDictionary<DrawColor, string> drawColorMap)
         {
-            InvokeAsync(() => ChildSvgContainer.Initialize(drawColorMap));
+            await InvokeAsync(() => ChildSvgContainer.Initialize(drawColorMap));
 
-            InteropKeyPress.KeyUp += OnKeyUp;
-            InteropKeyPress.KeyDown += OnKeyDown;
-
-            return Task.CompletedTask;
+            _interopKeyPress = new InteropKeyPress(JsRuntime);
+            await _interopKeyPress.Initialize();
+            _interopKeyPress.KeyUp += OnKeyUp;
+            _interopKeyPress.KeyDown += OnKeyDown;
         }
 
         /// <summary>
@@ -129,6 +133,29 @@ namespace Asteroids.BlazorComponents.Components
         {
             InvokeAsync(() => ChildSvgContainer.Draw(lines, polygons));
             return Task.CompletedTask;
+        }
+
+        #endregion
+
+        #region Methods
+
+        public void Dispose()
+        {
+            _controller.SoundPlayed -= OnSoundPlayed;
+        
+            if (_interopKeyPress != null )
+            {
+                _interopKeyPress.KeyUp -= OnKeyUp;
+                _interopKeyPress.KeyDown -= OnKeyDown;
+                _interopKeyPress.Dispose();
+            }
+
+            if (_interopWindow  != null )
+            {
+                _interopWindow.Initialized -= InteropWindow_Loaded;
+                _interopWindow.SizeChanged -= InteropWindow_SizeChanged;
+                _interopWindow.Dispose();
+            }
         }
 
         #endregion

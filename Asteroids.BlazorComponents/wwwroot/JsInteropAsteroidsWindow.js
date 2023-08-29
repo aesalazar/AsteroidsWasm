@@ -1,23 +1,19 @@
-﻿window.onresize = () => {
-    //Send dotnet an update
-    window.DotNet.invokeMethodAsync(
-        'Asteroids.BlazorComponents'
-        , 'UpdateWindowSize'
-        , window.innerWidth
-        , window.innerHeight
-    );
-};
-
-window.JsInteropAsteroidsWindow = {
-
-    initialize: () => {
+﻿window.jsInteropWindow = {
+    registerDotNetInterop: function (dotNetReference) {
+        window.onresize = function () {
+            //Send dotnet an update
+            dotNetReference.invokeMethodAsync(
+                'JsUpdateWindowSize'
+                , window.innerWidth
+                , window.innerHeight
+            );
+        };
 
         //let dotnet know it is ready
-        window.DotNet.invokeMethodAsync(
-            'Asteroids.BlazorComponents'
-            , 'WindowInitialized'
+        dotNetReference.invokeMethodAsync(
+            'JsWindowInitialized'
             , window.innerWidth
             , window.innerHeight
         );
     }
-};
+}

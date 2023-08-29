@@ -14,6 +14,8 @@ namespace Asteroids.BlazorComponents.JsInterop
     /// </summary>
     public sealed class InteropSounds
     {
+        #region Constructor
+
         /// <summary>
         /// Creates a new instance of <see cref="InteropSounds"/>.
         /// </summary>
@@ -22,26 +24,17 @@ namespace Asteroids.BlazorComponents.JsInterop
         {
             _jsRuntime = jsRuntime;
         }
+    
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// JavaScript runtime bridge.
         /// </summary>
         private readonly IJSRuntime _jsRuntime;
 
-        /// <summary>
-        /// JavaScript method container name.
-        /// </summary>
-        private const string JsAsteroidsSound = nameof(JsAsteroidsSound);
-
-        /// <summary>
-        /// JavaScript method to call when sounds are to be loaded.
-        /// </summary>
-        private const string loadSounds = nameof(loadSounds);
-
-        /// <summary>
-        /// JavaScript method to call when a sound is to be played.
-        /// </summary>
-        private const string play = nameof(play);
+        #endregion
 
         #region Public Methods
 
@@ -61,7 +54,7 @@ namespace Asteroids.BlazorComponents.JsInterop
 
             //Index in the collection will be the map
             return await _jsRuntime.InvokeAsync<bool>(
-                $"{JsAsteroidsSound}.{loadSounds}"
+                $"{InteropConstants.JsInteropSoundsClassName}.{InteropConstants.JsInteropRegistrationMethodName}"
                 , sounds
             );
         }
@@ -75,7 +68,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         {
             //Returns null so use object type
             return await _jsRuntime.InvokeAsync<bool>(
-                $"{JsAsteroidsSound}.{play}"
+                $"{InteropConstants.JsInteropSoundsClassName}.{InteropConstants.JsInteropSoundsPlayMethodName}"
                 , sound
             );
         }
