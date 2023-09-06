@@ -15,6 +15,13 @@ namespace Asteroids.WinForms.Classes
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
         private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
 
+        public GraphicPictureBox()
+        {
+            _colorCache = new Dictionary<DrawColor, Pen>();
+            _lastLines = new List<IGraphicLine>();
+            _lastPolygons = new List<IGraphicPolygon>();
+        }
+
         public Task Initialize(IDictionary<DrawColor, string> drawColorMap)
         {
             _colorCache = new ReadOnlyDictionary<DrawColor, Pen>(
@@ -37,7 +44,7 @@ namespace Asteroids.WinForms.Classes
 
         }
 
-        private void OnPaint(object sender, PaintEventArgs e)
+        private void OnPaint(object? _, PaintEventArgs e)
         {
             foreach (var line in _lastLines)
                 e.Graphics.DrawLine(_colorCache[line.Color], line.Point1, line.Point2);

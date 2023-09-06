@@ -31,8 +31,11 @@ namespace Asteroids.Standard.Managers
 
         #region Drawing Primatives
 
-        private void DrawPolygon(IList<Point> points, DrawColor color = DrawColor.White)
+        private void DrawPolygon(IList<Point>? points, DrawColor color = DrawColor.White)
         {
+            if (points == null || !points.Any())
+                return;
+
             _canvas.LoadPolygon(points, color);
         }
 
@@ -62,13 +65,13 @@ namespace Asteroids.Standard.Managers
         /// </summary>
         private void DrawShip()
         {
-            if (!_cache.Ship.IsAlive)
+            if (_cache.Ship?.IsAlive != true)
                 return;
 
             DrawPolygon(_cache.ShipPoints);
 
             //Draw flame if thrust is on
-            if (_cache.Ship.IsThrustOn)
+            if (_cache.Ship.IsThrustOn && _cache.ShipPoints != null)
             {
                 // We have points transformed so we know where the bottom of the ship is
                 var thrustPoints = new List<Point>
@@ -108,7 +111,7 @@ namespace Asteroids.Standard.Managers
             DrawPolygon(_cache.SaucerPoints);
 
             //Draw its missile
-            if (_cache.MissilePoints?.Any() != true)
+            if (_cache.Saucer.Missile == null || _cache.MissilePoints?.Any() != true)
                 return;
 
             DrawPolygon(_cache.MissilePoints);

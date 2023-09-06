@@ -3,6 +3,9 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <Description>Asteroids.Standard running as Blazor Server.</Description>
+	<Nullable>enable</Nullable>
+	<LangVersion>11</LangVersion>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

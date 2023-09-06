@@ -22,7 +22,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Child <see cref="SvgContentContainer"/> to draw into.
         /// </summary>
-        protected SvgContentContainer ChildSvgContainer;
+        protected SvgContentContainer? ChildSvgContainer { get; set; }
 
         /// <summary>
         /// Available width in the current window for the main container.
@@ -40,7 +40,7 @@ namespace Asteroids.BlazorComponents.Components
         /// JavaScript runtime bridge to provide to proxies.
         /// </summary>
         [Inject]
-        protected IJSRuntime JsRuntime { get; set; }
+        protected IJSRuntime? JsRuntime { get; set; }
         
         #endregion
 
@@ -54,17 +54,17 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Interop handler between .NET and JavaScript runtime for key press events.
         /// </summary>
-        private InteropKeyPress _interopKeyPress;
+        private readonly InteropKeyPress _interopKeyPress;
 
         /// <summary>
         /// Proxy to JavaScript command to draw on the main Window.
         /// </summary>
-        private InteropWindow _interopWindow;
+        private readonly InteropWindow _interopWindow;
 
         /// <summary>
         /// Proxy to JavaScript sound collection.
         /// </summary>
-        private InteropSounds _interopSounds;
+        private readonly InteropSounds _interopSounds;
 
         /// <summary>
         /// Creates new instance of <see cref="GraphicsContainerComponent"/>.
@@ -72,7 +72,9 @@ namespace Asteroids.BlazorComponents.Components
         public GraphicsContainerComponent()
         {
             _controller = new GameController();
-            _controller.SoundPlayed += OnSoundPlayed;
+            _interopKeyPress = new InteropKeyPress();
+            _interopSounds = new InteropSounds();
+            _interopWindow = new InteropWindow();
         }
 
         #endregion
@@ -90,17 +92,18 @@ namespace Asteroids.BlazorComponents.Components
             if (!firstRender)
                 return;
 
-            //Load the sound interop in JavaScript
-            _interopSounds = new InteropSounds(JsRuntime);
+            if (JsRuntime == null)
+                throw new ArgumentNullException(nameof(JsRuntime));
 
-            if (!await _interopSounds.Initialize(_controller.ActionSounds))
+            //Load the sound interop in JavaScript
+            _controller.SoundPlayed += OnSoundPlayed;
+            if (!await _interopSounds.Initialize(JsRuntime, _controller.ActionSounds))
                 Console.WriteLine($"ERROR '{nameof(InteropSounds)}': Could not initialize sounds in JavaScript.");
 
             //Load the window interop in JavaScript
-            _interopWindow = new InteropWindow(JsRuntime);
             _interopWindow.Initialized += InteropWindow_Loaded;
             _interopWindow.SizeChanged += InteropWindow_SizeChanged;
-            await _interopWindow.Initialize();
+            await _interopWindow.Initialize(JsRuntime);
 
             //Force a refresh
             await InvokeAsync(StateHasChanged);
@@ -116,10 +119,14 @@ namespace Asteroids.BlazorComponents.Components
         /// <param name="drawColorMap">Collection (read-only) of <see cref="DrawColor"/> used by the game engine and associated HEX-based (HTML) color strings.</param>
         public async Task Initialize(IDictionary<DrawColor, string> drawColorMap)
         {
+            if (JsRuntime == null)
+                throw new TypeInitializationException(GetType().Name, new NullReferenceException(nameof(JsRuntime)));
+            if (ChildSvgContainer == null)
+                throw new TypeInitializationException(GetType().Name, new NullReferenceException(nameof(ChildSvgContainer)));
+
             await InvokeAsync(() => ChildSvgContainer.Initialize(drawColorMap));
 
-            _interopKeyPress = new InteropKeyPress(JsRuntime);
-            await _interopKeyPress.Initialize();
+            await _interopKeyPress.Initialize(JsRuntime);
             _interopKeyPress.KeyUp += OnKeyUp;
             _interopKeyPress.KeyDown += OnKeyDown;
         }
@@ -131,7 +138,9 @@ namespace Asteroids.BlazorComponents.Components
         /// <param name="polygons">Collection of <see cref="IGraphicPolygon"/>.</param>
         public Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
-            InvokeAsync(() => ChildSvgContainer.Draw(lines, polygons));
+            if (ChildSvgContainer != null)
+                InvokeAsync(() => ChildSvgContainer.Draw(lines, polygons));
+
             return Task.CompletedTask;
         }
 
@@ -143,19 +152,13 @@ namespace Asteroids.BlazorComponents.Components
         {
             _controller.SoundPlayed -= OnSoundPlayed;
         
-            if (_interopKeyPress != null )
-            {
-                _interopKeyPress.KeyUp -= OnKeyUp;
-                _interopKeyPress.KeyDown -= OnKeyDown;
-                _interopKeyPress.Dispose();
-            }
+            _interopKeyPress.KeyUp -= OnKeyUp;
+            _interopKeyPress.KeyDown -= OnKeyDown;
+            _interopKeyPress.Dispose();
 
-            if (_interopWindow  != null )
-            {
-                _interopWindow.Initialized -= InteropWindow_Loaded;
-                _interopWindow.SizeChanged -= InteropWindow_SizeChanged;
-                _interopWindow.Dispose();
-            }
+            _interopWindow.Initialized -= InteropWindow_Loaded;
+            _interopWindow.SizeChanged -= InteropWindow_SizeChanged;
+            _interopWindow.Dispose();
         }
 
         #endregion
@@ -165,7 +168,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Initializes the <see cref="IGameController"/>.
         /// </summary>
-        private async void InteropWindow_Loaded(object sender, Rectangle e)
+        private async void InteropWindow_Loaded(object? _, Rectangle e)
         {
             ElementWidth = e.Width;
             ElementHeight = e.Height;
@@ -176,7 +179,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Resizes the <see cref="IGameController"/>.
         /// </summary>
-        private void InteropWindow_SizeChanged(object sender, Rectangle e)
+        private void InteropWindow_SizeChanged(object? _, Rectangle e)
         {
             ElementWidth = e.Width;
             ElementHeight = e.Height;
@@ -192,7 +195,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Sends the equivalent <see cref="PlayKey"/> from a Key Down event to the <see cref="IGameController"/>.
         /// </summary>
-        private void OnKeyDown(object sender, ConsoleKey e)
+        private void OnKeyDown(object? _, ConsoleKey e)
         {
             PlayKey key;
             switch (e)
@@ -240,7 +243,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Sends the equivalent <see cref="PlayKey"/> from a Key Up event to the <see cref="IGameController"/>.
         /// </summary>
-        private void OnKeyUp(object sender, ConsoleKey e)
+        private void OnKeyUp(object? _, ConsoleKey e)
         {
             PlayKey key;
             switch (e)
@@ -287,7 +290,7 @@ namespace Asteroids.BlazorComponents.Components
         /// <summary>
         /// Handles playing of <see cref="ActionSound"/>s.
         /// </summary>
-        private async void OnSoundPlayed(object sender, ActionSound sound)
+        private async void OnSoundPlayed(object? _, ActionSound sound)
         {
             if (!await _interopSounds.Play(sound))
                 Console.WriteLine($"ERROR '{nameof(InteropSounds)}':Could not play sound: {sound}");

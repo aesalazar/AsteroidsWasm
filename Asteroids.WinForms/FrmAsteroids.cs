@@ -17,11 +17,13 @@ namespace Asteroids.WinForms
 
         private readonly IGameController _controller;
         private readonly IDictionary<ActionSound, SoundPlayer> _soundPlayers;
-        private SoundPlayer _soundPlaying;
+        private SoundPlayer? _soundPlaying;
 
         public FrmAsteroids()
         {
             InitializeComponent();
+            if (_frame1  == null) 
+                throw new NullReferenceException();
 
             _controller = new GameController();
             _controller.SoundPlayed += OnSoundPlayed;
@@ -37,12 +39,14 @@ namespace Asteroids.WinForms
                 player.Value.Load();
         }
 
-        private void OnSoundPlayed(object sender, ActionSound sound)
+        private void OnSoundPlayed(object? _, ActionSound sound)
         {
             if (_soundPlaying != null)
                 return;
 
             _soundPlaying = _soundPlayers[sound];
+            if (_soundPlaying.Stream == null) 
+                return;
 
             Task.Factory.StartNew(() =>
             {
@@ -63,7 +67,7 @@ namespace Asteroids.WinForms
             _controller.ResizeGame(rec);
         }
 
-        private async void frmAsteroids_Activated(object sender, EventArgs e)
+        private async void frmAsteroids_Activated(object? _, EventArgs e)
         {
             Activated -= frmAsteroids_Activated;
             var rec = new Rectangle(0, 0, ClientSize.Width, ClientSize.Height);

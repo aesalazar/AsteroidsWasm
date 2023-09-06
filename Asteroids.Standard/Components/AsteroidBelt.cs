@@ -11,13 +11,15 @@ namespace Asteroids.Standard.Components
         private readonly object _updateAsteroidsLock;
         private IList<Asteroid> _asteroids;
 
-        public AsteroidBelt(int iNumAsteroids) : this(iNumAsteroids, Asteroid.AsteroidSize.Large)
+        public AsteroidBelt(int iNumAsteroids) 
+            : this(iNumAsteroids, Asteroid.AsteroidSize.Large)
         {
         }
 
         public AsteroidBelt(int iNumAsteroids, Asteroid.AsteroidSize iMinSize)
         {
             _updateAsteroidsLock = new object();
+            _asteroids = new List<Asteroid>();
             StartBelt(iNumAsteroids, iMinSize);
         }
 

@@ -17,7 +17,7 @@ namespace Asteroids.Wpf.Classes
     /// </summary>
     internal sealed class GraphicContainer : Image, IGraphicContainer, IDisposable
     {
-        private readonly Dispatcher _mainDispatcher = Dispatcher.CurrentDispatcher;
+        private readonly Dispatcher _mainDispatcher;
         private IDictionary<DrawColor, Color> _colorCache;
         private WriteableBitmap _bitmap;
 
@@ -26,6 +26,9 @@ namespace Asteroids.Wpf.Classes
         /// </summary>
         public GraphicContainer()
         {
+            _mainDispatcher = Dispatcher.CurrentDispatcher;
+            _colorCache = new Dictionary<DrawColor, Color>();
+            _bitmap = BitmapFactory.New(0, 0);
             SizeChanged += OnSizeChanged;
         }
 
@@ -58,7 +61,6 @@ namespace Asteroids.Wpf.Classes
             );
 
             //Since the control has no size yet simply draw a size bitmap
-            _bitmap = BitmapFactory.New(0, 0);
             Source = _bitmap;
             return Task.CompletedTask;
         }

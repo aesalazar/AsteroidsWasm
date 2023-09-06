@@ -111,8 +111,7 @@ namespace Asteroids.Xamarin
             {
                 var player = _soundPlayers[e];
                 player.Play();
-            }
-            );
+            });
         }
             
         #endregion

@@ -20,8 +20,8 @@ namespace Asteroids.Standard.Screen
     {
         private readonly object _updatePointsLock;
         private readonly object _updatePolysLock;
-        private readonly IList<Tuple<Point[], DrawColor>> _points;
-        private readonly IList<Tuple<Point[], DrawColor>> _polys;
+        private readonly IList<(Point[], DrawColor)> _points;
+        private readonly IList<(Point[], DrawColor)> _polys;
 
         private Point _lastPoint;
         private DrawColor _lastPen;
@@ -36,8 +36,8 @@ namespace Asteroids.Standard.Screen
 
             _updatePointsLock = new object();
             _updatePolysLock = new object();
-            _points = new List<Tuple<Point[], DrawColor>>();
-            _polys = new List<Tuple<Point[], DrawColor>>();
+            _points = new List<(Point[], DrawColor)>();
+            _polys = new List<(Point[], DrawColor)>();
 
             //Set in case a call to add to end is made prior to creating a line
             _lastPoint = new Point(0, 0);
@@ -66,28 +66,26 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public async Task Draw(IGraphicContainer container)
         {
-            var pts = new List<Tuple<Point[], DrawColor>>();
+            var pts = new List<(Point[], DrawColor)>();
             lock (_updatePointsLock)
                 pts.AddRange(_points);
 
-            var polys = new List<Tuple<Point[], DrawColor>>();
+            var polys = new List<(Point[], DrawColor)>();
             lock (_updatePolysLock)
                 polys.AddRange(_polys);
 
             //Send lines
-            var glines = pts.Select(tuple => new GraphicLine
+            var glines = pts.Select(a => new GraphicLine
             {
-                Color = tuple.Item2,
-                Point1 = tuple.Item1[0],
-                Point2 = tuple.Item1[1]
+                Color = a.Item2,
+                Point1 = a.Item1[0],
+                Point2 = a.Item1[1]
             }).ToList();
 
             //Send polygons
-            var gpolys = polys.Select(tuple => new GraphicPolygon
-            {
-                Color = tuple.Item2,
-                Points = tuple.Item1
-            }).ToList();
+            var gpolys = polys
+                .Select(a => new GraphicPolygon(a.Item2, a.Item1))
+                .ToList();
 
             await container.Draw(glines, gpolys);
         }
@@ -102,7 +100,7 @@ namespace Asteroids.Standard.Screen
 
             var pts = new [] { ptStart, ptEnd };
             lock (_updatePointsLock)
-                _points.Add(new Tuple<Point[], DrawColor>(pts, penColor));
+                _points.Add((pts, penColor));
         }
 
         /// <summary>
@@ -131,7 +129,7 @@ namespace Asteroids.Standard.Screen
         public void AddPolygon(Point[] polygonPoints, DrawColor penColor)
         {
             lock (_updatePolysLock)
-                _polys.Add(new Tuple<Point[], DrawColor>(polygonPoints, penColor));
+                _polys.Add((polygonPoints, penColor));
         }
 
         /// <summary>

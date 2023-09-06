@@ -37,6 +37,7 @@ namespace Asteroids.Standard.Screen
         {
             _textManager = textManager;
             _canvas = canvas;
+            _title = string.Empty;
 
             InitTitleScreen();
 

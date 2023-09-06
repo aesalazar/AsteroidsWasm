@@ -8,6 +8,9 @@
       https://dotnet.myget.org/F/blazor-dev/api/v3/index.json;
     </RestoreAdditionalProjectSources>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+	<Nullable>enable</Nullable>
+	<LangVersion>11</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>

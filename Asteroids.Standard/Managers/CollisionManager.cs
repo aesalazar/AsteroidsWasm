@@ -170,8 +170,9 @@ namespace Asteroids.Standard.Managers
             {
                 _cache.Score.AddScore(Saucer.KillScore);
 
-                foreach (var explosion in _cache.Saucer.Explode())
-                    _cache.AddExplosion(explosion);
+                if (_cache.Saucer != null)
+                    foreach (var explosion in _cache.Saucer.Explode())
+                        _cache.AddExplosion(explosion);
             }
 
             return saucerHit;
@@ -194,7 +195,7 @@ namespace Asteroids.Standard.Managers
 
             var missileHit = polygonPoints.ContainsAnyPoint(_cache.MissilePoints);
 
-            if (missileHit)
+            if (missileHit && _cache.Saucer?.Missile != null)
                 foreach (var explosion in _cache.Saucer.Missile.Explode())
                     _cache.AddExplosion(explosion);
 

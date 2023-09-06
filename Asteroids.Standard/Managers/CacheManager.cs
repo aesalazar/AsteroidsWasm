@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using Asteroids.Standard.Components;
@@ -17,17 +18,20 @@ namespace Asteroids.Standard.Managers
         /// <summary>
         /// Create a new instance of <see cref="CacheManager"/>.
         /// </summary>
-        public CacheManager(ScoreManager score, Ship ship, AsteroidBelt belt, IList<Bullet> bullets)
+        public CacheManager(ScoreManager score, Ship? ship, AsteroidBelt belt, IList<Bullet> bullets)
         {
             Score = score;
             Ship = ship;
             Belt = belt;
+            _bullets = bullets;
+
+            _bulletLock = new object();
+            _explosionLock = new object();
 
             _explosions = new List<Explosion>();
-
-            _bullets = bullets;
             _bulletsInFlight = new List<CachedObject<Bullet>>();
             _bulletsAvailable = new List<CachedObject<Bullet>>();
+            Asteroids = new List<CachedObject<Asteroid>>();
 
             Repopulate();
         }
@@ -37,8 +41,8 @@ namespace Asteroids.Standard.Managers
         #region Objects
 
         //Read-only
-        private readonly object _bulletLock = new object();
-        private readonly object _explosionLock = new object();
+        private readonly object _bulletLock;
+        private readonly object _explosionLock;
 
         private readonly IList<Explosion> _explosions;
         private readonly IList<Bullet> _bullets;
@@ -47,16 +51,40 @@ namespace Asteroids.Standard.Managers
 
         public ScoreManager Score { get; }
 
-        //Live and die
-        public Ship Ship { get; private set; }
-        public Saucer Saucer { get; private set; }
+        /// <summary>
+        /// Main Ship; <see langword=""="null"/> if it does not currently exist.
+        /// </summary>
+        public Ship? Ship { get; private set; }
+
+        /// <summary>
+        /// Attacking Saucer; <see langword=""="null"/> if it does not currently exist.
+        /// </summary>
+        public Saucer? Saucer { get; private set; }
+
+        /// <summary>
+        /// Belt for <see cref="Asteroid"/>s.
+        /// </summary>
         public AsteroidBelt Belt { get; private set; }
 
-        //Optimize to avoid repeat traversal
+        /// <summary>
+        /// Collection of cached <see cref="Asteroid"/>s with parameters cached for optimization. 
+        /// </summary>
         public IList<CachedObject<Asteroid>> Asteroids { get; private set; }
-        public IList<Point> SaucerPoints { get; private set; }
-        public IList<Point> MissilePoints { get; private set; }
-        public IList<Point> ShipPoints { get; private set; }
+
+        /// <summary>
+        /// Collection of points associated with the <see cref="Saucer"/>, if present.
+        /// </summary>
+        public IList<Point>? SaucerPoints { get; private set; }
+
+        /// <summary>
+        /// Collection of points associated with the <see cref="Missile"/>, if present.
+        /// </summary>
+        public IList<Point>? MissilePoints { get; private set; }
+
+        /// <summary>
+        /// Collection of points associated with the <see cref="Ship"/>, if present.
+        /// </summary>
+        public IList<Point>? ShipPoints { get; private set; }
 
         #endregion
 
@@ -93,7 +121,7 @@ namespace Asteroids.Standard.Managers
         /// <summary>
         /// Updates the Ship cache.
         /// </summary>
-        public void UpdateShip(Ship ship)
+        public void UpdateShip(Ship? ship)
         {
             Ship = ship;
 
@@ -105,7 +133,7 @@ namespace Asteroids.Standard.Managers
         /// <summary>
         /// Updates both the saucer and missile cache.
         /// </summary>
-        public void UpdateSaucer(Saucer saucer)
+        public void UpdateSaucer(Saucer? saucer)
         {
             Saucer = saucer;
 
@@ -121,23 +149,13 @@ namespace Asteroids.Standard.Managers
         }
 
         /// <summary>
-        /// Updates the missile cache.
-        /// </summary>
-        public void UpdateMissile(Missile missile)
-        {
-            MissilePoints = missile?.IsAlive == true
-                ? missile.GetPoints()
-                : null;
-        }
-
-        /// <summary>
         /// Updates the <see cref="AsteroidBelt"/> and cached <see cref="Asteroids"/>.
         /// </summary>
         public void UpdateBelt(AsteroidBelt belt)
         {
             Belt = belt;
 
-            Asteroids = Belt?
+            Asteroids = Belt
                 .GetAsteroids()
                 .Select(a => new CachedObject<Asteroid>(a))
                 .ToList();
@@ -161,6 +179,16 @@ namespace Asteroids.Standard.Managers
         {
             Asteroids.RemoveAt(index);
             Belt.SetAsteroids(Asteroids.Select(c => c.ScreenObject).ToList());
+        }
+
+        /// <summary>
+        /// Updates the missile cache.
+        /// </summary>
+        private void UpdateMissile(Missile? missile)
+        {
+            MissilePoints = missile?.IsAlive == true
+                ? missile.GetPoints()
+                : null;
         }
 
         #endregion
