@@ -23,9 +23,9 @@ function b64toBlob(b64Data, contentType, sliceSize) {
     return new Blob(byteArrays, { type: contentType });
 }
 
-window.JsAsteroidsSound = {
+window.jsInteropSounds = {
 
-    loadSounds: function(sounds) {
+    registerDotNetInterop: function(sounds) {
         try {
             sounds.forEach((str64, idx) => {
                 const blob = b64toBlob(str64, "audio/wav");
