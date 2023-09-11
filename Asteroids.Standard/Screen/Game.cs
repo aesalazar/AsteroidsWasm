@@ -114,7 +114,7 @@ namespace Asteroids.Standard.Screen
                 // get a new one - or end the game
                 var noExplosions = _cache.ExplosionCount() == 0;
 
-                if (!_cache.Ship.IsAlive && noExplosions)
+                if (_cache.Ship?.IsAlive != true && noExplosions)
                 {
                     if (!_score.HasReserveShips())
                     {
@@ -133,15 +133,15 @@ namespace Asteroids.Standard.Screen
                     _cache.UpdateBelt(new AsteroidBelt(++_currentLevel));
 
                 // Move all objects starting with the ship
-                _cache.Ship.Move();
+                _cache.Ship?.Move();
 
                 //Move the saucer and its missile
                 if (_cache.Saucer != null)
                 {
                     if (_cache.Saucer.Move())
                     {
-                        //Aim for the ship oe nothing
-                        var target = _cache.Ship.IsAlive
+                        //Aim for the ship or nothing
+                        var target = _cache.Ship?.IsAlive == true
                             ? _cache.Ship.GetCurrentLocation()
                             : default(Point?);
 
@@ -175,7 +175,7 @@ namespace Asteroids.Standard.Screen
                 }
 
                 // Check ship for collisions
-                if (_cache.Ship.IsAlive)
+                if (_cache.Ship?.IsAlive == true && _cache.ShipPoints != null)
                 {
                     var shipPoints = _cache.ShipPoints;
 
@@ -224,17 +224,12 @@ namespace Asteroids.Standard.Screen
         #region Ship Controls
 
         /// <summary>
-        /// Indicates if <see cref="CacheManager.Ship"/> is considered active (alive and not paused).
-        /// </summary>
-        private bool IsShipActive => !_paused && _cache.Ship.IsAlive;
-
-        /// <summary>
         /// Moves the <see cref="Ship"/> if active.
         /// </summary>
         /// <param name="showThrust">Indication if <see cref="Ship.Thrust"/> should also be called.</param>
         public void Thrust(bool showThrust)
         {
-            if (!IsShipActive)
+            if (_paused || _cache.Ship?.IsAlive != true)
                 return;
 
             _cache.Ship.DecayThrust();
@@ -248,8 +243,10 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public void Left()
         {
-            if (IsShipActive)
-                _cache.Ship.RotateLeft();
+            if (_paused || _cache.Ship?.IsAlive != true)
+                return;
+
+            _cache.Ship.RotateLeft();
         }
 
         /// <summary>
@@ -257,8 +254,10 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public void Right()
         {
-            if (IsShipActive)
-                _cache.Ship.RotateRight();
+            if (_paused || _cache.Ship?.IsAlive != true)
+                return;
+
+            _cache.Ship.RotateRight();
         }
 
         /// <summary>
@@ -266,7 +265,7 @@ namespace Asteroids.Standard.Screen
         /// </summary>
         public void Hyperspace()
         {
-            if (!IsShipActive)
+            if (_paused || _cache.Ship?.IsAlive != true)
                 return;
 
             if (!_cache.Ship.Hyperspace())
@@ -281,7 +280,7 @@ namespace Asteroids.Standard.Screen
             if (_paused)
                 return;
 
-            if (_cache.Ship.IsAlive)
+            if (_cache.Ship?.IsAlive == true)
             {
                 //Fire bullets that are not already moving
                 foreach (var bullet in _cache.GetBulletsAvailable())

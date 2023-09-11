@@ -6,7 +6,7 @@ namespace Asteroids.WinForms
 {
     internal static class Program
     {
-        private static FrmAsteroids _mainForm;
+        private static FrmAsteroids? _mainForm;
 
         /// <summary>
         /// The main entry point for the application.
@@ -23,9 +23,9 @@ namespace Asteroids.WinForms
             Application.ApplicationExit += OnApplicationExit;
         }
 
-        private static void OnApplicationExit(object sender, EventArgs e)
+        private static void OnApplicationExit(object? _, EventArgs __)
         {
-            _mainForm.Dispose();
+            _mainForm?.Dispose();
         }
     }
 }

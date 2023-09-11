@@ -13,10 +13,9 @@ namespace Asteroids.Xamarin.Classes
 {
     internal sealed class GraphicsContainer : SKCanvasView, IGraphicContainer, IRegisterable
     {
-        private IDictionary<DrawColor, SKColor> _colorCache;
+        private IDictionary<DrawColor, SKColor> _colorCache = new Dictionary<DrawColor, SKColor>();
         private IEnumerable<IGraphicLine> _lastLines = new List<IGraphicLine>();
         private IEnumerable<IGraphicPolygon> _lastPolygons = new List<IGraphicPolygon>();
-
 
         public Task Initialize(IDictionary<DrawColor, string> drawColorMap)
         {
@@ -62,11 +61,11 @@ namespace Asteroids.Xamarin.Classes
 
             foreach (var gpoly in _lastPolygons)
             {
-                   var paint = new SKPaint
+                var paint = new SKPaint
                 {
                     Color = _colorCache[gpoly.Color],
                     IsStroke = true,
-                };
+                }; 
 
                 var path = new SKPath();
                 path.AddPoly(gpoly.Points.Select(p => new SKPoint(p.X, p.Y)).ToArray());

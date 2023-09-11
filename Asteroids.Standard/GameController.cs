@@ -33,6 +33,7 @@ namespace Asteroids.Standard
             _textManager = new TextManager(_screenCanvas);
             _scoreManager = new ScoreManager(_textManager);
             _currentTitle = new TitleScreen(_textManager, _screenCanvas);
+            _game = new Game(_scoreManager, _textManager, _screenCanvas);
         }
 
         public async Task Initialize(IGraphicContainer container, Rectangle frameRectangle)
@@ -55,7 +56,7 @@ namespace Asteroids.Standard
 
         private const double TimerInterval = 1000 / ScreenCanvas.FramesPerSecond;
 
-        private IGraphicContainer _container;
+        private IGraphicContainer? _container;
         private Rectangle _frameRectangle;
 
         private bool _lastDrawn;
@@ -74,7 +75,7 @@ namespace Asteroids.Standard
         private bool _shootingLastPressed;
         private bool _pauseLastPressed;
 
-        private Timer _timerFlip;
+        private Timer? _timerFlip;
 
         #endregion
 
@@ -97,7 +98,7 @@ namespace Asteroids.Standard
         /// <summary>
         /// Fires when the game calculation results in a sound stored in <see cref="ActionSounds"/> to be played by UI.
         /// </summary>
-        public event EventHandler<ActionSound> SoundPlayed;
+        public event EventHandler<ActionSound>? SoundPlayed;
 
         #endregion
 
@@ -243,6 +244,9 @@ namespace Asteroids.Standard
 
         private async Task Repaint()
         {
+            if (_container == null)
+                throw new TypeInitializationException(GetType().Name, new NullReferenceException(nameof(_container)));
+
             // Only allow the canvas to be drawn once if there is an invalidate, it's ok, the other canvas will soon be drawn
             if (_lastDrawn)
                 return;

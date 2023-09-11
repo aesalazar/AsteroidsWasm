@@ -9,30 +9,12 @@ namespace Asteroids.BlazorComponents.JsInterop
     /// </summary>
     public sealed class InteropKeyPress : IDisposable
     {
-        #region Constructor
-
-        /// <summary>
-        /// Creates a new instance of <see cref="InteropKeyPress"/>.
-        /// </summary>
-        /// <param name="jsRuntime">JavaScript runtime bridge.</param>
-        public InteropKeyPress(IJSRuntime jsRuntime)
-        {
-            _jsRuntime = jsRuntime;
-        }
-
-        #endregion
-
         #region Properties
-
-        /// <summary>
-        /// JavaScript runtime bridge.
-        /// </summary>
-        private readonly IJSRuntime _jsRuntime;
 
         /// <summary>
         /// JavaScript reference created when registering this instance.
         /// </summary>
-        private DotNetObjectReference<InteropKeyPress> _dotNetReference;
+        private DotNetObjectReference<InteropKeyPress>? _dotNetReference;
 
         #endregion
 
@@ -41,12 +23,12 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <summary>
         /// Fires when a KeyUp message is received from JavaScript.
         /// </summary>
-        public event EventHandler<ConsoleKey> KeyUp;
+        public event EventHandler<ConsoleKey>? KeyUp;
 
         /// <summary>
         /// Fires when a KeyDown message is received from JavaScript.
         /// </summary>
-        public event EventHandler<ConsoleKey> KeyDown;
+        public event EventHandler<ConsoleKey>? KeyDown;
 
         #endregion
 
@@ -55,10 +37,12 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <summary>
         /// Registers this instance with JavaScript.
         /// </summary>
-        public async Task Initialize()
+        /// <param name="jsRuntime">JavaScript runtime to hook into.</param>
+        public async Task Initialize(IJSRuntime jSRuntime)
         {
             _dotNetReference = DotNetObjectReference.Create(this);
-            await _jsRuntime.InvokeVoidAsync(
+
+            await jSRuntime.InvokeVoidAsync(
                 $"{InteropConstants.JsInteropKeyPressClassName}.{InteropConstants.JsInteropRegistrationMethodName}",
                 _dotNetReference
             );

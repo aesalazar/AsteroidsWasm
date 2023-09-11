@@ -32,7 +32,7 @@ namespace Asteroids.Standard.Components
         /// <summary>
         /// Guided <see cref="Missile"/> for targeting a <see cref="Ship"/>.
         /// </summary>
-        public Missile Missile { get; private set; }
+        public Missile? Missile { get; private set; }
 
         /// <summary>
         /// Populates the base template collection of points to draw.
@@ -66,10 +66,12 @@ namespace Asteroids.Standard.Components
         /// Moves <see cref="Missile"/> towards the <see cref="target"/>.
         /// </summary>
         /// <param name="target">
-        /// <see cref="Point"/> to target; <see langword="null"/> moves <see cref="Missile"/> forward.</param>
+        /// <see cref="Point"/> to target; <see langword="null"/> moves <see cref="Missile"/> forward.
+        /// </param>
         public void Target(Point? target)
         {
-            var isMissile = Missile?.IsAlive == true;
+            Missile ??= new Missile(this);
+            var isMissile = Missile.IsAlive == true;
 
             if (target.HasValue)
             {

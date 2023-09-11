@@ -10,21 +10,7 @@ namespace Asteroids.BlazorComponents.JsInterop
     /// </summary>
     public sealed class InteropWindow : IDisposable
     {
-        /// <summary>
-        /// Creates a new instance of <see cref="InteropWindow"/>.
-        /// </summary>
-        /// <param name="jsRuntime">JavaScript runtime bridge.</param>
-        public InteropWindow(IJSRuntime jsRuntime)
-        {
-            _jsRuntime = jsRuntime;
-        }
-
         #region Properties
-
-        /// <summary>
-        /// JavaScript runtime bridge.
-        /// </summary>
-        private readonly IJSRuntime _jsRuntime;
 
         /// <summary>
         /// JavaScript method container name.
@@ -39,7 +25,7 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <summary>
         /// JavaScript reference created when registering this instance.
         /// </summary>
-        private DotNetObjectReference<InteropWindow> _dotNetReference;
+        private DotNetObjectReference<InteropWindow>? _dotNetReference;
 
         #endregion
 
@@ -48,11 +34,11 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <summary>
         /// Call JavaScript to prep the Window.
         /// </summary>
-        public async Task Initialize()
+        public async Task Initialize(IJSRuntime jSRuntime)
         {
             _dotNetReference = DotNetObjectReference.Create(this);
             
-            await _jsRuntime.InvokeVoidAsync(
+            await jSRuntime.InvokeVoidAsync(
                 $"{InteropConstants.JsInteropWindowClassName}.{InteropConstants.JsInteropRegistrationMethodName}",
                 _dotNetReference
             );
@@ -73,12 +59,12 @@ namespace Asteroids.BlazorComponents.JsInterop
         /// <summary>
         /// Fires when the Window in ready in JavaScript.
         /// </summary>
-        public event EventHandler<Rectangle> Initialized;
+        public event EventHandler<Rectangle>? Initialized;
 
         /// <summary>
         /// Fires when the Window is resized in JavaScript.
         /// </summary>
-        public event EventHandler<Rectangle> SizeChanged;
+        public event EventHandler<Rectangle>? SizeChanged;
 
         /// <summary>
         /// Called from JavaScript when the Window is resized.

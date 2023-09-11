@@ -16,7 +16,7 @@ namespace Asteroids.Wpf
     {
         private readonly IGameController _controller;
         private readonly IDictionary<ActionSound, SoundPlayer> _soundPlayers;
-        private SoundPlayer _soundPlaying;
+        private SoundPlayer? _soundPlaying;
 
         public MainWindow()
         {
@@ -37,12 +37,14 @@ namespace Asteroids.Wpf
             _controller.SoundPlayed += OnSoundPlayed;
         }
 
-        private void OnSoundPlayed(object sender, ActionSound sound)
+        private void OnSoundPlayed(object? _, ActionSound sound)
         {
             if (_soundPlaying != null)
                 return;
 
             _soundPlaying = _soundPlayers[sound];
+            if (_soundPlaying.Stream == null)
+                return;
 
             Task.Factory.StartNew(() =>
             {
@@ -52,19 +54,19 @@ namespace Asteroids.Wpf
             });
         }
 
-        private async void Window_Rendered(object sender, EventArgs e)
+        private async void Window_Rendered(object? _, EventArgs __)
         {
             ContentRendered -= Window_Rendered;
             var rec = new Rectangle(0, 0, (int)MainContainer.ActualWidth, (int)MainContainer.ActualHeight);
             await _controller.Initialize(MainContainer, rec);
         }
 
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void Window_SizeChanged(object? _, SizeChangedEventArgs e)
         {
             _controller.ResizeGame(new Rectangle(0, 0, (int)e.NewSize.Width, (int)e.NewSize.Height));
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object? _, KeyEventArgs e)
         {
             PlayKey key;
             switch (e.Key)
@@ -111,7 +113,7 @@ namespace Asteroids.Wpf
             _controller.KeyDown(key);
         }
 
-        private void Window_KeyUp(object sender, KeyEventArgs e)
+        private void Window_KeyUp(object? _, KeyEventArgs e)
         {
             PlayKey key;
             switch (e.Key)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace Asteroids.BlazorComponents.Components
     {
         private const string StylePolygon = "stroke=width:1px; fill:transparent; ";
 
-        private IDictionary<DrawColor, string> _colors;
+        private IDictionary<DrawColor, string>? _colors;
 
         private const string AttributeLine = "line";
         private const string AttributeLineX1 = "x1";
@@ -62,6 +63,9 @@ namespace Asteroids.BlazorComponents.Components
         /// <param name="builder">A <see cref="RenderTreeBuilder"/> that will receive the render output.</param>
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
+            if (_colors == null)
+                return;
+
             //Grab the refs in case multi-threading becomes an option
             var lines = _lastLines;
             var polygons = _lastPolygons;
