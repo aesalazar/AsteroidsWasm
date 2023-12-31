@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net7.0-windows;net4.8</TargetFrameworks>
+    <TargetFrameworks>net8.0-windows;net4.8</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
 	<Nullable>enable</Nullable>
-	<LangVersion>11</LangVersion>
+	<LangVersion>12</LangVersion>
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 

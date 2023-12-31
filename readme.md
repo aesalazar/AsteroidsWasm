@@ -1,4 +1,4 @@
-# Asteroids in .NET Framework, .NET 7, and Blazor WebAssembly
+# Asteroids in .NET Framework, .NET 8, and Blazor WebAssembly
 
 ## Live Demo: https://aesalazar.github.io/AsteroidsWasm/
 
@@ -24,9 +24,9 @@ Currently, the project is made of the following:
 
 - Asteroids.Standard - .Net Standard Library containing the game engine.
 
-- Asteroids.WinForms - Reconstructed WinForms GUI that uses the game engine with a [PictureBox](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.picturebox) as the main renderer.  This is targets .NET 7 by default but can also be set for .NET Framework 4.8.
+- Asteroids.WinForms - Reconstructed WinForms GUI that uses the game engine with a [PictureBox](https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.picturebox) as the main renderer.
 
-- Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [WriteableBitmap](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap) as the main renderer with help from the [WritableBitmapEx](https://github.com/teichgraf/WriteableBitmapEx/) library.  This is targets .NET 7 by default but can also be set for .NET Framework 4.8.
+- Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [WriteableBitmap](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap) as the main renderer with help from the [WritableBitmapEx](https://github.com/teichgraf/WriteableBitmapEx/) library.
 
 - Asteroids.Xamarin - The core Xamarin application that uses SkiaSharp for 2D rendering via a [SKCanvasView](https://docs.microsoft.com/en-us/dotnet/api/skiasharp.views.forms.skcanvasview).
 
@@ -48,13 +48,15 @@ Currently, the project is made of the following:
 
 All applications are written in Visual Studio and can be launch simply by doing `Debug -> Start New Instance`.  All are fully functional in terms of sound and keyboard support.  
 
-Note that the Blazor, WinForms .NET 7 and Wpf .NET 7 projects require Visual Studio 2022 or the latest Visual Studio Code to edit and compile; otherwise it can be done via Command Line.
+Note that all projects in this repository were updated using Visual Studio 2022 but should be editable in the latest Visual Studio Code; otherwise it can be done via Command Line.
 
-Performance varies among the technologies with WinForms in .NET 7 being the clear winner for desktop and Firefox for Blazor/Web.  Wpf in .NET 7 is a close second for desktop, however, the UWP app is also quite fast and has better sound support in that more then one can play at a time, out of the box.  The new MAUI app is also quite fast and maybe even the fastest but would require a more scientific analysis to really make the call.
+Performance is getting fairly close between the different platforms as they continue to improve.  For desktop, MAUI is smooth for game place and sounds play well. But an intresting note is that the Desktop Electron app also plays quite well.
 
-## .NET 7 Notes
+One really interesting comparison to make is the differene between .net 8 and .net framewwork 4.8 when running the WinForms and WPF applications.  The performance difference is very dramatic with the framework versions being almost unplayable.
 
-All .NET 7 applications including Blazor are tested on version `7.0.306` of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
+## .NET 8 Notes
+
+All .NET 8 applications including Blazor are tested on version `8.0.100` of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
@@ -62,11 +64,11 @@ To run all projects in this solution requires the installation of Visual Studio 
 
 ## Xamarin Notes
 
-The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Android `13.0` VM running on my dev machine.
+The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Android `14.0` VM running on my dev machine.
 
 There is no Xamarin iOS app at this point only because Apple does not allow development on non-macs (which is what I am on) without connected hardware.  But there is no technical reason for it not to be possible.
 
-The UWP application is set to require the Windows 10 Fall Creators Update at a minimum.  This is necessary to run the latest .NET 7 and Standard versions.
+The UWP application is set to require the Windows 10 Fall Creators Update at a minimum.  This is necessary to run the latest .NET 8 and Standard versions.
 
 ## Blazor Notes
 

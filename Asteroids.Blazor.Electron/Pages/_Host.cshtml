@@ -17,6 +17,8 @@
     <component type="typeof(App)" render-mode="Server" />
 </app>
 
+@* https://github.com/ElectronNET/Electron.NET/issues/823 *@
+<script>process = undefined;</script>
 <script src="_framework/blazor.server.js"></script>
 
 <script src="_content/Asteroids.BlazorComponents/JsInteropAsteroidsKeyPress.js"></script>
