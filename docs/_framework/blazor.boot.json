@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Asteroids.Blazor.Wasm",
   "resources": {
-    "hash": "sha256-+gC+RY2YzrD6yY/7rcix//ggqUfOQqepFP6zEcHu1Ug=",
+    "hash": "sha256-byALBW7LWDkrIPIz0MXZgIdIenOj88+rD49ez+4nsX8=",
     "jsModuleNative": {
       "dotnet.native.8.0.0.es56qai4cz.js": "sha256-LjLDIz9+J7uuiwMlQ4HbNx2BnSpphOtO2MwkoI28vdI="
     },
@@ -17,9 +17,9 @@
       "icudt_no_CJK.dat": "sha256-L7sV7NEYP37/Qr2FPCePo5cJqRgTXRwGHuwF5Q+0Nfs="
     },
     "assembly": {
-      "Asteroids.Blazor.Wasm.wasm": "sha256-RLi3RfuDcSGGmn25fxMeParOyIXwgZZUNQUlfbg2zto=",
-      "Asteroids.BlazorComponents.wasm": "sha256-jMvCKXw59ku6Whjf++eQ/qx5PIq0EANH70Fct/lWwfA=",
-      "Asteroids.Standard.wasm": "sha256-oP9d8yMGajCugrq0rc+bD3gO3Nni656wlWsHP+I9T2A=",
+      "Asteroids.Blazor.Wasm.wasm": "sha256-u5BypPg5g1Xsv2WDvQ9qrjnDkEmU0A54YrNKRwJsCj4=",
+      "Asteroids.BlazorComponents.wasm": "sha256-NGLBMnm0WDKZMXVEaZNscZFXpfVpdoHVQMUib+uFbWQ=",
+      "Asteroids.Standard.wasm": "sha256-CDrDClkbqxedh56HEllRyt/CBhkaDEdjgFaDXIwbS9s=",
       "Microsoft.AspNetCore.Components.wasm": "sha256-Vlgg7hST5l5zwM1SzqboDMiOvgeDjxfxyi2wXkkT87w=",
       "Microsoft.AspNetCore.Components.Web.wasm": "sha256-6Ii0xui1NKvy2fCRUKlkDuawuve/InLIwkk05KvTY+0=",
       "Microsoft.AspNetCore.Components.WebAssembly.wasm": "sha256-Ws5szf6fWPAXna+XyWsAhavx+WDFcA/91DQ7iPRPCMs=",
@@ -34,7 +34,7 @@
       "Microsoft.Extensions.Primitives.wasm": "sha256-6187ynEahDlSLMBvD4vAmiLpZ3clRb5xu6rM7O8AxNo=",
       "Microsoft.JSInterop.wasm": "sha256-lXwhdv0Is9FMH/j0+WH3zoNWAGLbVaONtGucJ/4URQ0=",
       "Microsoft.JSInterop.WebAssembly.wasm": "sha256-CQVLCKiSxLN5ghyJZG3mhnMGRROdqrbNUjtAXB0nWb8=",
-      "netstandard.wasm": "sha256-3RpnuC5tR4GM4ceKCz1xykujoPTwOQ+Sd6YwbB29do8=",
+      "netstandard.wasm": "sha256-Oi7ZZPlVgBT0RIdXGqi9STXzhegdwJxyX4NlPPPYX14=",
       "System.Collections.Concurrent.wasm": "sha256-VcUybjJzTMQMdGeovXdPu3BdUWlityMHEDOB8/DrJFI=",
       "System.Collections.wasm": "sha256-Fus5frhmroc966beCj8crB/GZqlAycOgmjUatdr53I0=",
       "System.ComponentModel.Primitives.wasm": "sha256-cIclvUcc3+7njohC+DojkW/HKpzAeN25xY8FleKIiO8=",
