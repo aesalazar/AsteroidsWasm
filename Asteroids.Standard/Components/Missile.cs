@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using Asteroids.Standard.Helpers;
 using Asteroids.Standard.Screen;
 
 namespace Asteroids.Standard.Components
@@ -45,7 +47,17 @@ namespace Asteroids.Standard.Components
             VelocityX = -Math.Sin(Radians) * Velocity;
             VelocityY = Math.Cos(Radians) * Velocity;
 
-            return Move();
+            return base.Move();
+        }
+
+        /// <summary>
+        /// With no target provide, moves the Missle in a random direction.
+        /// </summary>
+        /// <returns>Indication if the move was successful.</returns>
+        public override bool Move()
+        {
+            var point = RandomizeHelper.GetRandomPoint(CurrentLocation, .2);
+            return Move(point);
         }
 
         #region Statics
