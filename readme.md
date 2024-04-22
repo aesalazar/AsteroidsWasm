@@ -56,11 +56,15 @@ One really interesting comparison to make is the differene between .net 8 and .n
 
 ## .NET 8 Notes
 
-All .NET 8 applications including Blazor are tested on version `8.0.100` of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
+All .NET 8 applications including Blazor are tested on version `8.0.204` (runtime `8.0.4`) of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
-To run all projects in this solution requires the installation of Visual Studio 2022 minimum or the latest Visual Studio Code.
+You can install the latest via `Winget` using:
+
+`winget install dotnet-sdk-8`
+
+To run all projects in this solution requires the installation of Visual Studio 2022 or the latest Visual Studio Code.
 
 ## Xamarin Notes
 
@@ -112,7 +116,7 @@ NOTE: Electron.NET requires node.js and npm so make sure to have them installed.
 
 https://nodejs.org/en/
 
-NOTE 2:  Sometimes I get an "is being used by another process" error when attempting to start from Visual Studio.  I have not been able to narrow it down but it seems to be a known issue with the package.  You can easily tell by trying to delete the obj or bin folders and getting file lock errors.  If it happens, look in Task Manager for any running instances of electron.exe.  Kill them and it should resolve.
+NOTE 2:  Sometimes I get an "is being used by another process" error when attempting to start from Visual Studio.  I have not been able to narrow it down but it seems to be a known issue with the package.  You can easily tell by trying to delete the obj or bin folders and getting file lock errors.  If it happens, look in Task Manager for any running instances of `electron.exe` .  Kill them and it should resolve.
 
 ## Blazor MAUI Notes
 
