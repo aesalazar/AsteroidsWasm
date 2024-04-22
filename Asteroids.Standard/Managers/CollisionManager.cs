@@ -43,7 +43,7 @@ namespace Asteroids.Standard.Managers
         public bool AsteroidBeltCollision(IList<Point> pointsToCheck)
         {
             //Get a copy for collection adds/removes
-            var asteroids = _cache.Asteroids.ToList();
+            var asteroids = _cache.GetAsteroids();
             var score = 0;
 
             //Go through each but break on first hit
@@ -131,7 +131,7 @@ namespace Asteroids.Standard.Managers
         {
             bool safe = true;
 
-            foreach (var asteroid in _cache.Asteroids)
+            foreach (var asteroid in _cache.GetAsteroids())
             {
                 var separation = asteroid
                     .Location
@@ -222,7 +222,7 @@ namespace Asteroids.Standard.Managers
         public void MoveAsteroids()
         {
             //Move does not use locks
-            foreach (var asteroid in _cache.Asteroids)
+            foreach (var asteroid in _cache.GetAsteroids())
                 asteroid.ScreenObject.Move();
         }
 

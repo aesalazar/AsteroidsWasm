@@ -156,7 +156,7 @@ namespace Asteroids.Standard.Managers
         private void DrawBelt()
         {
             var asteroids = _cache
-                 .Asteroids
+                 .GetAsteroids()
                  .Where(a => a.ScreenObject.Size != Asteroid.AsteroidSize.Dne);
 
             foreach (var asteroid in asteroids)
