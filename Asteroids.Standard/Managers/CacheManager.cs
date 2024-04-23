@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using Asteroids.Standard.Components;
+using Asteroids.Standard.Screen;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Asteroids.Standard.Components;
-using Asteroids.Standard.Screen;
 
 namespace Asteroids.Standard.Managers
 {
@@ -23,15 +22,16 @@ namespace Asteroids.Standard.Managers
             Score = score;
             Ship = ship;
             Belt = belt;
-            _bullets = bullets;
+            _bullets = bullets.ToList();
 
             _bulletLock = new object();
             _explosionLock = new object();
+            _asteroidsLock = new object();
 
             _explosions = new List<Explosion>();
             _bulletsInFlight = new List<CachedObject<Bullet>>();
             _bulletsAvailable = new List<CachedObject<Bullet>>();
-            Asteroids = new List<CachedObject<Asteroid>>();
+            _asteroids = new List<CachedObject<Asteroid>>();
 
             Repopulate();
         }
@@ -43,11 +43,13 @@ namespace Asteroids.Standard.Managers
         //Read-only
         private readonly object _bulletLock;
         private readonly object _explosionLock;
+        private readonly object _asteroidsLock;
 
-        private readonly IList<Explosion> _explosions;
-        private readonly IList<Bullet> _bullets;
-        private readonly IList<CachedObject<Bullet>> _bulletsInFlight;
-        private readonly IList<CachedObject<Bullet>> _bulletsAvailable;
+        private readonly List<Explosion> _explosions;
+        private readonly List<Bullet> _bullets;
+        private readonly List<CachedObject<Bullet>> _bulletsInFlight;
+        private readonly List<CachedObject<Bullet>> _bulletsAvailable;
+        private readonly List<CachedObject<Asteroid>> _asteroids;
 
         public ScoreManager Score { get; }
 
@@ -65,11 +67,6 @@ namespace Asteroids.Standard.Managers
         /// Belt for <see cref="Asteroid"/>s.
         /// </summary>
         public AsteroidBelt Belt { get; private set; }
-
-        /// <summary>
-        /// Collection of cached <see cref="Asteroid"/>s with parameters cached for optimization. 
-        /// </summary>
-        public IList<CachedObject<Asteroid>> Asteroids { get; private set; }
 
         /// <summary>
         /// Collection of points associated with the <see cref="Saucer"/>, if present.
@@ -155,10 +152,28 @@ namespace Asteroids.Standard.Managers
         {
             Belt = belt;
 
-            Asteroids = Belt
+            var list = Belt
                 .GetAsteroids()
                 .Select(a => new CachedObject<Asteroid>(a))
                 .ToList();
+
+            lock (_asteroidsLock)
+            {
+                _asteroids.Clear();
+                _asteroids.AddRange(list);
+            }
+        }
+
+        /// <summary>
+        /// Returns the current collection of cached Asteroids in a thread-safe manor.
+        /// </summary>
+        /// <returns>Disconnected list of cached Asteroids.</returns>
+        public IList<CachedObject<Asteroid>> GetAsteroids()
+        {
+            lock (_asteroidsLock)
+            {
+                return _asteroids.ToList();
+            }
         }
 
         /// <summary>
@@ -167,8 +182,11 @@ namespace Asteroids.Standard.Managers
         /// </summary>
         public void AddAsteroid(Asteroid asteroid)
         {
-            Asteroids.Add(new CachedObject<Asteroid>(asteroid));
-            Belt.SetAsteroids(Asteroids.Select(c => c.ScreenObject).ToList());
+            lock (_asteroidsLock)
+            {
+                _asteroids.Add(new CachedObject<Asteroid>(asteroid));
+                Belt.SetAsteroids(_asteroids.Select(c => c.ScreenObject).ToList());
+            }
         }
 
         /// <summary>
@@ -177,8 +195,11 @@ namespace Asteroids.Standard.Managers
         /// </summary>
         public void RemoveAsteroid(int index)
         {
-            Asteroids.RemoveAt(index);
-            Belt.SetAsteroids(Asteroids.Select(c => c.ScreenObject).ToList());
+            lock (_asteroidsLock)
+            {
+                _asteroids.RemoveAt(index);
+                Belt.SetAsteroids(_asteroids.Select(c => c.ScreenObject).ToList());
+            }
         }
 
         /// <summary>

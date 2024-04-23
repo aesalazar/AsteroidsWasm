@@ -112,7 +112,7 @@ namespace Asteroids.Standard.Screen
             // Draw the asteroid belt
             _cache.Repopulate();
 
-            foreach (var asteroid in _cache.Asteroids)
+            foreach (var asteroid in _cache.GetAsteroids())
             {
                 asteroid.ScreenObject.Move();
                 _canvas.LoadPolygon(asteroid.PolygonPoints, DrawColor.White);
