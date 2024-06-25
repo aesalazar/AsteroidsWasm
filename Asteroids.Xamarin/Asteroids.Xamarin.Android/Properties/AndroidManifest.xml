@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname" android:installLocation="preferExternal">
-	<uses-sdk android:minSdkVersion="34" android:targetSdkVersion="34" />
-	<application android:label="Asteroids.Xamarin.Android" android:icon="@mipmap/launcher_foreground"></application>
-</manifest>

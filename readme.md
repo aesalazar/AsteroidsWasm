@@ -123,3 +123,9 @@ NOTE 2:  Sometimes I get an "is being used by another process" error when attemp
 This is the most recent addition to the collection.  It was created using the Visual Studio Wizard for a Blazor MAUI project.  The Weather demo components were removed along with a general cleanup.  Then a reference to the Astorids.BlazorComponents project was made and added to the main layout.  It is very similar to how the Asterdoids.Blazor.Wasm project works.
 
 I left all of the Platform resources as is (Windows, Android, iOS, etc.).  I have only tested Windows and Android, both of which started up flawlessly.  Android used the same simiulator I had created for the Asteroids.Xamarin.Andoird project.  I didnt have an Apple developer subscription available but I image it will work with little effort.
+
+If you get an error when trying to start the MAUI Android app, you may need to install `WASI` workload:
+
+```
+dotnet workload install wasi-experimental
+```
