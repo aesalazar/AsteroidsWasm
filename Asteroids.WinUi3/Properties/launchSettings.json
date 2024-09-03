@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Asteroids.WinUi3 (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Asteroids.WinUi3 (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
