@@ -26,7 +26,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.5.240802000" />
-	  <PackageReference Include="SkiaSharp.Views.WinUI" Version="2.88.6" />
+	  <PackageReference Include="SkiaSharp.Views.WinUI" Version="2.88.8" />
 	<Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
