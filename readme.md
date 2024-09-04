@@ -1,4 +1,4 @@
-# Asteroids in .NET Framework, .NET 8, and Blazor WebAssembly
+# Asteroids in .NET Framework, .NET 8, WinUI3, Maui, Electron, and Blazor WebAssembly
 
 ## Live Demo: https://aesalazar.github.io/AsteroidsWasm/
 
@@ -28,12 +28,6 @@ Currently, the project is made of the following:
 
 - Asteroids.Wpf - Equivalent WPF GUI to the WinForms applications that uses a WPF [WriteableBitmap](https://docs.microsoft.com/en-us/dotnet/api/system.windows.media.imaging.writeablebitmap) as the main renderer with help from the [WritableBitmapEx](https://github.com/teichgraf/WriteableBitmapEx/) library.
 
-- Asteroids.Xamarin - The core Xamarin application that uses SkiaSharp for 2D rendering via a [SKCanvasView](https://docs.microsoft.com/en-us/dotnet/api/skiasharp.views.forms.skcanvasview).
-
-- Asteroids.Xamarin.Android - Android GUI that uses the core Xamarin library.
-
-- Asteroid.Xamarin.UWP - UWP GUI that uses the core Xamarin library.
-
 - Asteroids.Blazor.Wasm - WebAssembly project that uses Microsoft's [Blazor Client](https://dotnet.microsoft.com/apps/aspnet/web-apps/client) to allow cross-compiling the C# code to WASM so it can be rendered in a browser (see below for more info).
 
 - Asteroids.Blazor.Server - Similar to the Wasm project but instead uses Microsoft's [Blazor Server](https://docs.microsoft.com/en-us/aspnet/core/blazor/hosting-models?view=aspnetcore-3.1#blazor-server) to execute the application server-side (see below for more info).
@@ -44,19 +38,21 @@ Currently, the project is made of the following:
 
 - Asteroids.BlazorComponents - Blazor Class Library that contains the actual game engine instantiated object and associated HTML and JavaScript bridge to allow rendering in the browser.
 
+- Asteroids.WinUI3 - XAML-based WinUI 3 project, similar to the WPF and now-removed Xamarin (see notes) projects.  It uses the [SKXamlCanvas](https://learn.microsoft.com/en-us/dotnet/api/skiasharp.views.windows.skxamlcanvas) as a base class for the main render control.
+
 ## General Notes
 
 All applications are written in Visual Studio and can be launch simply by doing `Debug -> Start New Instance`.  All are fully functional in terms of sound and keyboard support.  
 
-Note that all projects in this repository were updated using Visual Studio 2022 but should be editable in the latest Visual Studio Code; otherwise it can be done via Command Line.
+Note that all projects in this repository were updated using Visual Studio 2022 but should be editable in the latest Visual Studio Code; otherwise they can be started via Command Line.
 
-Performance is getting fairly close between the different platforms as they continue to improve.  For desktop, MAUI is smooth for game place and sounds play well. But an intresting note is that the Desktop Electron app also plays quite well.
+Performance is getting fairly close between the different platforms as they continue to improve.  For desktop, MAUI and WinUI are very smooth for game place as well as the ability to play more then one sound at a time. But an intresting note is that the Desktop Electron app also plays quite well.
 
 One really interesting comparison to make is the differene between .net 8 and .net framewwork 4.8 when running the WinForms and WPF applications.  The performance difference is very dramatic with the framework versions being almost unplayable.
 
 ## .NET 8 Notes
 
-All .NET 8 applications including Blazor are tested on version `8.0.204` (runtime `8.0.4`) of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
+All .NET 8 applications including Blazor are tested on version `8.0.401` (runtime `8.0.8`) of the SDK so remember to have it installed. You can check what versions are installed (you can have multiple) by entering in a command prompt:
 
 `dotnet --info` or `dotnet --version`
 
@@ -65,14 +61,6 @@ You can install the latest via `Winget` using:
 `winget install dotnet-sdk-8`
 
 To run all projects in this solution requires the installation of Visual Studio 2022 or the latest Visual Studio Code.
-
-## Xamarin Notes
-
-The Android application will need some additional configuration like any other Xamarin project, e.g. I test in an Android `14.0` VM running on my dev machine.
-
-There is no Xamarin iOS app at this point only because Apple does not allow development on non-macs (which is what I am on) without connected hardware.  But there is no technical reason for it not to be possible.
-
-The UWP application is set to require the Windows 10 Fall Creators Update at a minimum.  This is necessary to run the latest .NET 8 and Standard versions.
 
 ## Blazor Notes
 
@@ -120,6 +108,34 @@ NOTE 2:  Sometimes I get an "is being used by another process" error when attemp
 
 ## Blazor MAUI Notes
 
-This is the most recent addition to the collection.  It was created using the Visual Studio Wizard for a Blazor MAUI project.  The Weather demo components were removed along with a general cleanup.  Then a reference to the Astorids.BlazorComponents project was made and added to the main layout.  It is very similar to how the Asterdoids.Blazor.Wasm project works.
+This was created using the Visual Studio Wizard for a Blazor MAUI project.  The Weather demo components were removed along with a general cleanup.  Then a reference to the Astorids.BlazorComponents project was made and added to the main layout.  It is very similar to how the Asterdoids.Blazor.Wasm project works.
 
 I left all of the Platform resources as is (Windows, Android, iOS, etc.).  I have only tested Windows and Android, both of which started up flawlessly.  Android used the same simiulator I had created for the Asteroids.Xamarin.Andoird project.  I didnt have an Apple developer subscription available but I image it will work with little effort.
+
+If you get an error when trying to start the MAUI Android app, you may need to install `WASI` workload:
+
+```
+dotnet workload install wasi-experimental
+```
+
+## WinUI 3
+
+This was created using an new empty WinUI project in Visual Studio. It uses the SkiaSharp [SKXamlCanvas](https://learn.microsoft.com/en-us/dotnet/api/skiasharp.views.windows.skxamlcanvas) to provide rendering.
+
+The .csproj file has been modified so the application can be ran/debugged withOUT always installing it to the Windows OS (the default behavior):
+
+```xml
+<PropertyGroup>
+    <!--SUPRESS PACKAGING-->
+    <WindowsPackageType>None</WindowsPackageType>
+
+    <!-- Bundle the WinUI3 components -->
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+</PropertyGroup>
+```
+
+## Xamarin Notes (removed)
+
+Orginally, this include a set of Xamarin projects for Windows Desktop and Android.  These have since been removed since Xamarin has been deprecated by Microsoft.  If you still wish to see these, you can check it the prior commit:
+
+https://github.com/aesalazar/AsteroidsWasm/tree/update-aspnet-core-8.0.4
