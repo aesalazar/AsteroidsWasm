@@ -41,9 +41,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Asteroids.Standard\Asteroids.Standard.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
 
   <!--
     Defining the "HasPackageAndPublishMenuAddedByProject" property here allows the Solution
