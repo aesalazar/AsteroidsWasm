@@ -15,7 +15,7 @@ internal class ColorHelper
     /// <returns>Hydrated <see cref="SKPaint"/> object.</returns>
     public static SKPaint ColorHexToPaint(string colorHex)
     {
-        var hex = colorHex.Replace("#", "");
+        var hex = colorHex.Replace("#", string.Empty);
         var length = hex.Length;
 
         var bytes = new byte[length / 2];

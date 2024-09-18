@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,9 +13,8 @@ namespace Asteroids.WinUi3.Classes
     /// <summary>
     /// Canvas Control to paint vectors.
     /// </summary>
-    internal sealed class GraphicsContainer : SKXamlCanvas, IGraphicContainer, IDisposable
+    internal sealed class GraphicsContainer : SKXamlCanvas, IGraphicContainer
     {
-        private bool _isDisposed;
         private IDictionary<DrawColor, SKPaint> _colorCache = new Dictionary<DrawColor, SKPaint>();
         private IEnumerable<IGraphicLine> _lastLines = [];
         private IEnumerable<IGraphicPolygon> _lastPolygons = [];
@@ -30,15 +28,11 @@ namespace Asteroids.WinUi3.Classes
                 )
             );
 
-            PaintSurface += OnPaintSurface;
             return Task.CompletedTask;
         }
 
         public Task Draw(IEnumerable<IGraphicLine> lines, IEnumerable<IGraphicPolygon> polygons)
         {
-            if (_isDisposed)
-                return Task.CompletedTask;
-
             _lastLines = lines;
             _lastPolygons = polygons;
 
@@ -46,14 +40,9 @@ namespace Asteroids.WinUi3.Classes
             return Task.CompletedTask;
         }
 
-        public void Dispose()
+        protected override void OnPaintSurface(SKPaintSurfaceEventArgs e)
         {
-            PaintSurface -= OnPaintSurface;
-            _isDisposed = true;
-        }
-
-        private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
-        {
+            base.OnPaintSurface(e);
             var canvas = e.Surface.Canvas;
             canvas.Clear();
 
