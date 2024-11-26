@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 	<Nullable>enable</Nullable>
-	<LangVersion>12</LangVersion>
+	<LangVersion>13</LangVersion>
 	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
