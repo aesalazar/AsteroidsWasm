@@ -19,7 +19,7 @@ internal static class SoundPlayerHelper
         var writer = new DataWriter(outputStream);
         var buffer = new byte[inputStream.Length];
 
-        inputStream.Read(buffer, 0, buffer.Length);
+        inputStream.ReadExactly(buffer, 0, buffer.Length);
         writer.WriteBytes(buffer);
         writer.StoreAsync().GetResults();
         randomAccessStream.Seek(0);
