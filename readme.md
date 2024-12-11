@@ -1,4 +1,4 @@
-# Asteroids in .NET Framework, .NET 9, WinUI3, Maui, Electron, and Blazor WebAssembly
+# Asteroids in .NET Framework, .NET 9, WinUI3, Maui, Electron, AvaloniaUI, and Blazor WebAssembly
 
 ## Live Demo: https://aesalazar.github.io/AsteroidsWasm/
 
@@ -39,6 +39,8 @@ Currently, the project is made of the following:
 - Asteroids.BlazorComponents - Blazor Class Library that contains the actual game engine instantiated object and associated HTML and JavaScript bridge to allow rendering in the browser.
 
 - Asteroids.WinUI3 - XAML-based WinUI 3 project, similar to the WPF and now-removed Xamarin (see notes) projects.  It uses the [SKXamlCanvas](https://learn.microsoft.com/en-us/dotnet/api/skiasharp.views.windows.skxamlcanvas) as a base class for the main render control.
+
+- Asteroids.AvaloniaUi - XAML-based [AvaloniaUI](https://avaloniaui.net/) project, similar to the WPF project.  It uses the platform's own [Canvas](https://docs.avaloniaui.net/docs/reference/controls/canvas) as a base for the graphics rendering and the [VLC](https://code.videolan.org/videolan/LibVLCSharp) library for playing sounds.
 
 ## General Notes
 
@@ -133,6 +135,12 @@ The .csproj file has been modified so the application can be ran/debugged withOU
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
 </PropertyGroup>
 ```
+
+## AvaloniaUI Notes
+
+The AvaloniaUI platform is relatively new and an interesting one.  It is designed with the WPF developer in mind but allows for, in theory, running on just about any Operating System.  This current implementation is very basic but is fully functional on Windows.  It has not yet been tested in other Operating Systems.
+
+Since it is meant to run on "anything", it cannot use the built in .NET sound player.  Instead, it references the VLC library which is pretty much universally available.
 
 ## Xamarin Notes (removed)
 
